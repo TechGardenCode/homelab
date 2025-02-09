@@ -10,8 +10,8 @@ argo-cd:
         certificate:
             enabled: true
             issuer:
-                kind: ClusterIssuer
-                name: letsencrypt-production
+                kind: "ClusterIssuer"
+                name: "letsencrypt-production"
         ingress:
             enabled: true
             ingressClassName: nginx
