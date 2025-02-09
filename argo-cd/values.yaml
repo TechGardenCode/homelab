@@ -1,0 +1,29 @@
+argo-cd:
+    redis-ha:
+        enabled: true
+    controller:
+        replicas: 1
+    server:
+        replicas: 2
+        service:
+            type: LoadBalancer
+        certificate:
+            enabled: true
+            issuer:
+                kind: ClusterIssuer
+                name: letsencrypt-production
+        ingress:
+            enabled: true
+            ingressClassName: nginx
+            annotations:
+                cert-manager.io/cluster-issuer: "letsencrypt-production"
+                nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+                nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+            tls: true
+    repoServer:
+        replicas: 2
+    applicationSet:
+        replicas: 2
+
+    global:
+        domain: argocd.1276.kian.sh
