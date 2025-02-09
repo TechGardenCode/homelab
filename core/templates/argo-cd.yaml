@@ -7,7 +7,7 @@ metadata:
 spec:
     project: default
     source:
-        repoURL: https://github.com/techgarencode/argo-cd-aoe.git
+        repoURL: https://github.com/techgardencode/argo-cd-aoe.git
         path: argo-cd/
         targetRevision: HEAD
     destination:
