@@ -1,10 +1,27 @@
 argo-cd:
     application:
         namespaces: "*"
-    redis-ha:
-        enabled: true
+    applicationSet:
+        replicas: 2
+    configs:
+        cmp:
+            plugins: |
+                - name: kustomized-helm
+                  init:
+                      command: ["/bin/sh", "-c"]
+                      args: ["helm dependency build"]
+                  generate:
+                      command: ["/bin/sh", "-c"]
+                      args: ["helm template . --name-template $ARGOCD_APP_NAME --namespace $ARGOCD_APP_NAMESPACE --kube-version $KUBE_VERSION > all.yaml && kustomize build"]
+
     controller:
         replicas: 1
+    global:
+        domain: argocd.1276.kian.sh
+    redis-ha:
+        enabled: true
+    repoServer:
+        replicas: 2
     server:
         replicas: 2
         service:
@@ -17,9 +34,3 @@ argo-cd:
                 nginx.ingress.kubernetes.io/ssl-passthrough: "true"
                 nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
             tls: true
-    repoServer:
-        replicas: 2
-    applicationSet:
-        replicas: 2
-    global:
-        domain: argocd.1276.kian.sh
