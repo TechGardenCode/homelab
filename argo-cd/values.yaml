@@ -28,7 +28,7 @@ argo-cd:
         extraContainers:
             - name: kustomized-helm
               command: [/var/run/argocd/argocd-cmp-server] # Entrypoint should be Argo CD lightweight CMP server i.e. argocd-cmp-server
-              image: ubuntu
+              image: quay.io/argoproj/argocd
               securityContext:
                   runAsNonRoot: true
                   runAsUser: 999
