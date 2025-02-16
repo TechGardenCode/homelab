@@ -2,19 +2,19 @@ argo-cd:
     applicationSet:
         replicas: 2
     configs:
-        cmp:
-            create: true
-            plugins:
-                kustomized-helm:
-                    init:
-                        command: ["/bin/sh", "-c"]
-                        args: ["helm dependency build"]
-                    generate:
-                        command: ["/bin/sh", "-c"]
-                        args:
-                            [
-                                "helm template . --name-template $ARGOCD_APP_NAME --namespace $ARGOCD_APP_NAMESPACE --kube-version $KUBE_VERSION > all.yaml && kustomize build",
-                            ]
+        # cmp:
+        #     create: true
+        #     plugins:
+        #         kustomized-helm:
+        #             init:
+        #                 command: ["/bin/sh", "-c"]
+        #                 args: ["helm dependency build"]
+        #             generate:
+        #                 command: ["/bin/sh", "-c"]
+        #                 args:
+        #                     [
+        #                         "helm template . --name-template $ARGOCD_APP_NAME --namespace $ARGOCD_APP_NAMESPACE --kube-version $KUBE_VERSION > all.yaml && kustomize build",
+        #                     ]
         params:
             application.namespaces: "*"
     controller:
@@ -25,22 +25,22 @@ argo-cd:
         enabled: true
     repoServer:
         replicas: 2
-        extraContainers:
-            - name: kustomized-helm
-              command: [/var/run/argocd/argocd-cmp-server] # Entrypoint should be Argo CD lightweight CMP server i.e. argocd-cmp-server
-              image: ubuntu
-        volumeMounts:
-            - mountPath: /argo-tmp/kustomized-helm
-              name: kustomized-helm-tmp
-            - mountPath: /home/argocd/cmp-server/config/kustomized-helm.yaml
-              subPath: kustomized-helm.yaml
-              name: kustomized-helm-config
-        volumes:
-            - configMap:
-                name: kustomized-helm-config
-              name: kustomized-helm-config
-            - emptyDir: {}
-              name: kustomized-helm-tmp
+        # extraContainers:
+        #     - name: kustomized-helm
+        #       command: [/var/run/argocd/argocd-cmp-server] # Entrypoint should be Argo CD lightweight CMP server i.e. argocd-cmp-server
+        #       image: ubuntu
+        # volumeMounts:
+        #     - mountPath: /argo-tmp/kustomized-helm
+        #       name: kustomized-helm-tmp
+        #     - mountPath: /home/argocd/cmp-server/config/kustomized-helm.yaml
+        #       subPath: kustomized-helm.yaml
+        #       name: kustomized-helm-config
+        # volumes:
+        #     - configMap:
+        #         name: kustomized-helm-config
+        #       name: kustomized-helm-config
+        #     - emptyDir: {}
+        #       name: kustomized-helm-tmp
     server:
         replicas: 2
         service:
