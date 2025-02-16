@@ -4,8 +4,6 @@ kind: Application
 metadata:
   name: kian-coffee-app-dev
   namespace: kian-coffee
-  finalizers:
-  - resources-finalizer.argocd.argoproj.io
 spec:
   destination:
     namespace: kian-coffee
