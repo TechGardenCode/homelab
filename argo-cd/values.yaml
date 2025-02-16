@@ -1,6 +1,4 @@
 argo-cd:
-    application:
-        namespaces: "*"
     applicationSet:
         replicas: 2
     configs:
@@ -17,7 +15,9 @@ argo-cd:
                             [
                                 "helm template . --name-template $ARGOCD_APP_NAME --namespace $ARGOCD_APP_NAMESPACE --kube-version $KUBE_VERSION > all.yaml && kustomize build",
                             ]
-
+        params:
+            application:
+                namespaces: "*"
     controller:
         replicas: 1
     global:
