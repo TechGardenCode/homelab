@@ -5,6 +5,7 @@ argo-cd:
         replicas: 2
     configs:
         cmp:
+            create: true
             plugins: |
                 - name: kustomized-helm
                   init:
