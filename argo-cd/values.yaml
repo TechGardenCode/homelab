@@ -28,7 +28,7 @@ argo-cd:
         extraContainers:
             - name: kustomized-helm
               command: [/var/run/argocd/argocd-cmp-server] # Entrypoint should be Argo CD lightweight CMP server i.e. argocd-cmp-server
-              image: quay.io/argoproj/argocd
+              image: ubuntu
         volumeMounts:
             - mountPath: /var/run/argocd
               name: var-files
