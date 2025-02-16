@@ -25,6 +25,18 @@ argo-cd:
         enabled: true
     repoServer:
         replicas: 2
+        extraContainers:
+            - name: kustomized-helm
+              command: [/var/run/argocd/argocd-cmp-server] # Entrypoint should be Argo CD lightweight CMP server i.e. argocd-cmp-server
+              image: ubuntu
+        volumeMounts:
+            - mountPath: /argo-tmp/kustomized-helm
+              name: kustomized-helm-tmp
+        volumes:
+            - configMap:
+                  name: kustomized-helm
+            - emptyDir: {}
+              name: kustomized-helm-tmp
     server:
         replicas: 2
         service:
