@@ -1,4 +1,6 @@
 argo-cd:
+    application:
+        namespaces: "*"
     redis-ha:
         enabled: true
     controller:
