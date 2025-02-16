@@ -7,7 +7,7 @@ argo-cd:
         cmp:
             create: true
             plugins:
-                - kustomized-helm: |
+                - kustomized-helm:
                       init:
                           command: ["/bin/sh", "-c"]
                           args: ["helm dependency build"]
