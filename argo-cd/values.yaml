@@ -34,7 +34,7 @@ argo-cd:
               name: kustomized-helm-tmp
         volumes:
             - configMap:
-                  name: kustomized-helm
+                  name: argocd-cmp-cm
             - emptyDir: {}
               name: kustomized-helm-tmp
     server:
