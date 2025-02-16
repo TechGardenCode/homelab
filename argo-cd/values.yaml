@@ -32,13 +32,13 @@ argo-cd:
         volumeMounts:
         #     - mountPath: /argo-tmp/kustomized-helm
         #       name: kustomized-helm-tmp
-            - mountPath: /home/argocd/cmp-server/config/kustomized-helm.yaml
+            - mountPath: /home/argocd/cmp-server/config/plugin.yaml
               subPath: kustomized-helm.yaml
               name: kustomized-helm-config
-        # volumes:
-        #     - configMap:
-        #         name: kustomized-helm-config
-        #       name: kustomized-helm-config
+        volumes:
+            - configMap:
+                name: kustomized-helm-config
+              name: kustomized-helm-config
         #     - emptyDir: {}
         #       name: kustomized-helm-tmp
     server:
