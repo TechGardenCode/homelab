@@ -2,19 +2,19 @@ argo-cd:
     applicationSet:
         replicas: 2
     configs:
-        # cmp:
-        #     create: true
-        #     plugins:
-        #         kustomized-helm:
-        #             init:
-        #                 command: ["/bin/sh", "-c"]
-        #                 args: ["helm dependency build"]
-        #             generate:
-        #                 command: ["/bin/sh", "-c"]
-        #                 args:
-        #                     [
-        #                         "helm template . --name-template $ARGOCD_APP_NAME --namespace $ARGOCD_APP_NAMESPACE --kube-version $KUBE_VERSION > all.yaml && kustomize build",
-        #                     ]
+        cmp:
+            create: true
+            plugins:
+                kustomized-helm:
+                    init:
+                        command: ["/bin/sh", "-c"]
+                        args: ["helm dependency build"]
+                    generate:
+                        command: ["/bin/sh", "-c"]
+                        args:
+                            [
+                                "helm template . --name-template $ARGOCD_APP_NAME --namespace $ARGOCD_APP_NAMESPACE --kube-version $KUBE_VERSION > all.yaml && kustomize build",
+                            ]
         params:
             application.namespaces: "*"
     controller:

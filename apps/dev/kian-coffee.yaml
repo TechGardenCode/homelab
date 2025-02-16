@@ -10,5 +10,5 @@ spec:
     project: default
     source:
         repoURL: https://github.com/techgardencode/kian.coffee.git
-        path: charts/overlays/dev
+        path: charts
         targetRevision: HEAD
