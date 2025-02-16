@@ -13,7 +13,7 @@ argo-cd:
                         command: ["/bin/sh", "-c"]
                         args:
                             [
-                                "helm template . --name-template $ARGOCD_APP_NAME --namespace $ARGOCD_APP_NAMESPACE --kube-version $KUBE_VERSION > all.yaml && kustomize build",
+                                "helm template . --name-template $ARGOCD_ENV_APP_NAME --namespace $ARGOCD_APP_NAMESPACE --kube-version $KUBE_VERSION > all.yaml && kustomize build",
                             ]
         params:
             application.namespaces: "*"

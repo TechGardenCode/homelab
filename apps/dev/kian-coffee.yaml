@@ -14,3 +14,6 @@ spec:
         targetRevision: HEAD
         plugin:
             name: kustomized-helm
+            env:
+                - name: APP_NAME
+                  value: kian-coffee-app-dev
