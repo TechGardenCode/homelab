@@ -12,5 +12,5 @@ spec:
         repoURL: https://github.com/techgardencode/kian.coffee.git
         path: charts/overlays/dev
         targetRevision: HEAD
-        plugin:
-            name: kustomized-helm
+        # plugin:
+        #     name: kustomized-helm
