@@ -25,10 +25,10 @@ argo-cd:
         enabled: true
     repoServer:
         replicas: 2
-        # extraContainers:
-        #     - name: kustomized-helm
-        #       command: [/var/run/argocd/argocd-cmp-server] # Entrypoint should be Argo CD lightweight CMP server i.e. argocd-cmp-server
-        #       image: ubuntu
+        extraContainers:
+            - name: kustomized-helm
+              command: [/var/run/argocd/argocd-cmp-server] # Entrypoint should be Argo CD lightweight CMP server i.e. argocd-cmp-server
+              image: quay.io/argoproj/argocd
         volumeMounts:
             - mountPath: /var/run/argocd
               name: var-files
