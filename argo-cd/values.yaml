@@ -19,6 +19,5 @@ argo-cd:
         replicas: 2
     applicationSet:
         replicas: 2
-
     global:
         domain: argocd.1276.kian.sh
