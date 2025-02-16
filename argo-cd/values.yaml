@@ -6,18 +6,22 @@ argo-cd:
     configs:
         cmp:
             create: true
-            plugins:
-                - name: kustomized-helm
-                  init:
-                      command: ["/bin/sh", "-c"]
-                      args: ["helm dependency build"]
-                  generate:
-                      command: ["/bin/sh", "-c"]
-                      args:
-                          [
-                              "helm template . --name-template $ARGOCD_APP_NAME --namespace $ARGOCD_APP_NAMESPACE --kube-version $KUBE_VERSION > all.yaml && kustomize build",
-                          ]
-
+            plugins: |
+                apiVersion: argoproj.io/v1alpha1
+                kind: ConfigManagementPlugin
+                metadata:
+                    name: kustomized-helm
+                spec:
+                    version: v1.0
+                    init:
+                        command: ["/bin/sh", "-c"]
+                        args: ["helm dependency build"]
+                    generate:
+                        command: ["/bin/sh", "-c"]
+                        args:
+                            [
+                                "helm template . --name-template $ARGOCD_APP_NAME --namespace $ARGOCD_APP_NAMESPACE --kube-version $KUBE_VERSION > all.yaml && kustomize build",
+                            ]
     controller:
         replicas: 1
     global:
