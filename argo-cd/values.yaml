@@ -29,12 +29,12 @@ argo-cd:
         #     - name: kustomized-helm
         #       command: [/var/run/argocd/argocd-cmp-server] # Entrypoint should be Argo CD lightweight CMP server i.e. argocd-cmp-server
         #       image: ubuntu
-        # volumeMounts:
+        volumeMounts:
         #     - mountPath: /argo-tmp/kustomized-helm
         #       name: kustomized-helm-tmp
-        #     - mountPath: /home/argocd/cmp-server/config/kustomized-helm.yaml
-        #       subPath: kustomized-helm.yaml
-        #       name: kustomized-helm-config
+            - mountPath: /home/argocd/cmp-server/config/kustomized-helm.yaml
+              subPath: kustomized-helm.yaml
+              name: kustomized-helm-config
         # volumes:
         #     - configMap:
         #         name: kustomized-helm-config
