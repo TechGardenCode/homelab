@@ -32,16 +32,16 @@ argo-cd:
               securityContext:
                   runAsNonRoot: true
                   runAsUser: 999
-        volumeMounts:
-            - mountPath: /var/run/argocd
-              name: var-files
-            - mountPath: /home/argocd/cmp-server/plugins
-              name: plugins
-            - mountPath: /home/argocd/cmp-server/config/plugin.yaml
-              subPath: kustomized-helm.yaml
-              name: argocd-cmp-cm
-            - mountPath: /tmp
-              name: cmp-tmp
+              volumeMounts:
+                  - mountPath: /var/run/argocd
+                    name: var-files
+                  - mountPath: /home/argocd/cmp-server/plugins
+                    name: plugins
+                  - mountPath: /home/argocd/cmp-server/config/plugin.yaml
+                    subPath: kustomized-helm.yaml
+                    name: argocd-cmp-cm
+                  - mountPath: /tmp
+                    name: cmp-tmp
         volumes:
             - configMap:
                   name: argocd-cmp-cm
