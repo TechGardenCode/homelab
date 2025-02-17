@@ -1,0 +1,63 @@
+applicationSet:
+  replicas: 2 # maybe not needed?
+configs:
+  cmp:
+    create: true
+    plugins:
+      kustomized-helm:
+        init:
+          command: ["/bin/sh", "-c"]
+          args: ["helm dependency build"]
+        generate:
+          command: ["/bin/sh", "-c"]
+          args:
+            [
+              "helm template . --name-template $ARGOCD_ENV_APP_NAME --namespace $ARGOCD_APP_NAMESPACE --kube-version $KUBE_VERSION > all.yaml && kustomize build",
+            ]
+  params:
+    application.namespaces: "*"
+    # controller.diff.server.side: "true"
+controller:
+  replicas: 1 # maybe not needed?
+global:
+  domain: foo.kian.sh
+redis-ha:
+  enabled: true
+repoServer:
+  replicas: 2
+  extraContainers:
+    - name: kustomized-helm
+      command: ["/var/run/argocd/argocd-cmp-server"]
+      image: |-
+        {{ default .Values.global.image.repository .Values.repoServer.image.repository }}:{{ default (include "argo-cd.defaultTag" .) .Values.repoServer.image.tag }}
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+            - ALL
+        runAsNonRoot: true
+        runAsUser: 999
+      volumeMounts:
+        - mountPath: /var/run/argocd
+          name: var-files
+        - mountPath: /home/argocd/cmp-server/plugins
+          name: plugins
+        - mountPath: /home/argocd/cmp-server/config/plugin.yaml
+          subPath: kustomized-helm.yaml
+          name: argocd-cmp-cm
+  volumes:
+    - configMap:
+        name: argocd-cmp-cm
+      name: argocd-cmp-cm
+server:
+  replicas: 2
+  service:
+    type: LoadBalancer
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    annotations:
+      cert-manager.io/cluster-issuer: "letsencrypt-production"
+      nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    tls: true
