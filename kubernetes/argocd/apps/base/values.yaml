@@ -12,7 +12,7 @@ applicationsets:
             - path: "kubernetes/external-dns/**/base"
     template:
       metadata:
-        name: "{{path[1]}}-{{regexReplaceAll \"_\" path[2] \"\"}}-{{path.basenameNormalized}}"
+        name: "{{path[1]}}-{{path[2]}}-{{path.basenameNormalized}}"
         project: default
         source:
           repoURL: https://github.com/techgardencode/argo-cd-aoe.git
