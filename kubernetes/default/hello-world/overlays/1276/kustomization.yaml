@@ -12,3 +12,5 @@ helmCharts:
     releaseName: hello-world
     repo: https://helm.github.io/examples
     namespace: default
+    additionalValuesFiles:
+      - values.yaml
