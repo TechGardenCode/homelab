@@ -6,7 +6,6 @@ applicationsets:
           repoURL: https://github.com/techgardencode/argo-cd-aoe.git
           revision: main
           directories:
-            - path: "kubernetes/**/_namespace"
             - path: "kubernetes/argocd/**/overlays/1276"
             - path: "kubernetes/default/**/overlays/1276"
             - path: "kubernetes/external-dns/**/overlays/1276"
