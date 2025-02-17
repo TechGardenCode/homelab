@@ -8,4 +8,4 @@ applicationsets:
           directories:
             - path: "kubernetes/argocd/argocd/overlays/1276"
             - path: "kubernetes/argocd/argocd-apps/base"
-            - path: "kubernetes/default/**"
+            - path: "kubernetes/default/**/overlays/1276"
