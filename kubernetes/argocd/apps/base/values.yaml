@@ -12,7 +12,7 @@ applicationsets:
             - path: "kubernetes/external-dns/**/base"
     template:
       metadata:
-        name: "{{path[1]}}-{{path.basenameNormalized}}"
+        name: "{{path[1]}}-{{path[2]}}-{{path.basenameNormalized}}"
       spec:
         project: default
         source:
