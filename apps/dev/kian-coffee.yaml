@@ -13,7 +13,7 @@ spec:
         path: charts
         targetRevision: HEAD
         plugin:
-            name: kustomized-helm
+            name: kustomize-helm
             env:
                 - name: APP_NAME
                   value: kian-coffee-app-dev

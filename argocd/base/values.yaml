@@ -4,15 +4,19 @@ configs:
   cmp:
     create: true
     plugins:
-      kustomized-helm:
-        init:
-          command: ["/bin/sh", "-c"]
-          args: ["helm dependency build"]
+      kustomize-helm:
+        parameters:
+          static:
+            - name: NAMESPACE
+              title: Namespace of the application
+              required: true
+              itemType: string
+              collectionType: string
         generate:
-          command: ["/bin/sh", "-c"]
+          command: ["bash", "-c"]
           args:
             [
-              "helm template . --name-template $ARGOCD_ENV_APP_NAME --namespace $ARGOCD_APP_NAMESPACE --kube-version $KUBE_VERSION > all.yaml && kustomize build",
+              'kustomize edit set namespace -- "$PARAM_NAMESPACE" && kustomize build --enable-helm --helm-command ''/home/argocd/cmp-server/config/command.sh''',
             ]
   params:
     application.namespaces: "*"
@@ -26,7 +30,7 @@ redis-ha:
 repoServer:
   replicas: 2
   extraContainers:
-    - name: kustomized-helm
+    - name: kustomize-helm
       command: ["/var/run/argocd/argocd-cmp-server"]
       image: |-
         {{ default .Values.global.image.repository .Values.repoServer.image.repository }}:{{ default (include "argo-cd.defaultTag" .) .Values.repoServer.image.tag }}
@@ -43,9 +47,16 @@ repoServer:
         - mountPath: /home/argocd/cmp-server/plugins
           name: plugins
         - mountPath: /home/argocd/cmp-server/config/plugin.yaml
-          subPath: kustomized-helm.yaml
+          subPath: kustomize-helm.yaml
           name: argocd-cmp-cm
+        - name: argocd-kustomize-helm-workaround
+          mountPath: /home/argocd/cmp-server/config/command.sh
+          subPath: command.sh
   volumes:
+    - name: argocd-kustomize-helm-workaround
+      configMap:
+        name: argocd-kustomize-helm-workaround
+        defaultMode: 0777
     - configMap:
         name: argocd-cmp-cm
       name: argocd-cmp-cm
