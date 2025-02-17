@@ -11,5 +11,4 @@ helmCharts:
     version: 0.1.0
     releaseName: hello-world
     repo: https://helm.github.io/examples
-    path: charts/hello-world
     namespace: default
