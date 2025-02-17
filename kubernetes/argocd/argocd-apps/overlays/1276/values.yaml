@@ -1,0 +1,6 @@
+applicationsets:
+  main:
+    generators:
+      - git:
+          directories:
+            - path: "kubernetes/argocd/argocd/overlays/1276"
