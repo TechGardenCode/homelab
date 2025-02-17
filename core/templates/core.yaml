@@ -13,6 +13,8 @@ spec:
     repoURL: https://github.com/techgardencode/argo-cd-aoe.git
     path: core/
     targetRevision: HEAD
+  kustomize:
+    enableHelm: true
   syncPolicy:
     automated:
       selfHeal: true
