@@ -5,6 +5,7 @@ namespace: default
 
 resources:
   - ../../base
+  - templates/ingress.yaml
 
 helmCharts:
   - name: hello-world
