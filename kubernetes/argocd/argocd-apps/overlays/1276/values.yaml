@@ -7,3 +7,4 @@ applicationsets:
           revision: main
           directories:
             - path: "kubernetes/argocd/argocd/overlays/1276"
+            - path: "kubernetes/default/**"
