@@ -1,18 +1,18 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-    name: core
-    finalizers:
-        - resources-finalizer.argocd.argoproj.io
+  name: core
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
 spec:
-    destination:
-        server: https://kubernetes.default.svc
-        namespace: argocd
-    project: default
-    source:
-        repoURL: https://github.com/techgardencode/argo-cd-aoe.git
-        path: core/
-        targetRevision: HEAD
-    syncPolicy:
-        automated:
-            selfHeal: true
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  project: default
+  source:
+    repoURL: https://github.com/techgardencode/argo-cd-aoe.git
+    path: core/
+    targetRevision: HEAD
+  syncPolicy:
+    automated:
+      selfHeal: true
