@@ -1,0 +1,32 @@
+applicationsets:
+  main:
+    name: main
+    generators:
+      - git:
+          repoURL: https://github.com/techgardencode/argo-cd-aoe.git
+          revision: main
+          directories:
+            - path: "apps/**/*"
+            - path: "apps/.*/**"
+              exclude: true
+    template:
+      metadata:
+        name: "{{path[1]}}-{{path.basenameNormalized}}"
+      spec:
+        project: default
+        source:
+          repoURL: https://github.com/techgardencode/argo-cd-aoe.git
+          targetRevision: main
+          path: "{{path}}"
+          plugin:
+            name: kustomize-helm
+            parameters:
+              - name: NAMESPACE
+                string: "{{path[1]}}"
+        destination:
+          name: in-cluster
+          namespace: "{{path[1]}}"
+        syncPolicy:
+          automated:
+            selfHeal: true
+            prune: true
