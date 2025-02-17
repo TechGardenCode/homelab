@@ -7,7 +7,7 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   rules:
-    - host: hello-world.dev.kian.sh
+    - host: hello-world.1276.kian.sh
       http:
         paths:
           - path: /
@@ -19,5 +19,5 @@ spec:
                   number: 80
   tls:
     - hosts:
-        - hello-world.dev.kian.sh
+        - hello-world.1276.kian.sh
       secretName: hello-world-tls
