@@ -1,0 +1,22 @@
+policy: sync
+registry: txt
+txtPrefix: _external-dns-
+txtOwnerId: kian
+
+extraArgs:
+  - "--ingress-class=nginx-public"
+
+provider:
+  name: cloudflare
+
+sources:
+  - service
+  - ingress
+  - crd
+
+env:
+  - name: CF_API_TOKEN
+    valueFrom:
+      secretKeyRef:
+        name: cloudflare-api-key
+        key: apiKey
