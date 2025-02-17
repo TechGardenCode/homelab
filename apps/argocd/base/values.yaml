@@ -16,7 +16,7 @@ configs:
           command: ["bash", "-c"]
           args:
             [
-              'kustomize edit set namespace -- "$PARAM_NAMESPACE" && kustomize build --enable-helm --helm-command ''/home/argocd/cmp-server/config/command.sh''',
+              'kustomize edit set namespace -- "$PARAM_NAMESPACE" && kustomize build --load-restrictor LoadRestrictionsNone --enable-helm --helm-command ''/home/argocd/cmp-server/config/command.sh''',
             ]
   params:
     application.namespaces: "*"
