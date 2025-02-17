@@ -7,6 +7,7 @@ applicationsets:
           revision: main
           directories:
             - path: "kubernetes/argocd/argocd/base"
+            - path: "kubernetes/argocd/argocd-apps/base"
             - path: "kubernetes/default/**"
     template:
       metadata:
