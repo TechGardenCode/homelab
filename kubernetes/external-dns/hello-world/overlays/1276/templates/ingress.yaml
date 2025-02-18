@@ -7,7 +7,7 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: /
     cert-manager.io/cluster-issuer: "letsencrypt-production"
 spec:
-  ingressClassName: ingress-nginx-private
+  ingressClassName: ingress-nginx-public
   rules:
     - host: external-dns.1276.kian.sh
       http:
