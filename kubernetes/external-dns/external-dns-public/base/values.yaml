@@ -4,7 +4,7 @@ txtPrefix: _external-dns-
 txtOwnerId: kian
 
 extraArgs:
-  - "--ingress-class=nginx-public"
+  - "--ingress-class=ingress-nginx-public"
 
 provider:
   name: cloudflare

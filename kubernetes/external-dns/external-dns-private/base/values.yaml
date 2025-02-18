@@ -1,7 +1,7 @@
 policy: upsert-only
 
 extraArgs:
-  - "--ingress-class=nginx-private"
+  - "--ingress-class=ingress-nginx-private"
 
 sources:
   - service

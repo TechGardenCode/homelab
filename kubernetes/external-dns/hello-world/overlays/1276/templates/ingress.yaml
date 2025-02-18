@@ -6,7 +6,7 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
-  ingressClassName: nginx-private
+  ingressClassName: ingress-nginx-private
   rules:
     - host: external-dns.1276.kian.sh
       http:
