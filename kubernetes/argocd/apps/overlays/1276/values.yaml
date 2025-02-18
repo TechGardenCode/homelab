@@ -10,3 +10,4 @@ applicationsets:
             - path: "kubernetes/default/**/overlays/1276"
             - path: "kubernetes/external-dns/**/overlays/1276"
             - path: "kubernetes/ingress-nginx/**/overlays/1276"
+            - path: "kubernetes/cert-manager/**/overlays/1276"
