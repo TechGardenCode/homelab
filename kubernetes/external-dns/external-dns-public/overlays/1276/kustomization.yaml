@@ -11,6 +11,8 @@ helmCharts:
     name: external-dns
     version: 1.15.2
     releaseName: external-dns-public
-    valuesFile: values.yaml
     namespace: external-dns
     includeCRDs: false
+    valuesFile: ../../base/values.yaml
+    additionalValuesFiles:
+      - values.yaml
