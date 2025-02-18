@@ -9,6 +9,7 @@ applicationsets:
             - path: "kubernetes/argocd/**/base"
             - path: "kubernetes/default/**/base"
             - path: "kubernetes/external-dns/**/base"
+            - path: "kubernetes/ingress-nginx/**/base"
     template:
       metadata:
         name: "{{path[1]}}-{{path[2]}}-{{path.basenameNormalized}}"
