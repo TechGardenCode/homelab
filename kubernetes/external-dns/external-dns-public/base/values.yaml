@@ -3,8 +3,8 @@ registry: txt
 txtPrefix: _external-dns-
 txtOwnerId: kian
 
-extraArgs:
-  - "--ingress-class=ingress-nginx-public"
+# extraArgs:
+#   - "--ingress-class=ingress-nginx-public"
 
 provider:
   name: cloudflare
