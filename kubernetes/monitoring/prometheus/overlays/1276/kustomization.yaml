@@ -11,6 +11,7 @@ helmCharts:
     name: kube-prometheus-stack
     version: 69.3.2
     releaseName: prometheus
+    includeCRDs: true
     valuesFile: ../../base/values.yaml
     namespace: monitoring
     additionalValuesFiles:
