@@ -11,4 +11,4 @@ applicationsets:
             - path: "kubernetes/external-dns/**/overlays/1276"
             - path: "kubernetes/ingress-nginx/**/overlays/1276"
             - path: "kubernetes/cert-manager/**/overlays/1276"
-            # - path: "kubernetes/monitoring/**/overlays/1276"
+            - path: "kubernetes/monitoring/**/overlays/1276"
