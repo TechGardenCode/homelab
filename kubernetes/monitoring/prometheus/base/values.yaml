@@ -10,3 +10,15 @@ grafana:
       - secretName: grafana-tls
         hosts:
           - grafana.1276.kian.sh
+prometheus:
+  ingress:
+    enabled: true
+    ingressClassName: ingress-nginx-private
+    annotations:
+      cert-manager.io/cluster-issuer: "letsencrypt-production"
+    hosts:
+      - prometheus.1276.kian.sh
+    tls:
+      - secretName: prometheus-tls
+        hosts:
+          - prometheus.1276.kian.sh
