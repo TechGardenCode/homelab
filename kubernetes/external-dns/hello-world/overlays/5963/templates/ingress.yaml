@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: external-dns-ingress
+  namespace: external-dns
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    cert-manager.io/cluster-issuer: "letsencrypt-production"
+spec:
+  ingressClassName: ingress-nginx-public
+  rules:
+    - host: external-dns.5963.kian.sh
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: hello-world
+                port:
+                  number: 80
+  tls:
+    - hosts:
+        - external-dns.5963.kian.sh
+      secretName: external-dns-tls
