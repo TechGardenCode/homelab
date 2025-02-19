@@ -14,6 +14,7 @@ applicationsets:
     template:
       metadata:
         name: "{{path[1]}}-{{path[2]}}-{{path.basenameNormalized}}"
+      spec:
         project: default
         source:
           repoURL: https://github.com/techgardencode/argo-cd-aoe.git
