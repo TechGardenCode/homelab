@@ -3,9 +3,9 @@ grafana:
     enabled: true
     ingressClassName: ingress-nginx-private
     annotations:
-      cert-manager.io/cluster-issuer: letsencrypt-production
+      cert-manager.io/cluster-issuer: "letsencrypt-production"
     hosts:
-      - host: grafana.1276.kian.sh
+      - grafana.1276.kian.sh
     tls:
       - secretName: grafana-tls
         hosts:
