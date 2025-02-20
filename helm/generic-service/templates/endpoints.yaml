@@ -1,0 +1,19 @@
+{{- if .Values.endpoints }}
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: {{ include "generic-service.name" . }}
+  labels:
+    {{- include "generic-service.labels" . | nindent 4 }}
+      {{- with .Values.endpoints.annotations }}
+      subsets:
+        - addresses:
+          {{- range .Values.endpoints.addresses }}
+            - ip: {{ .ip | quote }}
+          {{- end }}
+          ports:
+          {{- range .Values.endpoints.ports }}
+            - name: {{ .name | quote }}
+              port: {{ .port }}
+              protocol: {{ .protocol | quote }}
+          {{- end }}
