@@ -31,7 +31,7 @@ metadata:
   namespace: tools
 spec:
   type: ExternalName
-  externalName: 127.0.0.1
+  externalName: 10.0.60.26
   ports:
     - port: 8123
       targetPort: 8123
