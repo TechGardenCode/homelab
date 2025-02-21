@@ -6,5 +6,8 @@ ports:
   - name: http
     containerPort: 80
 
+service:
+  type: LoadBalancer
+
 ingress:
   host: coffee.kian.sh
