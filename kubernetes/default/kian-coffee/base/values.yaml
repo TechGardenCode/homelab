@@ -3,7 +3,7 @@ image:
   tag: "53ecaaa94d26aee854878bb8b3c12396bfe68709"
 
 ports:
-  - name: http
+  - name: main
     containerPort: 80
 
 service:
