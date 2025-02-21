@@ -9,7 +9,7 @@ helmGlobals:
 helmCharts:
   - name: generic-service
     releaseName: kian-coffee
-    valuesFile: ../../base
+    valuesFile: ../../base/values.yaml
     namespace: default
     additionalValuesFiles:
       - values.yaml
