@@ -16,6 +16,3 @@ ingress:
   host: coffee.kian.sh
   tls:
     secretName: kian-coffee-tls
-
-health:
-  enabled: false
