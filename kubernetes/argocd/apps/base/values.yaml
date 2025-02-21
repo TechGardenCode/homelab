@@ -3,7 +3,7 @@ applicationsets:
     name: main
     generators:
       - git:
-          repoURL: https://github.com/techgardencode/argo-cd-aoe.git
+          repoURL: https://github.com/techgardencode/homelab.git
           revision: main
           directories:
             - path: "kubernetes/argocd/**/base"
@@ -17,7 +17,7 @@ applicationsets:
       spec:
         project: default
         source:
-          repoURL: https://github.com/techgardencode/argo-cd-aoe.git
+          repoURL: https://github.com/techgardencode/homelab.git
           targetRevision: main
           path: "{{path}}"
           plugin:
