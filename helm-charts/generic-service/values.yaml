@@ -34,14 +34,6 @@ service:
   externalTrafficPolicy: ""
   loadBalancerIP: ""
 
-endpoints:
-  #   - addresses: 
-  #       - ip: ""
-  #     ports:
-  #       - name: http
-  #         port: 80
-  #         protocol: TCP
-
 health:
   enabled: true
   startupProbeFailureThreshold: 60
