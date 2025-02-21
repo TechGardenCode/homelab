@@ -20,7 +20,7 @@ configs:
             ]
   params:
     application.namespaces: "*"
-    # controller.diff.server.side: "true"
+    controller.diff.server.side: "true"
 controller:
   replicas: 1 # maybe not needed?
 global:
