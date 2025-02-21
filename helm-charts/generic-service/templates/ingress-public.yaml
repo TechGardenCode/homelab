@@ -19,7 +19,7 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  ingressClassName: nginx-public
+  ingressClassName: ingress-nginx-public
   
   rules:
   - host: {{ .Values.ingress.host }}

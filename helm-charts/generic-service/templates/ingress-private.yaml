@@ -37,7 +37,7 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  ingressClassName: nginx-private
+  ingressClassName: ingress-nginx-private
   rules:
   - host: {{ .Values.ingress.host }}
     http:
