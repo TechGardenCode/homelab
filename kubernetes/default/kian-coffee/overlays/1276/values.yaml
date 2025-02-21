@@ -1,4 +1,4 @@
 ingress:
-  host: coffee.1276.kian.sh
+  host: kian.coffee
   tls:
     secretName: kian-coffee-tls
