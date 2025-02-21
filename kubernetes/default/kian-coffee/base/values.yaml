@@ -11,3 +11,6 @@ service:
 
 ingress:
   host: coffee.kian.sh
+
+health:
+  enabled: false
