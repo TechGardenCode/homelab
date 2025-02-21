@@ -3,11 +3,12 @@ kind: Kustomization
 
 namespace: default
 
+helmGlobals:
+  chartHome: ../../../../../helm-charts
+
 helmCharts:
-  - name: helm/generic-service
+  - name: generic-service
     releaseName: kian-coffee
-    repo: https://github.com/techgardencode/argo-cd-aoe.git
-    version: 0.1.0
     valuesFile: ../../base
     namespace: default
     additionalValuesFiles:
