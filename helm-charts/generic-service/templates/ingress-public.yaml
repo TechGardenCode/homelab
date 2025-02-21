@@ -34,10 +34,8 @@ spec:
               name: {{ .Values.ingress.port }}
   {{- with .Values.ingress.tls }}
   tls:
-  {{- range . }}
     - hosts:
         - {{ $.Values.ingress.host }}
       secretName: {{ .secretName }}
-  {{- end }}
   {{- end }}
 {{- end }}

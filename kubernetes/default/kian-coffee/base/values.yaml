@@ -15,7 +15,7 @@ ingress:
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
   host: coffee.kian.sh
   tls:
-    - secretName: kian-coffee-tls
+    secretName: kian-coffee-tls
 
 health:
   enabled: false
