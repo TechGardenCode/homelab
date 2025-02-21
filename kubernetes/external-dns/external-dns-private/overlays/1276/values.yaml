@@ -7,4 +7,4 @@ env:
         name: pihole-password
         key: EXTERNAL_DNS_PIHOLE_PASSWORD
   - name: EXTERNAL_DNS_PIHOLE_SERVER
-    value: http://10.0.60.18
+    value: http://10.0.60.20
