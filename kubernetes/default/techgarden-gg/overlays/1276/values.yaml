@@ -1,0 +1,4 @@
+ingress:
+  host: techgarden.1276.kian.sh
+  tls:
+    secretName: techgarden-gg-tls
