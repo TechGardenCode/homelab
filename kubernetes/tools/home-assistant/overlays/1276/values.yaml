@@ -37,6 +37,7 @@ metadata:
 spec:
   ports:
     - port: 80
+      protocol: TCP
 ---
 apiVersion: v1
 kind: Endpoints
