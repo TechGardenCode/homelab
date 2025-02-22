@@ -8,8 +8,8 @@ resources:
 
 helmCharts:
   - repo: https://grafana.github.io/helm-charts
-    name: grafana/loki-stack
-    version: 2.9.3
+    name: loki-stack
+    version: 2.10.2
     releaseName: loki
     includeCRDs: false
     valuesFile: ../../base/values.yaml
