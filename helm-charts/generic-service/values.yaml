@@ -114,7 +114,7 @@ database:
   postgresql:
     image:
       repository: postgres
-      tag: "17.3@sha256:0321e2252ebfeecb8bc1a899755084d29bce872953e1a5a3e25ec0860b739098"
+      tag: "17.4@sha256:eb37f58646a901dc7727cf448cae36daaefaba79de33b5058dab79aa4c04aefb"
     backup:
       schedule: "0 4 * * *"
       image:
@@ -124,7 +124,7 @@ database:
 helper:
   image:
     repository: busybox
-    tag: "1.37.0@sha256:a5d0ce49aa801d475da48f8cb163c354ab95cab073cd3c138bd458fc8257fbf1"
+    tag: "1.37.0@sha256:498a000f370d8c37927118ed80afe8adc38d1edcbfc071627d17b25c88efcab0"
 
 homepage:
   name: ""
