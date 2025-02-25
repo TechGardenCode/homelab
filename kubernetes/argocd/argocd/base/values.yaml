@@ -27,6 +27,11 @@ global:
   domain: foo.kian.sh
 redis-ha:
   enabled: true
+  sentinel:
+    lifecycle: 
+      postStart:
+        exec:
+          command: ["/bin/sh", "-c", "sleep 30; redis-cli -p 26379 sentinel reset argocd "]
 repoServer:
   replicas: 2
   extraContainers:
