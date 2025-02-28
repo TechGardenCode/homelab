@@ -11,19 +11,15 @@ This project provides a way to self-host Argo CD using Helm and the "App of Ever
 
 1. Clone the repository:
     ```sh
-    git clone https://github.com/techgardencode/argo-cd-aoe.git
-    cd argo-cd-aoe
+    git clone https://github.com/techgardencode/homelab.git
+    cd homelab
     ```
 
 2. Install Argo CD using Helm:
     ```sh
-    sh ./install/install-argocd.sh
+    kustomize build --load-restrictor LoadRestrictionsNone kubernetes/argocd/argocd/overlays/{{OVERLAY_HERE}} --enable-helm | kubectl -n argocd apply -f -
+    kustomize build --load-restrictor LoadRestrictionsNone kubernetes/argocd/apps/overlays/{{OVERLAY_HERE}} --enable-helm | kubectl -n argocd apply -f - 
     ```
-
-## Usage
-
-- Add your Argo CD projects to the `projects` folder.
-- Add your Argo CD applications to the `apps` folder.
 
 ## Contributing
 
