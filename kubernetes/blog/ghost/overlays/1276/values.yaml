@@ -8,6 +8,6 @@ mysql:
 externalDatabase:
   host: '10.0.60.44'
   user: 'ghost'
-  existingSecret: ghost-mysql
+  existingSecret: ghost-mysql-secret
   database: 'ghost'
   port: 3306
