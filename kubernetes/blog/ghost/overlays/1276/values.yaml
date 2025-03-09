@@ -1,3 +1,11 @@
 ingress:
   annotations:
     cert-manager.io/cluster-issuer: "letsencrypt-production"
+mysql:
+  enabled: false
+externalDatabase:
+  host: 10.0.60.42
+  user: ghost
+  existingSecret: ghost-mysql
+  database: ghost
+  port: 3306
