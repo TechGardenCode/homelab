@@ -6,8 +6,7 @@ ingress:
 mysql:
   enabled: false
 externalDatabase:
-  host: '10.0.60.44'
-  user: 'ghost'
-  existingSecret: ghost-mysql-secret
-  database: 'ghost'
+  host: 10.0.60.44
+  user: ghost
+  database: ghost
   port: 3306
