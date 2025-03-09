@@ -1,0 +1,7 @@
+ingress:
+  enabled: true
+  ingressClassName: ingress-nginx-public
+  hostname: blog.kian.sh
+  tls: true
+  secrets: 
+    - blog-kian-sh-tls

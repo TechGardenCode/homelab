@@ -7,6 +7,7 @@ applicationsets:
           revision: main
           directories:
             - path: "kubernetes/argocd/**/overlays/1276"
+            - path: "kubernetes/blog/**/overlays/1276"
             - path: "kubernetes/default/**/overlays/1276"
             - path: "kubernetes/external-dns/**/overlays/1276"
             - path: "kubernetes/ingress-nginx/**/overlays/1276"

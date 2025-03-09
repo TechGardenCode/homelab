@@ -1,0 +1,17 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: blog
+
+resources:
+  - ../../base
+
+helmCharts:
+  - name: ghost
+    version: 22.1.19
+    releaseName: ghost
+    repo: https://charts.bitnami.com/bitnami
+    namespace: blog
+    valuesFile: ../../base/values.yaml
+    additionalValuesFiles:
+      - values.yaml

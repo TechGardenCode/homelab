@@ -1,0 +1,4 @@
+ingress:
+  hostname: blog.1276.kian.sh
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-production"
