@@ -7,10 +7,10 @@ resources:
   - ../../base
 
 helmCharts:
-  - name: bitnami/ghost
+  - name: ghost
     version: 22.1.19
     releaseName: ghost
-    repo: https://charts.bitnami.com
+    repo: oci://registry-1.docker.io/bitnamicharts
     namespace: blog
     valuesFile: ../../base/values.yaml
     additionalValuesFiles:
