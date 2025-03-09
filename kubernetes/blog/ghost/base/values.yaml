@@ -1,3 +1,4 @@
+ghostEnableHttps: true
 ingress:
   enabled: true
   ingressClassName: ingress-nginx-public
