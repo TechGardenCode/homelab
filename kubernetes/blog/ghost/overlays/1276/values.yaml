@@ -4,7 +4,7 @@ ingress:
 mysql:
   enabled: false
 externalDatabase:
-  host: 10.0.60.42
+  host: 10.0.60.44
   user: ghost
   existingSecret: ghost-mysql
   database: ghost
