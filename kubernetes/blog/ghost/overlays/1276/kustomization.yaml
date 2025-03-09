@@ -7,7 +7,7 @@ resources:
   - ../../base
 
 helmCharts:
-  - name: ghost
+  - name: bitnami/ghost
     version: 22.1.19
     releaseName: ghost
     repo: https://charts.bitnami.com/bitnami
