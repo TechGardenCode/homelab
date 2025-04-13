@@ -1,4 +1,5 @@
 ingress:
+  public: true
   host: sprout.techgarden.gg
   tls:
     secretName: sprout-techgarden-gg-tls
