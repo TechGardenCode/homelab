@@ -3,7 +3,7 @@ image:
   tag: "latest@sha256:9224966f76b0ea464ee8c3dc85dd87b922ec8058e2aa5d527b5392d0452f2bee"
 
 ports:
-  - name: tcp
+  - name: main
     containerPort: 3000
 
 service:
