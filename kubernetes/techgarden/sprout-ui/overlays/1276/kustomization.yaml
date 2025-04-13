@@ -1,15 +1,15 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-namespace: default
+namespace: techgarden
 
 helmGlobals:
   chartHome: ../../../../../helm-charts
 
 helmCharts:
   - name: generic-service
-    releaseName: techgarden-gg
+    releaseName: sprout-ui
     valuesFile: ../../base/values.yaml
-    namespace: default
+    namespace: techgarden
     additionalValuesFiles:
       - values.yaml
