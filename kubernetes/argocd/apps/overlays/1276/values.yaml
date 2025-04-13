@@ -13,4 +13,5 @@ applicationsets:
             - path: "kubernetes/ingress-nginx/**/overlays/1276"
             - path: "kubernetes/cert-manager/**/overlays/1276"
             - path: "kubernetes/monitoring/**/overlays/1276"
+            - path: "kubernetes/techgarden/**/overlays/1276"
             - path: "kubernetes/tools/**/overlays/1276"

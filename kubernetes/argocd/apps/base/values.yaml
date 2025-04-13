@@ -11,6 +11,7 @@ applicationsets:
             - path: "kubernetes/external-dns/**/base"
             - path: "kubernetes/ingress-nginx/**/base"
             - path: "kubernetes/cert-manager/**/base"
+            - path: "kubernetes/techgarden/**/base"
     template:
       metadata:
         name: "{{path[1]}}-{{path[2]}}-{{path.basenameNormalized}}"

@@ -1,0 +1,18 @@
+image:
+  repository: "ghcr.io/techgardencode/sprout-ui"
+  tag: "latest@sha256:f0bb98d374e5ecde492a3a5799fb563ca6f42f754fdc8a3628f6f5c3e20722ad"
+
+ports:
+  - name: main
+    containerPort: 80
+
+service:
+  type: LoadBalancer
+
+ingress:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-production
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+  host: sprout.techgarden.gg
+  tls:
+    secretName: sprout-techgarden-gg-tls
