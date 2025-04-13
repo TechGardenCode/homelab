@@ -1,0 +1,63 @@
+{{- if and .Values.database.enabled (eq .Values.database.type "mariadb") }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "database.name" . }}-backup
+  labels:
+    {{- include "database.labels" . | nindent 4 }}
+spec:
+  schedule: {{ .Values.database.mariadb.backup.schedule | quote }}
+  timeZone: America/New_York
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 2
+  jobTemplate:
+    metadata:
+      name: {{ include "database.name" . }}-backup
+      labels:
+        {{- include "database.labels" . | nindent 8 }}
+    spec:
+      completions: 1
+      parallelism: 1
+      template:
+        metadata:
+          name: {{ include "database.name" . }}-backup
+          labels:
+            {{- include "database.labels" . | nindent 12 }}
+        spec:
+          restartPolicy: OnFailure
+          automountServiceAccountToken: true
+          terminationGracePeriodSeconds: 30
+          containers:
+          - name: {{ include "database.name" . }}
+            image: "{{ .Values.database.mariadb.backup.image.repository }}:{{ .Values.database.mariadb.backup.image.tag }}"
+            imagePullPolicy: IfNotPresent
+            command:
+            - /backup.sh
+            env:
+            - name: TZ
+              value: America/New_York
+            - name: MAX_BACKUPS
+              value: "14"
+            - name: GZIP_LEVEL
+              value: "9"
+            - name: MYSQL_HOST
+              value: {{ include "database.name" . }}
+            - name: MYSQL_PORT
+              value: {{ include "database.port" . | quote }}
+            - name: MYSQL_USER
+              value: root
+            - name: MYSQL_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "database.name" . }}
+                  key: rootPassword
+            volumeMounts:
+            - name: data
+              mountPath: /backup
+          dnsPolicy: ClusterFirst
+          volumes:
+          - name: data
+            persistentVolumeClaim:
+              claimName: {{ include "database.name" . }}-backup
+{{- end -}}
