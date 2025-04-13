@@ -4,7 +4,7 @@ image:
 
 ports:
   - name: main
-    containerPort: 80
+    containerPort: 3000
 
 service:
   type: LoadBalancer
