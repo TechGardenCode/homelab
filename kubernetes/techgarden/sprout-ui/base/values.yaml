@@ -1,6 +1,6 @@
 image:
   repository: "ghcr.io/techgardencode/sprout-ui"
-  tag: "latest@sha256:2c266df847f2b01f7b0b302e20a08efaf9d1819f492747f02242fca206c951d5"
+  tag: "latest@sha256:534ff542729203a8f058c3dfb82b72da3090d68b56eacad8d35d0df61faccad3"
 
 ports:
   - name: main
