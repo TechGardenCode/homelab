@@ -10,6 +10,7 @@ applicationsets:
             - path: "kubernetes/default/**/base"
             - path: "kubernetes/external-dns/**/base"
             - path: "kubernetes/ingress-nginx/**/base"
+            - path: "kubernetes/sealed-secrets/**/base"
             - path: "kubernetes/cert-manager/**/base"
             - path: "kubernetes/techgarden/**/base"
     template:
