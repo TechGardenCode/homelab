@@ -2,6 +2,9 @@ image:
   repository: "ghcr.io/techgardencode/sprout-service"
   tag: "latest@sha256:0f9a1c5e273ecaaf3926578ce47f2158f9598cd23d7293a86bbf218a7e26ce51"
 
+health:
+  path: /health
+
 ports:
   - name: main
     containerPort: 3000
