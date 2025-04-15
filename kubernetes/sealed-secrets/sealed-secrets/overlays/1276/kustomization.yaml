@@ -10,6 +10,4 @@ helmCharts:
   releaseName: sealed-secrets
   repo: https://bitnami-labs.github.io/sealed-secrets
   includeCRDs: true
-  valuesFile: ../../base/values.yaml
-  additionalValuesFiles:
-    - values.yaml
+  valuesFile: values.yaml
