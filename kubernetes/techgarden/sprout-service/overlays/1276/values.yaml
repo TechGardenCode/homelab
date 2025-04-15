@@ -2,3 +2,6 @@ ingress:
   host: sprout.api.techgarden.gg
   tls:
     secretName: sprout-service-techgarden-gg-tls
+    
+secretEnvs:
+  - name: sprout-env-secret
