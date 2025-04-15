@@ -65,7 +65,7 @@ tcpSocket:
     {{- end }}
 {{- end }}
 - name: TZ
-  value: Europe/Berlin
+  value: America/New_York
 {{- range $k, $v := .Values.secretEnvs }}
 {{- range $kk, $vv := $v }}
 - name: {{ $kk | quote }}
