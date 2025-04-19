@@ -1,6 +1,6 @@
 image:
   repository: "ghcr.io/techgardencode/sprout-service"
-  tag: "latest@sha256:5da86f516f595986dbb71778c50cab2bccb5ccda162b2ff027b5f773b58ccfbf"
+  tag: "latest@sha256:6446d64ae6d64d18442cf0ac6b94c4917c3e5c3a63ced1502fcf2df2228de3a6"
 
 health:
   path: /health
