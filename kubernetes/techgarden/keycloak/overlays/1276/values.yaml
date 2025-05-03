@@ -10,5 +10,6 @@ ingress:
 proxy: edge
 postgresql:
   auth:
+    existingSecret: keycloak-secret
     secretKeys:
       userPasswordKey: postgres-password
