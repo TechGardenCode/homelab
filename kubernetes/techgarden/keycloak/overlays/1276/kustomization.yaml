@@ -1,0 +1,12 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: techgarden
+
+helmCharts:
+  - name: keycloak
+    version: 24.6.3
+    releaseName: keycloak
+    repo: oci://registry-1.docker.io/bitnamicharts
+    namespace: keycloak
+    valuesFile: values.yaml

@@ -1,0 +1,7 @@
+ingress:
+  enabled: true
+  hostname: sso.techgarden.gg
+  ingressClassName: ingress-nginx-private
+  tls: true
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-production"
