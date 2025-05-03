@@ -8,3 +8,6 @@ ingress:
   annotations:
     cert-manager.io/cluster-issuer: "letsencrypt-production"
 proxy: edge
+postgresql:
+  auth:
+    existingSecret: keycloak-secret
