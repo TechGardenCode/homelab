@@ -5,3 +5,4 @@ ingress:
   tls: true
   annotations:
     cert-manager.io/cluster-issuer: "letsencrypt-production"
+proxy: edge
