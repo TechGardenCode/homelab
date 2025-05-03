@@ -1,5 +1,3 @@
-auth:
-  existingSecret: keycloak-secret
 ingress:
   enabled: true
   hostname: sso.techgarden.gg
@@ -8,8 +6,3 @@ ingress:
   annotations:
     cert-manager.io/cluster-issuer: "letsencrypt-production"
 proxy: edge
-postgresql:
-  auth:
-    existingSecret: keycloak-secret
-    secretKeys:
-      userPasswordKey: postgres-password
