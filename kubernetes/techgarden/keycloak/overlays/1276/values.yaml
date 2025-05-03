@@ -1,3 +1,5 @@
+auth:
+  existingSecret: keycloak-secret
 ingress:
   enabled: true
   hostname: sso.techgarden.gg
