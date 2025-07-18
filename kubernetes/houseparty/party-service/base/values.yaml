@@ -1,13 +1,13 @@
 image:
-  repository: "ghcr.io/techgardencode/sprout-service"
-  tag: "latest@sha256:bf1c88151fb157476240ceb7093f81bfd5eb63e216c5b8022273f3ca83f744d9"
+  repository: "ghcr.io/techgardencode/hp_party-service"
+  tag: "latest"
 
 health:
   path: /health
 
 ports:
   - name: main
-    containerPort: 3000
+    containerPort: 8080
 
 service:
   type: LoadBalancer
@@ -16,6 +16,6 @@ ingress:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-production
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-  host: sprout.api.techgarden.gg
+  host: party.api.houseparty.techgarden.gg
   tls:
-    secretName: sprout-service-techgarden-gg-tls
+    secretName: party-service-techgarden-gg-tls
