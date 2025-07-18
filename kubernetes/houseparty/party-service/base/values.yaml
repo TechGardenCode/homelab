@@ -7,7 +7,7 @@ health:
 
 ports:
   - name: main
-    containerPort: 8080
+    containerPort: 8000
 
 service:
   type: LoadBalancer
