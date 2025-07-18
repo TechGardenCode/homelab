@@ -1,6 +1,6 @@
 image:
   repository: "ghcr.io/techgardencode/hp_party-service"
-  tag: "latest"
+  tag: "47b68dd17b49e6730473b2255c3239ba5e8b32b5"
 
 health:
   path: /actuator/health
