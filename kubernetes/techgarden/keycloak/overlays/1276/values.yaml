@@ -10,4 +10,3 @@ postgresql:
     existingSecret: keycloak-postgres-db
 production: true
 proxy: edge
-replicaCount: 3
