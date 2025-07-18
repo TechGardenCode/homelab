@@ -5,4 +5,7 @@ ingress:
   tls: true
   annotations:
     cert-manager.io/cluster-issuer: "letsencrypt-production"
+postgresql:
+  auth:
+    existingSecret: keycloak-postgres-db
 proxy: edge
