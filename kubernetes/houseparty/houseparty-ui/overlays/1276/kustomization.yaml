@@ -8,7 +8,7 @@ helmGlobals:
 
 helmCharts:
   - name: generic-service
-    releaseName: party-service
+    releaseName: houseparty-ui
     valuesFile: ../../base/values.yaml
     namespace: houseparty
     additionalValuesFiles:
