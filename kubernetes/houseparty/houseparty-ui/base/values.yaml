@@ -1,1 +1,21 @@
-true
+image:
+  repository: "ghcr.io/techgardencode/houseparty-ui"
+  tag: "ba45572fc7f77077d6e8bede4673061ad4274a32"
+
+health:
+  path: /
+
+ports:
+  - name: main
+    containerPort: 80
+
+service:
+  type: LoadBalancer
+
+ingress:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-production
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+  host: houseparty.techgarden.gg
+  tls:
+    secretName: houseparty-ui-techgarden-gg-tls
