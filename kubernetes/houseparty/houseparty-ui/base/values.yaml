@@ -1,17 +1,13 @@
 image:
   repository: "ghcr.io/techgardencode/houseparty-ui"
-  tag: "ba45572fc7f77077d6e8bede4673061ad4274a32"
-
+  tag: "8b0a30f96421a04503674e38523b363c08d35824"
 health:
   path: /
-
 ports:
   - name: main
     containerPort: 80
-
 service:
   type: LoadBalancer
-
 ingress:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-production
