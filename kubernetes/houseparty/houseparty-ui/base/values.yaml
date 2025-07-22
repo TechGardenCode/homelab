@@ -1,6 +1,6 @@
 image:
   repository: "ghcr.io/techgardencode/houseparty-ui"
-  tag: "8b0a30f96421a04503674e38523b363c08d35824"
+  tag: "daed0675f597f413c8fe3d25db61eca9bd31ebf9"
 health:
   path: /
 ports:
