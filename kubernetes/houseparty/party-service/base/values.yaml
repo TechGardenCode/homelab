@@ -1,6 +1,6 @@
 image:
   repository: "ghcr.io/techgardencode/hp_party-service"
-  tag: "3f0f65ca8fa32b16a99bca0d81db357da5f02ea5"
+  tag: "064a7fde0fcaa70f20e2e3638da0f94c4d20b7a1"
 health:
   path: /actuator/health
 ports:
