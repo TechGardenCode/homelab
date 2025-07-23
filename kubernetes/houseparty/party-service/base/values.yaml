@@ -1,17 +1,13 @@
 image:
   repository: "ghcr.io/techgardencode/hp_party-service"
-  tag: "f9a120a7ff544eec5671bc041fd5e49f44a0b017"
-
+  tag: "ccbbef646edd999f2482bf0ff36b22260ea94463"
 health:
   path: /actuator/health
-
 ports:
   - name: main
     containerPort: 8000
-
 service:
   type: LoadBalancer
-
 ingress:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-production
