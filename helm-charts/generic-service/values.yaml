@@ -50,7 +50,7 @@ ingress:
   annotations: {}
 
 replicas: 1
-strategyType: Recreate
+strategyType: RollingUpdate
 
 resources:
   {}
