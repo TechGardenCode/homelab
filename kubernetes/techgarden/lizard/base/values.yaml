@@ -1,14 +1,11 @@
 image:
   repository: "ghcr.io/techgardencode/lizard"
-  tag: "latest@sha256:ebf70c1abb9a75c1e29e144bddfac0ee40517503acc2c98616fe030019056083"
-
+  tag: "cc2cca6640476a4829973d8daa8ac62376f9abb5"
 ports:
   - name: main
     containerPort: 80
-
 service:
   type: LoadBalancer
-
 ingress:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-production
