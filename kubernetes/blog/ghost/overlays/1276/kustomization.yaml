@@ -8,7 +8,7 @@ resources:
 
 helmCharts:
   - name: ghost
-    version: 22.2.16
+    version: 24.0.3
     releaseName: ghost
     repo: oci://registry-1.docker.io/bitnamicharts
     namespace: blog
