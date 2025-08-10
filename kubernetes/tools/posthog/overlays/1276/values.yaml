@@ -1,0 +1,50 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: posthog-forward
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-production
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+  namespace: tools
+spec:
+  ingressClassName: ingress-nginx-private
+  rules:
+    - host: posthog.techgarden.gg
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: posthog-forward
+                port:
+                  number: 80
+  tls:
+    - hosts:
+         - posthog.techgarden.gg
+      secretName: posthog-tls
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: posthog-forward
+  namespace: tools
+spec:
+  ports:
+    - port: 80
+      protocol: TCP
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: home-assistant-forward
+  namespace: tools
+subsets:
+  - addresses:
+      - ip: 10.0.60.207
+    ports:
+      - port: 80
+        protocol: TCP
