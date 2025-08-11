@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: https://github.com/techgardencode/homelab.git
     targetRevision: homelab2
-    path: bootstrap/argocd
+    path: kubernetes/bootstrap/argocd
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
