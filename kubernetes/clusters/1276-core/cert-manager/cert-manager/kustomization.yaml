@@ -3,3 +3,12 @@ kind: Kustomization
 
 resources:
   - base/cluster-issuer.yaml
+
+helmCharts:
+  - repo: https://charts.jetstack.io
+    name: cert-manager
+    version: v1.18.2
+    includeCRDs: true
+    releaseName: cert-manager
+    valuesFile: ../../base/values.yaml
+    namespace: cert-manager
