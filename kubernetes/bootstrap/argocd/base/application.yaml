@@ -11,7 +11,7 @@ spec:
   source:
     repoURL: https://github.com/techgardencode/homelab.git
     targetRevision: homelab2
-    path: kubernetes/bootstrap
+    path: kubernetes/bootstrap/argocd
     plugin:
       name: kustomize-helm
       parameters:
