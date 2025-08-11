@@ -1,3 +1,6 @@
+applicationSet:
+  replicas: 2
+
 configs:
   params:
     controller.diff.server.side: "true"
@@ -71,9 +74,18 @@ configs:
               collectionType: string
         generate:
           command: ["bash", "-c"]
-          args: ["kustomize edit set namespace -- \"$PARAM_NAMESPACE\" && kustomize build --enable-helm --helm-command '/home/argocd/cmp-server/config/command.sh'"]
+          args:
+            [
+              'kustomize edit set namespace -- "$PARAM_NAMESPACE" && kustomize build --enable-helm --helm-command ''/home/argocd/cmp-server/config/command.sh''',
+            ]
+
+redis-ha:
+  enabled: true
 
 repoServer:
+  autoscaling:
+    enabled: true
+    minReplicas: 2
   extraContainers:
     - name: cmp-kustomize-helm
       command: ["/var/run/argocd/argocd-cmp-server"]
@@ -106,15 +118,24 @@ repoServer:
       configMap:
         name: argocd-cmp-cm
 
+controller:
+  replicas: 1 # maybe not needed?
+
 global:
   domain: argocd.techgarden.gg
 
 server:
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+  service:
+    type: LoadBalancer
   ingress:
     enabled: true
-    ingressClassName: nginx-private
+    ingressClassName: ingress-nginx-private
     annotations:
       cert-manager.io/cluster-issuer: letsencrypt
+      nginx.ingress.kubernetes.io/ssl-passthrough: true
       nginx.ingress.kubernetes.io/backend-protocol: HTTPS
     extraTls:
       - secretName: argocd.techgarden.gg
