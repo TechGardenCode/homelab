@@ -31,6 +31,5 @@ spec:
     metadata:
       annotations:
         sealedsecrets.bitnami.com/cluster-wide: "true"
-      creationTimestamp: null
       name: cloudflare-api-token-secret
       namespace: cert-manager
