@@ -130,14 +130,14 @@ server:
     minReplicas: 2
   service:
     type: LoadBalancer
-  ingress:
-    enabled: true
-    ingressClassName: ingress-nginx-private
-    annotations:
-      cert-manager.io/cluster-issuer: letsencrypt
-      nginx.ingress.kubernetes.io/ssl-passthrough: true
-      nginx.ingress.kubernetes.io/backend-protocol: HTTPS
-    extraTls:
-      - secretName: argocd.techgarden.gg
-        hosts:
-          - argocd.techgarden.gg
+  # ingress:
+  #   enabled: true
+  #   ingressClassName: ingress-nginx-private
+  #   annotations:
+  #     cert-manager.io/cluster-issuer: letsencrypt
+  #     nginx.ingress.kubernetes.io/ssl-passthrough: true
+  #     nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+  #   extraTls:
+  #     - secretName: argocd.techgarden.gg
+  #       hosts:
+  #         - argocd.techgarden.gg
