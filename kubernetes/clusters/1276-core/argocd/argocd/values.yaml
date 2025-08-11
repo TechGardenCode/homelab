@@ -132,10 +132,10 @@ server:
   service:
     type: LoadBalancer
   ingress:
-    enabled: false
+    enabled: true
     ingressClassName: ingress-nginx-private
     annotations:
-      cert-manager.io/cluster-issuer: letsencrypt
+      cert-manager.io/cluster-issuer: letsencrypt-production
       nginx.ingress.kubernetes.io/ssl-passthrough: true
       nginx.ingress.kubernetes.io/backend-protocol: HTTPS
     extraTls:
