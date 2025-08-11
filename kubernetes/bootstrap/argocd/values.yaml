@@ -132,7 +132,7 @@ server:
   service:
     type: LoadBalancer
   ingress:
-    enabled: true
+    enabled: false
     ingressClassName: ingress-nginx-private
     annotations:
       cert-manager.io/cluster-issuer: letsencrypt
