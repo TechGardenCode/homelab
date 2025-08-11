@@ -1,5 +1,0 @@
-ingress:
-  public: true
-  host: lizard.techgarden.gg
-  tls:
-    secretName: lizard-techgarden-gg-tls

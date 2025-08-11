@@ -1,5 +1,0 @@
-ingress:
-  public: true
-  host: houseparty.techgarden.gg
-  tls:
-    secretName: houseparty-ui-techgarden-gg-tls

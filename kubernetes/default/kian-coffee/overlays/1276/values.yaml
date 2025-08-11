@@ -1,5 +1,0 @@
-ingress:
-  public: true
-  host: kian.coffee
-  tls:
-    secretName: kian-coffee-tls
