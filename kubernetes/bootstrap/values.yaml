@@ -74,7 +74,7 @@ configs:
               itemType: string
               collectionType: string
         generate:
-          command: ["bash", "-c"]
+          command: ["sh", "-c"]
           args:
             [
               'kustomize edit set namespace -- "$PARAM_NAMESPACE" && kustomize build --enable-helm --helm-command ''/home/argocd/cmp-server/config/command.sh''',
