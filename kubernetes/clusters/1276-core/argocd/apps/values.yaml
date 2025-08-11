@@ -11,7 +11,7 @@ applicationsets:
               exclude: true
     template:
       metadata:
-        name: "{{path[1]}}-{{path.basenameNormalized}}"
+        name: "{{path[3]}}-{{path.basenameNormalized}}"
       spec:
         project: default
         source:
@@ -22,10 +22,10 @@ applicationsets:
             name: kustomize-helm
             parameters:
               - name: NAMESPACE
-                string: "{{path[1]}}"
+                string: "{{path[3]}}"
         destination:
           name: in-cluster
-          namespace: "{{path[1]}}"
+          namespace: "{{path[3]}}"
         syncPolicy:
           automated:
             selfHeal: true
