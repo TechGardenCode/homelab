@@ -1,0 +1,34 @@
+applicationsets:
+  main:
+    name: main
+    generators:
+      - git:
+          repoURL: https://github.com/techgardencode/homelab.git
+          revision: homelab2
+          directories:
+            - path: "kubernetes/**/*"
+            - path: "kubernetes/exclude/example"
+              exclude: true
+    template:
+      metadata:
+        name: "{{path[1]}}-{{path.basenameNormalized}}"
+      spec:
+        project: default
+        source:
+          repoURL: https://github.com/techgardencode/homelab.git
+          targetRevision: homelab2
+          path: "{{path}}"
+          plugin:
+            name: kustomize-helm
+            parameters:
+              - name: NAMESPACE
+                string: "{{path[1]}}"
+        destination:
+          name: in-cluster
+          namespace: "{{path[1]}}"
+        syncPolicy:
+          automated:
+            selfHeal: true
+            prune: true
+          syncOptions:
+            - ApplyOutOfSyncOnly=true
