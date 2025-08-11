@@ -2,6 +2,7 @@ policy: upsert-only
 
 extraArgs:
   - "--ingress-class=ingress-nginx-private"
+  - "--pihole-api-version=6"
 
 sources:
   - service
@@ -10,7 +11,7 @@ sources:
 
 provider:
   name: pihole
-  
+
 env:
   - name: EXTERNAL_DNS_PIHOLE_PASSWORD
     valueFrom:
