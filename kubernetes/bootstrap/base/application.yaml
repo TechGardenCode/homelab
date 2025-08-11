@@ -14,6 +14,9 @@ spec:
     path: kubernetes/bootstrap
     plugin:
       name: kustomize-helm
+      parameters:
+        - name: NAMESPACE
+          string: '{{path[1]}}'
   syncPolicy:
     automated: { prune: true, selfHeal: true }
     syncOptions:
