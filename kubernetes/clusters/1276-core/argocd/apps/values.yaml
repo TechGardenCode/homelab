@@ -7,7 +7,7 @@ applicationsets:
           revision: homelab2
           directories:
             - path: "kubernetes/**/*"
-            - path: "kubernetes/exclude/example"
+            - path: "kubernetes/ingress-nginx/ingress-nginx-private"
               exclude: true
     template:
       metadata:
