@@ -7,7 +7,9 @@ applicationsets:
           revision: homelab2
           directories:
             - path: "kubernetes/clusters/1276-core/**/*"
-            - path: "kubernetes/clusters/1276-core/example/exclude"
+            - path: "kubernetes/clusters/1276-core/cert-manager/*"
+              exclude: true
+            - path: "kubernetes/clusters/1276-core/example/*"
               exclude: true
     template:
       metadata:
