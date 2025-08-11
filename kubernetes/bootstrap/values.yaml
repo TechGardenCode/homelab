@@ -5,6 +5,7 @@ configs:
   params:
     controller.diff.server.side: "true"
   cm:
+    kustomize.buildOptions: --enable-helm
     # This is default MINUS Endpoints
     resource.exclusions: |
       ### Network resources created by the Kubernetes control plane and excluded to reduce the number of watched events and UI clutter

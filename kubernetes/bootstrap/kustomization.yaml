@@ -4,9 +4,8 @@ kind: Kustomization
 namespace: argocd
 
 resources:
-  - base/configmap.yaml
   - base/namespace.yaml
-  - base/application.yaml
+  - base/configmap.yaml
 
 helmCharts:
   - name: argo-cd
