@@ -6,8 +6,8 @@ applicationsets:
           repoURL: https://github.com/techgardencode/homelab.git
           revision: homelab2
           directories:
-            - path: "kubernetes/**/*"
-            - path: "kubernetes/ingress-nginx/ingress-nginx-private"
+            - path: "kubernetes/clusters/1276-core/**/*"
+            - path: "kubernetes/clusters/1276-core/ingress-nginx/ingress-nginx-private"
               exclude: true
     template:
       metadata:
