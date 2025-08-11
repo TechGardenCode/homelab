@@ -17,8 +17,8 @@ This project provides a way to self-host Argo CD using Helm and the "App of Ever
 
 2. Install Argo CD using Helm:
     ```sh
-    kustomize build --load-restrictor LoadRestrictionsNone kubernetes/argocd/argocd/overlays/{{OVERLAY_HERE}} --enable-helm | kubectl -n argocd apply -f -
-    kustomize build --load-restrictor LoadRestrictionsNone kubernetes/argocd/apps/overlays/{{OVERLAY_HERE}} --enable-helm | kubectl -n argocd apply -f - 
+    kustomize build kubernetes/clusters/1276-core/argocd/argocd --enable-helm | kubectl -n argocd apply -f - 
+    kustomize build kubernetes/clusters/1276-core/argocd/apps --enable-helm | kubectl -n argocd apply -f - 
     ```
 
 ## Contributing
