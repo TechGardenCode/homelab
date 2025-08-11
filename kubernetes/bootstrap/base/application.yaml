@@ -12,6 +12,8 @@ spec:
     repoURL: https://github.com/techgardencode/homelab.git
     targetRevision: homelab2
     path: kubernetes/bootstrap
+    plugin:
+      name: kustomize-helm
   syncPolicy:
     automated: { prune: true, selfHeal: true }
     syncOptions:
