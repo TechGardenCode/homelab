@@ -16,7 +16,7 @@ spec:
       name: kustomize-helm
       parameters:
         - name: NAMESPACE
-          string: '{{path[1]}}'
+          string: 'argocd'
   syncPolicy:
     automated: { prune: true, selfHeal: true }
     syncOptions:
