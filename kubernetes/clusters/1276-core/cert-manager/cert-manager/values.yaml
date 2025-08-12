@@ -5,4 +5,4 @@ global:
   leaderElection:
     namespace: "cert-manager"
 
-enableCertificateOwnerRef: true
+# enableCertificateOwnerRef: true
