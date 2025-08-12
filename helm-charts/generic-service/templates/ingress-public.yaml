@@ -33,4 +33,10 @@ spec:
             name: {{ include "generic-service.name" . }}
             port:
               name: {{ .Values.ingress.port }}
+  {{- with .Values.ingress.tls }}
+  tls:
+    - hosts:
+        - {{ $.Values.ingress.host }}
+      secretName: {{ .secretName }}
+  {{- end }}
 {{- end }}
