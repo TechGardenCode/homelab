@@ -10,5 +10,5 @@ controller:
     enabled: false
 
   ingressClassResource:
-    name: ingress-nginx-private
+    name: nginx-private
     controllerValue: k8s.io/ingress-nginx-private

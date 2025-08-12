@@ -7,7 +7,7 @@ metadata:
     {{- include "database.labels" . | nindent 4 }}
 spec:
   schedule: {{ .Values.database.mariadb.backup.schedule | quote }}
-  timeZone: America/New_York
+  timeZone: Europe/Berlin
   concurrencyPolicy: Forbid
   successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 2
@@ -36,7 +36,7 @@ spec:
             - /backup.sh
             env:
             - name: TZ
-              value: America/New_York
+              value: Europe/Berlin
             - name: MAX_BACKUPS
               value: "14"
             - name: GZIP_LEVEL
@@ -58,6 +58,7 @@ spec:
           dnsPolicy: ClusterFirst
           volumes:
           - name: data
-            persistentVolumeClaim:
-              claimName: {{ include "database.name" . }}-backup
+            hostPath:
+              path: {{ printf "%s-%s" .Values.database.hostPath "backup" }}
+              type: DirectoryOrCreate
 {{- end -}}

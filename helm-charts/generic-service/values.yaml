@@ -36,7 +36,7 @@ service:
 
 health:
   enabled: true
-  startupProbeFailureThreshold: 60
+  startupProbeSeconds: 60
   port: main
   type: HTTP
   path: /
@@ -48,6 +48,8 @@ ingress:
   publicPath: /
   port: main
   annotations: {}
+  annotationsPublic: {}
+  annotationsPrivate: {}
 
 replicas: 1
 strategyType: RollingUpdate
@@ -79,18 +81,22 @@ configMaps: []
 #   subPath: ""
 #   content: ""
 
-volumes:
-  []
-  # - name: ""
-  #   storageClass: ""
-  #   subPath: ""
-  #   containerPath: ""
-  #   readOnly: false
+hostPaths: []
+# - name: ""
+#   hostPath: ""
+#   containerPath: ""
+#   readOnly: false
+#   type: "DirectoryOrCreate"
+
+emptyDirs: []
+
+# - name: ""
+#   containerPath: ""
 
 envsubst:
   image:
     repository: nixery.dev/shell/envsubst
-    tag: "latest@sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    tag: "latest"
   files: []
   # - src:
   #   dest:
@@ -105,7 +111,7 @@ database:
   mariadb:
     image:
       repository: mariadb
-      tag: "11.7.2@sha256:81e893032978c4bf8ad43710b7a979774ed90787fa32d199162148ce28fe3b76"
+      tag: "11.8.2@sha256:2bcbaec92bd9d4f6591bc8103d3a8e6d0512ee2235506e47a2e129d190444405"
     backup:
       schedule: "0 4 * * *"
       image:
@@ -114,7 +120,7 @@ database:
   postgresql:
     image:
       repository: postgres
-      tag: "17.4@sha256:304ab813518754228f9f792f79d6da36359b82d8ecf418096c636725f8c930ad"
+      tag: "17.5@sha256:4d89c904835259bc58876520e56267ca07a4ebd6a027f7814bbbf91b50d685be"
     backup:
       schedule: "0 4 * * *"
       image:
@@ -124,7 +130,12 @@ database:
 helper:
   image:
     repository: busybox
-    tag: "1.37.0@sha256:37f7b378a29ceb4c551b1b5582e27747b855bbfaa73fa11914fe0df028dc581f"
+    tag: "1.37.0@sha256:f9a104fddb33220ec80fc45a4e606c74aadf1ef7a3832eb0b05be9e90cd61f5f"
+
+wait4x:
+  image:
+    repository: wait4x/wait4x
+    tag: "3.5.1@sha256:52e6791d4d8b8c80b2106e4d4f1e44ee69477c6dd461bdeb1aae2db6ccd5d038"
 
 homepage:
   name: ""

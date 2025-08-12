@@ -18,8 +18,11 @@ metadata:
   {{- with .Values.ingress.annotations }}
     {{- toYaml . | nindent 4 }}
   {{- end }}
+  {{- with .Values.ingress.annotationsPublic }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
-  ingressClassName: ingress-nginx-public
+  ingressClassName: nginx-public
   
   rules:
   - host: {{ .Values.ingress.host }}
@@ -32,10 +35,4 @@ spec:
             name: {{ include "generic-service.name" . }}
             port:
               name: {{ .Values.ingress.port }}
-  {{- with .Values.ingress.tls }}
-  tls:
-    - hosts:
-        - {{ $.Values.ingress.host }}
-      secretName: {{ .secretName }}
-  {{- end }}
 {{- end }}
