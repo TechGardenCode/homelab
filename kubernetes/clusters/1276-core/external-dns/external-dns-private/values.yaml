@@ -1,7 +1,7 @@
 policy: upsert-only
 
 extraArgs:
-  - "--ingress-class=ingress-nginx-private"
+  - "--ingress-class=nginx-private"
   - "--pihole-api-version=6"
 
 sources:
