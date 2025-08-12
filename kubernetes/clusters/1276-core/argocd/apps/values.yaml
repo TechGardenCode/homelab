@@ -7,8 +7,6 @@ applicationsets:
           revision: homelab2
           directories:
             - path: "kubernetes/clusters/1276-core/**/*"
-            - path: "kubernetes/clusters/1276-core/external-dns/external-dns-public"
-              exclude: true
             - path: "kubernetes/clusters/1276-core/example/*"
               exclude: true
     template:
