@@ -7,6 +7,8 @@ applicationsets:
           revision: homelab2
           directories:
             - path: "kubernetes/clusters/1276-core/**/*"
+            - path: "kubernetes/clusters/1276-core/default/kian-coffee"
+              exclude: true
             - path: "kubernetes/clusters/1276-core/example/*"
               exclude: true
     template:
