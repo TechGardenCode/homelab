@@ -13,7 +13,6 @@ ingress:
   public: true
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-production
-    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
   host: coffee.1276.internal.techgarden.gg
   tls:
     secretName: coffee.1276.internal.techgarden.gg
