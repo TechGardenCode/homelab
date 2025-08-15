@@ -11,43 +11,43 @@ projects:
         kind: "*"
 
 applicationsets:
-  # 1276-dev:
-  #   name: 1276-dev
-  #   namespace: argocd
-  #   generators:
-  #     - git:
-  #         repoURL: https://github.com/techgardencode/homelab.git
-  #         revision: homelab2
-  #         directories:
-  #           - path: "kubernetes/clusters/1276-dev/**/*"
-  #           - path: "kubernetes/clusters/1276-dev/external-dns/*"
-  #             exclude: true
-  #           - path: "kubernetes/clusters/1276-dev/example/*"
-  #             exclude: true
-  #   template:
-  #     metadata:
-  #       # Keep your naming convention from core: "<namespace>.<leaf-folder>"
-  #       name: "{{path[2]}}_{{path[3]}}.{{path.basenameNormalized}}"
-  #     spec:
-  #       project: "1276-dev"
-  #       source:
-  #         repoURL: https://github.com/techgardencode/homelab.git
-  #         targetRevision: homelab2
-  #         path: "{{path}}"
-  #         plugin:
-  #           name: kustomize-helm
-  #           parameters:
-  #             - name: NAMESPACE
-  #               string: "{{path[3]}}"
-  #       destination:
-  #         name: "1276-dev"
-  #         namespace: "{{path[3]}}"
-  #       syncPolicy:
-  #         automated:
-  #           selfHeal: true
-  #           prune: true
-  #         syncOptions:
-  #           - ApplyOutOfSyncOnly=true
+  1276-dev:
+    name: 1276-dev
+    namespace: argocd
+    generators:
+      - git:
+          repoURL: https://github.com/techgardencode/homelab.git
+          revision: homelab2
+          directories:
+            - path: "kubernetes/clusters/1276-dev/**/*"
+            - path: "kubernetes/clusters/1276-dev/external-dns/*"
+              exclude: true
+            - path: "kubernetes/clusters/1276-dev/example/*"
+              exclude: true
+    template:
+      metadata:
+        # Keep your naming convention from core: "<namespace>.<leaf-folder>"
+        name: "{{path[2]}}_{{path[3]}}.{{path.basenameNormalized}}"
+      spec:
+        project: "1276-dev"
+        source:
+          repoURL: https://github.com/techgardencode/homelab.git
+          targetRevision: homelab2
+          path: "{{path}}"
+          plugin:
+            name: kustomize-helm
+            parameters:
+              - name: NAMESPACE
+                string: "{{path[3]}}"
+        destination:
+          name: "1276-dev"
+          namespace: "{{path[3]}}"
+        syncPolicy:
+          automated:
+            selfHeal: true
+            prune: true
+          syncOptions:
+            - ApplyOutOfSyncOnly=true
   main:
     name: main
     generators:
