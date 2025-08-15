@@ -3,8 +3,8 @@ kind: Kustomization
 
 helmCharts:
   - repo: https://smallstep.github.io/helm-charts
-    name: smallstep
-    version: v1.18.2
+    name: step-certificates
+    version: v1.28.4
     includeCRDs: true
     releaseName: step-ca
     valuesFile: values.yaml
