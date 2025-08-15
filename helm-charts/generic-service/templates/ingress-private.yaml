@@ -6,7 +6,6 @@ metadata:
   labels:
     {{- include "generic-service.labels" . | nindent 4 }}
   annotations:
-    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
     {{- if .Values.ingress.basicAuth }}
     nginx.ingress.kubernetes.io/auth-type: "basic"
     nginx.ingress.kubernetes.io/auth-secret: {{ include "generic-service.name" . }}-basic-auth

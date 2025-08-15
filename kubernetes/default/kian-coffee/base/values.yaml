@@ -12,7 +12,6 @@ service:
 ingress:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-production
-    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
   host: coffee.kian.sh
   tls:
     secretName: kian-coffee-tls
