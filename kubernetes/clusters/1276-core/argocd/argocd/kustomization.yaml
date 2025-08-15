@@ -3,6 +3,7 @@ kind: Kustomization
 
 resources:
   - base/configmap.yaml
+  - 1276-dev.sealedsecret.yaml
 
 helmCharts:
   - name: argo-cd
