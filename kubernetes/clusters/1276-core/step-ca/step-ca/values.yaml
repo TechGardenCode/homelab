@@ -3,6 +3,7 @@ existingSecrets:
   ca: true
   # issuer: true
   certsAsSecret: true
+  configAsSecret: true
   # sshHostCa: true
   # sshUserCa: true
 
