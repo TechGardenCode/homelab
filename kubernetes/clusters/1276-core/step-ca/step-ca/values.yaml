@@ -13,7 +13,7 @@ ingress:
       hosts:
         - ca.core.internal.techgarden.gg
   hosts:
-    - ca.core.internal.techgarden.gg
+    - host: ca.core.internal.techgarden.gg
 
 bootstrap:
   secrets: false
