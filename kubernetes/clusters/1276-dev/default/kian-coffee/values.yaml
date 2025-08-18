@@ -14,7 +14,7 @@ ingress:
   annotations:
     cert-manager.io/issuer-group: certmanager.step.sm
     cert-manager.io/issuer-kind: StepClusterIssuer
-    cert-manager.io/issuer-name: step-issuer
+    cert-manager.io/issuer: step-issuer
   host: coffee.1276.internal.dev.techgarden.gg
   tls:
     secretName: coffee.1276.internal.dev.techgarden.gg
