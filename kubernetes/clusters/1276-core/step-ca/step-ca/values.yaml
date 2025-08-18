@@ -16,7 +16,11 @@ ingress:
   hosts:
     - host: ca.core.internal.techgarden.gg
       paths:
-        - "/"
+        - path: "/"
+          type: "Prefix"
+
+service:
+  port: 9000
 
 bootstrap:
   secrets: false
