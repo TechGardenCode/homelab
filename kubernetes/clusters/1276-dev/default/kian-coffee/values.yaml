@@ -15,6 +15,6 @@ ingress:
     cert-manager.io/issuer-group: certmanager.step.sm
     cert-manager.io/issuer-kind: StepClusterIssuer
     cert-manager.io/issuer: step-issuer
-  host: coffee.1276.internal.dev.techgarden.gg
+  host: coffee.1276.internal.kian.sh
   tls:
-    secretName: coffee.1276.internal.dev.techgarden.gg
+    secretName: coffee.1276.internal.kian.sh
