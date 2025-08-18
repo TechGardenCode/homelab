@@ -19,9 +19,6 @@ ingress:
         - path: "/"
           type: "Prefix"
 
-service:
-  port: 9000
-
 bootstrap:
   secrets: false
   enabled: false
