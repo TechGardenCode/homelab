@@ -12,7 +12,7 @@ service:
 ingress:
   public: true
   annotations:
-    # cert-manager.io/cluster-issuer: letsencrypt-production
+    cert-manager.io/cluster-issuer: letsencrypt-production
   host: coffee.techgarden.gg
   tls:
     secretName: coffee.techgarden.gg
