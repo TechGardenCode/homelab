@@ -11,8 +11,10 @@ service:
 
 ingress:
   public: true
-  # annotations:
-  #   cert-manager.io/cluster-issuer: letsencrypt-production
+  annotations:
+    cert-manager.io/issuer-group: certmanager.step.sm
+    cert-manager.io/issuer-kind: StepClusterIssuer
+    cert-manager.io/cluster-issuer: step-issuer
   host: coffee.1276.internal.dev.techgarden.gg
   tls:
     secretName: coffee.1276.internal.dev.techgarden.gg
