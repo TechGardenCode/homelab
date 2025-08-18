@@ -19,6 +19,9 @@ ingress:
         - path: "/"
           type: "Prefix"
 
+service:
+  type: LoadBalancer
+
 bootstrap:
   secrets: false
   enabled: false
