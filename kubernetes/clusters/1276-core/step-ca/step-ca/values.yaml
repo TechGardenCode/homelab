@@ -9,12 +9,13 @@ existingSecrets:
 
 ingress:
   enabled: true
-  tls: 
+  tls:
     - secretName: ca.core.internal.techgarden.gg
       hosts:
         - ca.core.internal.techgarden.gg
   hosts:
     - host: ca.core.internal.techgarden.gg
+      paths: "/"
 
 bootstrap:
   secrets: false
