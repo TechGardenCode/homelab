@@ -15,7 +15,8 @@ ingress:
         - ca.core.internal.techgarden.gg
   hosts:
     - host: ca.core.internal.techgarden.gg
-      paths: "/"
+      paths:
+        - "/"
 
 bootstrap:
   secrets: false
