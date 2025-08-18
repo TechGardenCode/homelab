@@ -135,7 +135,7 @@ server:
     enabled: true
     ingressClassName: nginx-private
     annotations:
-      cert-manager.io/cluster-issuer: letsencrypt-production
+      # cert-manager.io/cluster-issuer: letsencrypt-production
       nginx.ingress.kubernetes.io/ssl-passthrough: true
       nginx.ingress.kubernetes.io/backend-protocol: HTTPS
     tls: true
