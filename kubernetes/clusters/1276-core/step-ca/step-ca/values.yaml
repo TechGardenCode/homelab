@@ -7,17 +7,17 @@ existingSecrets:
   # sshHostCa: true
   # sshUserCa: true
 
-ingress:
-  enabled: true
-  tls:
-    - secretName: ca.core.internal.techgarden.gg
-      hosts:
-        - ca.core.internal.techgarden.gg
-  hosts:
-    - host: ca.core.internal.techgarden.gg
-      paths:
-        - path: "/"
-          type: "Prefix"
+# ingress:
+#   enabled: true
+#   tls:
+#     - secretName: ca.core.internal.techgarden.gg
+#       hosts:
+#         - ca.core.internal.techgarden.gg
+#   hosts:
+#     - host: ca.core.internal.techgarden.gg
+#       paths:
+#         - path: "/"
+#           type: "Prefix"
 
 service:
   type: LoadBalancer
