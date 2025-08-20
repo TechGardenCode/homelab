@@ -50,6 +50,7 @@ applicationsets:
             prune: true
           syncOptions:
             - ApplyOutOfSyncOnly=true
+            - ServerSideApply=true
   main:
     name: main
     generators:
