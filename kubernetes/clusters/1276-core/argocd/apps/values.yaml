@@ -22,8 +22,8 @@ applicationsets:
             - path: "kubernetes/clusters/1276-dev/**/*"
             - path: "kubernetes/clusters/1276-dev/external-dns/*"
               exclude: true
-            # - path: "kubernetes/clusters/1276-dev/step-issuer/*"
-            #   exclude: true
+            - path: "kubernetes/clusters/1276-dev/step-issuer/*"
+              exclude: true
             - path: "kubernetes/clusters/1276-dev/example/*"
               exclude: true
     template:
