@@ -27,7 +27,7 @@ applicationsets:
     generators:
       - git:
           repoURL: https://github.com/techgardencode/homelab.git
-          revision: homelab2
+          revision: main
           directories:
             - path: "kubernetes/clusters/1276-dev/**/*"
             - path: "kubernetes/clusters/1276-dev/external-dns/*"
@@ -42,7 +42,7 @@ applicationsets:
         project: "1276-dev"
         source:
           repoURL: https://github.com/techgardencode/homelab.git
-          targetRevision: homelab2
+          targetRevision: main
           path: "{{path}}"
           plugin:
             name: kustomize-helm
@@ -65,7 +65,7 @@ applicationsets:
     generators:
       - git:
           repoURL: https://github.com/techgardencode/homelab.git
-          revision: homelab2
+          revision: main
           directories:
             - path: "kubernetes/clusters/1276-prod/**/*"
             - path: "kubernetes/clusters/1276-prod/example/*"
@@ -78,7 +78,7 @@ applicationsets:
         project: "1276-prod"
         source:
           repoURL: https://github.com/techgardencode/homelab.git
-          targetRevision: homelab2
+          targetRevision: main
           path: "{{path}}"
           plugin:
             name: kustomize-helm
@@ -100,7 +100,7 @@ applicationsets:
     generators:
       - git:
           repoURL: https://github.com/techgardencode/homelab.git
-          revision: homelab2
+          revision: main
           directories:
             - path: "kubernetes/clusters/1276-core/**/*"
             - path: "kubernetes/clusters/1276-core/external-dns/*"
@@ -114,7 +114,7 @@ applicationsets:
         project: default
         source:
           repoURL: https://github.com/techgardencode/homelab.git
-          targetRevision: homelab2
+          targetRevision: main
           path: "{{path}}"
           plugin:
             name: kustomize-helm
