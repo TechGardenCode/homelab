@@ -85,3 +85,4 @@ applicationsets:
             prune: true
           syncOptions:
             - ApplyOutOfSyncOnly=true
+            - ServerSideApply=true
