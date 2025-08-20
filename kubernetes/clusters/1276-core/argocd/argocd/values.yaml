@@ -61,6 +61,17 @@ configs:
         - BackgroundScanReport
         - ClusterBackgroundScanReport
         - UpdateRequest
+    # Workaround for https://github.com/argoproj/argo-cd/issues/23886
+    resource.customizations.actions.external-secrets.io_ExternalSecret: |
+      discovery.lua: |
+        local actions = {}
+        actions["refresh"] = {["disabled"] = false}
+        return actions
+    resource.customizations.actions.external-secrets.io_PushSecret: |
+      discovery.lua: |
+        actions = {}
+        actions["push"] = {["disabled"] = false}
+        return actions
   cmp:
     create: true
     plugins:
