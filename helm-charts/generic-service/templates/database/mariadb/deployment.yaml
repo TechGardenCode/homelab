@@ -6,7 +6,7 @@ metadata:
   labels:
     {{- include "database.labels" . | nindent 4 }}
 spec:
-  replicas: {{ .Values.replicas }}
+  replicas: 1
   revisionHistoryLimit: 2
   strategy:
     type: Recreate
@@ -34,7 +34,7 @@ spec:
         - utf8mb4_unicode_ci
         env:
         - name: TZ
-          value: America/New_York
+          value: Europe/Berlin
         - name: MARIADB_AUTO_UPGRADE
           value: "1"
         - name: MARIADB_DATABASE
@@ -72,8 +72,9 @@ spec:
           mountPath: /var/lib/mysql
       volumes:
       - name: data
-        persistentVolumeClaim:
-          claimName: {{ include "database.name" . }}
+        hostPath:
+          path: {{ .Values.database.hostPath | required "database.hostPath is required!" | quote }}
+          type: DirectoryOrCreate
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

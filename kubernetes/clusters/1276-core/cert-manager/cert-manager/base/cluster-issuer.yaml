@@ -1,0 +1,32 @@
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-production
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: techgardencode+letsencrypt@gmail.com
+    privateKeySecretRef:
+      name: letsencrypt-production
+
+    solvers:
+      - dns01:
+          cloudflare:
+            apiTokenSecretRef:
+              name: cloudflare-api-token-secret
+              key: api-token
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: cloudflare-api-token-secret
+spec:
+  refreshInterval: 1h
+  secretStoreRef:
+    # This name must match the metadata.name in the `SecretStore`
+    name: bitwarden-secretsmanager
+    kind: ClusterSecretStore
+  data:
+  - secretKey: api-token
+    remoteRef:
+      key: "d4d8d92f-598d-42a2-8f0c-b33f0162c186"

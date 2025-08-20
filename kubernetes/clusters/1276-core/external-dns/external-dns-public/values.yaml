@@ -1,0 +1,24 @@
+policy: sync
+registry: txt
+txtPrefix: _external-dns-
+txtOwnerId: core
+
+extraArgs:
+  - --ingress-class=nginx-public
+
+provider:
+  name: cloudflare
+
+sources:
+  - service
+  - ingress
+  - crd
+
+triggerLoopOnEvent: true
+
+env:
+  - name: CF_API_TOKEN
+    valueFrom:
+      secretKeyRef:
+        name: cloudflare-api-key
+        key: apiKey

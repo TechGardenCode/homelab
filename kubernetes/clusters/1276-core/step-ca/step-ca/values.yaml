@@ -1,0 +1,16 @@
+existingSecrets:
+  enabled: true
+  ca: true
+  certsAsSecret: true
+  configAsSecret: true
+
+service:
+  type: LoadBalancer
+
+bootstrap:
+  secrets: false
+  enabled: false
+  configmaps: false
+
+inject:
+  enabled: false
