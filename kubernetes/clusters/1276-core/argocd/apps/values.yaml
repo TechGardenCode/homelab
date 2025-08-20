@@ -22,8 +22,8 @@ applicationsets:
             - path: "kubernetes/clusters/1276-dev/**/*"
             - path: "kubernetes/clusters/1276-dev/external-dns/*"
               exclude: true
-            - path: "kubernetes/clusters/1276-dev/step-issuer/*"
-              exclude: true
+            # - path: "kubernetes/clusters/1276-dev/step-issuer/*"
+            #   exclude: true
             - path: "kubernetes/clusters/1276-dev/example/*"
               exclude: true
     template:
@@ -59,7 +59,7 @@ applicationsets:
           revision: homelab2
           directories:
             - path: "kubernetes/clusters/1276-core/**/*"
-            - path: "kubernetes/clusters/1276-core/external-dns/external-dns-public"
+            - path: "kubernetes/clusters/1276-core/external-dns/*"
               exclude: true
             - path: "kubernetes/clusters/1276-core/example/*"
               exclude: true
