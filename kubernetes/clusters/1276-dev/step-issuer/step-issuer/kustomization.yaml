@@ -3,7 +3,8 @@ kind: Kustomization
 
 resources:
   - base/crds.yaml
-  - base/sealedsecrets.yaml
+  # - base/sealedsecrets.yaml
+  - base/externalsecret.yaml
 
 helmCharts:
   - repo: https://smallstep.github.io/helm-charts
