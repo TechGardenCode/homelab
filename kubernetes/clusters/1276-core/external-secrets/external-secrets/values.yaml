@@ -1,1 +1,2 @@
-bitwarden-sdk-server.enabled: true
+bitwarden-sdk-server:
+  enabled: true
