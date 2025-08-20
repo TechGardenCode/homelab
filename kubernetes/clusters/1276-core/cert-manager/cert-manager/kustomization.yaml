@@ -3,6 +3,7 @@ kind: Kustomization
 
 resources:
   - base/cluster-issuer.yaml
+  - base/bitwarden-issuer.yaml
 
 helmCharts:
   - repo: https://charts.jetstack.io
