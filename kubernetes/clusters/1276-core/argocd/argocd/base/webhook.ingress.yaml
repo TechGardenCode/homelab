@@ -24,7 +24,7 @@ spec:
     - host: argocd-webhook.techgarden.gg
       http:
         paths:
-          - path: /
+          - path: /api/webhook
             pathType: Prefix
             backend:
               service:
