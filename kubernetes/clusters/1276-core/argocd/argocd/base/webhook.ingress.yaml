@@ -4,7 +4,6 @@ metadata:
   name: argocd-webhook-public
   namespace: argocd
   annotations:
-    kubernetes.io/ingress.class: public
     nginx.ingress.kubernetes.io/rewrite-target: /api/webhook
     nginx.ingress.kubernetes.io/configuration-snippet: |
       # Allow only POST and small bodies
@@ -21,6 +20,7 @@ spec:
     - hosts:
         - "argocd-webhook.techgarden.gg"
       secretName: argocd-webhook.techgarden.gg
+  ingressClassName: nginx-public
   rules:
     - host: argocd-webhook.techgarden.gg
       http:
