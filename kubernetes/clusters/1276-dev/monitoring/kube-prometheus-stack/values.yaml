@@ -6,7 +6,7 @@ crds:
 grafana:
   ingress:
     enabled: true
-    ingressClassName: ingress-nginx-public
+    ingressClassName: nginx-public
     annotations:
       cert-manager.io/issuer-group: certmanager.step.sm
       cert-manager.io/issuer-kind: StepClusterIssuer
@@ -20,7 +20,7 @@ grafana:
 prometheus:
   ingress:
     enabled: true
-    ingressClassName: ingress-nginx-public
+    ingressClassName: nginx-public
     annotations:
       cert-manager.io/issuer-group: certmanager.step.sm
       cert-manager.io/issuer-kind: StepClusterIssuer
