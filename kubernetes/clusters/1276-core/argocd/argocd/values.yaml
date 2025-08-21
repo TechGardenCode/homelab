@@ -156,3 +156,4 @@ server:
           - argocd.techgarden.gg
     extraPaths:
       - path: /api/webhook
+        pathType: Prefix
