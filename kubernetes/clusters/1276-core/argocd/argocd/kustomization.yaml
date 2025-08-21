@@ -4,6 +4,7 @@ kind: Kustomization
 resources:
   - base/externalsecret.yaml
   - base/configmap.yaml
+  - base/webhook.ingress.yaml
 
 helmCharts:
   - name: argo-cd
