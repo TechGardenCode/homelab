@@ -154,3 +154,5 @@ server:
       - secretName: argocd.techgarden.gg
         hosts:
           - argocd.techgarden.gg
+    extraPaths:
+      - path: /api/webhook
