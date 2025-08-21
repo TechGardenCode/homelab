@@ -4,13 +4,13 @@ metadata:
   name: argocd-webhook-public
   namespace: argocd
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /api/webhook
+    # nginx.ingress.kubernetes.io/rewrite-target: /api/webhook
     # nginx.ingress.kubernetes.io/configuration-snippet: |
     #   # Allow only POST and small bodies
     #   if ($request_method !~ ^(POST)$ ) { return 405; }
-    nginx.ingress.kubernetes.io/proxy-body-size: "256k"
-    nginx.ingress.kubernetes.io/limit-rps: "5"
-    nginx.ingress.kubernetes.io/limit-burst-multiplier: "2"
+    # nginx.ingress.kubernetes.io/proxy-body-size: "256k"
+    # nginx.ingress.kubernetes.io/limit-rps: "5"
+    # nginx.ingress.kubernetes.io/limit-burst-multiplier: "2"
     # nginx.ingress.kubernetes.io/enable-access-log: "true"
     cert-manager.io/cluster-issuer: letsencrypt-production
     # Optional: only allow GitHub/GitLab IPs; update automatically via your edge/WAF (preferred there)
