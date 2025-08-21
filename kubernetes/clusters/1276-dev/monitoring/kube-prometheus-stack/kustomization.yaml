@@ -7,4 +7,5 @@ helmCharts:
     version: 76.4.0
     releaseName: kube-prometheus-stack
     valuesFile: values.yaml
+    includeCRDs: true
     namespace: monitoring
