@@ -1,0 +1,33 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: argocd-webhook-public
+  namespace: argocd
+  annotations:
+    kubernetes.io/ingress.class: public
+    nginx.ingress.kubernetes.io/rewrite-target: /api/webhook
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      # Allow only POST and small bodies
+      if ($request_method !~ ^(POST)$ ) { return 405; }
+    nginx.ingress.kubernetes.io/proxy-body-size: "256k"
+    nginx.ingress.kubernetes.io/limit-rps: "5"
+    nginx.ingress.kubernetes.io/limit-burst-multiplier: "2"
+    nginx.ingress.kubernetes.io/enable-access-log: "true"
+    # Optional: only allow GitHub/GitLab IPs; update automatically via your edge/WAF (preferred there)
+    # nginx.ingress.kubernetes.io/whitelist-source-range: "192.30.252.0/22,185.199.108.0/22,140.82.112.0/20"
+spec:
+  tls:
+    - hosts:
+        - "argocd-webhook.techgarden.gg"
+      secretName: argocd-webhook.techgarden.gg
+  rules:
+    - host: argocd-webhook.techgarden.gg
+      http:
+        paths:
+          - path: /api/webhook
+            pathType: Prefix
+            backend:
+              service:
+                name: argocd-server
+                port:
+                  number: 443
