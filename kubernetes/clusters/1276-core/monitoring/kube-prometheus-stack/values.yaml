@@ -8,26 +8,22 @@ grafana:
     enabled: true
     ingressClassName: nginx-public
     annotations:
-      cert-manager.io/issuer-group: certmanager.step.sm
-      cert-manager.io/issuer-kind: StepClusterIssuer
-      cert-manager.io/issuer: step-issuer
+      cert-manager.io/cluster-issuer: letsencrypt-production
     hosts:
-      - grafana.1276-core.internal.techgarden.gg
+      - grafana.techgarden.gg
     tls:
-      - secretName: grafana.1276-core.internal.techgarden.gg
+      - secretName: grafana.techgarden.gg
         hosts:
-          - grafana.1276-core.internal.techgarden.gg
+          - grafana.techgarden.gg
 prometheus:
   ingress:
     enabled: true
     ingressClassName: nginx-public
     annotations:
-      cert-manager.io/issuer-group: certmanager.step.sm
-      cert-manager.io/issuer-kind: StepClusterIssuer
-      cert-manager.io/issuer: step-issuer
+      cert-manager.io/cluster-issuer: letsencrypt-production
     hosts:
-      - prometheus.1276-core.internal.techgarden.gg
+      - prometheus.techgarden.gg
     tls:
-      - secretName: prometheus.1276-core.internal.techgarden.gg
+      - secretName: prometheus.techgarden.gg
         hosts:
-          - prometheus.1276-core.internal.techgarden.gg
+          - prometheus.techgarden.gg
