@@ -12,11 +12,11 @@ grafana:
       cert-manager.io/issuer-kind: StepClusterIssuer
       cert-manager.io/issuer: step-issuer
     hosts:
-      - grafana.1276.internal.kian.sh
+      - grafana.1276.internal.techgarden.gg
     tls:
-      - secretName: grafana.1276.internal.kian.sh
+      - secretName: grafana.1276.internal.techgarden.gg
         hosts:
-          - grafana.1276.internal.kian.sh
+          - grafana.1276.internal.techgarden.gg
 prometheus:
   ingress:
     enabled: true
@@ -26,8 +26,8 @@ prometheus:
       cert-manager.io/issuer-kind: StepClusterIssuer
       cert-manager.io/issuer: step-issuer
     hosts:
-      - prometheus.1276.internal.kian.sh
+      - prometheus.1276.internal.techgarden.gg
     tls:
-      - secretName: prometheus.1276.internal.kian.sh
+      - secretName: prometheus.1276.internal.techgarden.gg
         hosts:
-          - prometheus.1276.internal.kian.sh
+          - prometheus.1276.internal.techgarden.gg
