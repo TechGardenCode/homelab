@@ -157,3 +157,8 @@ server:
     extraPaths:
       - path: /api/webhook
         pathType: Prefix
+        backend:
+          service:
+            name: argocd-server
+            port:
+              number: 443
