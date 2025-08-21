@@ -2,3 +2,32 @@ crds:
   enabled: true
   upgradeJob:
     enabled: true
+
+grafana:
+  ingress:
+    enabled: true
+    ingressClassName: ingress-nginx-public
+    annotations:
+      cert-manager.io/issuer-group: certmanager.step.sm
+      cert-manager.io/issuer-kind: StepClusterIssuer
+      cert-manager.io/issuer: step-issuer
+    hosts:
+      - grafana.1276.internal.kian.sh
+    tls:
+      - secretName: grafana.1276.internal.kian.sh
+        hosts:
+          - grafana.1276.internal.kian.sh
+prometheus:
+  ingress:
+    enabled: true
+    ingressClassName: ingress-nginx-public
+    annotations:
+      cert-manager.io/issuer-group: certmanager.step.sm
+      cert-manager.io/issuer-kind: StepClusterIssuer
+      cert-manager.io/issuer: step-issuer
+    hosts:
+      - prometheus.1276.internal.kian.sh
+    tls:
+      - secretName: prometheus.1276.internal.kian.sh
+        hosts:
+          - prometheus.1276.internal.kian.sh
