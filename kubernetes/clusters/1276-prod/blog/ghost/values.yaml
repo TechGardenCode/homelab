@@ -16,5 +16,5 @@ ingress:
     cert-manager.io/issuer-group: certmanager.step.sm
     cert-manager.io/issuer-kind: StepClusterIssuer
     cert-manager.io/issuer: step-issuer
-  hosts: blog.1276.internal.techgarden.gg
+  host: blog.1276.internal.techgarden.gg
   public: true
