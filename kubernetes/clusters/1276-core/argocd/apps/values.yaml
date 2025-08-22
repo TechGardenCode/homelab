@@ -151,6 +151,8 @@ applicationsets:
             - path: "kubernetes/clusters/1276-core/**/*"
             - path: "kubernetes/clusters/1276-core/external-dns/*"
               exclude: true
+            - path: "kubernetes/clusters/1276-core/monitoring/loki"
+              excluse: true
             - path: "kubernetes/clusters/1276-core/example/*"
               exclude: true
     template:
