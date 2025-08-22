@@ -4,12 +4,14 @@ ghostEnableHttps: true
 
 ingress:
   enabled: true
-  hostname: blog.1276.internal.techgarden.gg
+  hostname: blog.techgarden.gg
   annotations:
     cert-manager.io/issuer-group: certmanager.step.sm
     cert-manager.io/issuer-kind: StepClusterIssuer
     cert-manager.io/issuer: step-issuer
-  tls: blog.1276.internal.techgarden.gg
+  tls: true
+  extraHosts:
+    - blog.1276.internal.techgarden.gg
   ingressClassName: nginx-public
 
 persistence:
