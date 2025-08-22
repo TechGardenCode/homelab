@@ -11,6 +11,10 @@ envs:
 secretEnvs:
   - database__connection__password: db-password
 
+ports:
+  - name: main
+    containerPort: 2368
+
 ingress:
   annotations:
     cert-manager.io/issuer-group: certmanager.step.sm
