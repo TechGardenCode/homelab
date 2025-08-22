@@ -22,3 +22,5 @@ ingress:
     cert-manager.io/issuer: step-issuer
   host: blog.1276.internal.techgarden.gg
   public: true
+  tls:
+    secretName: blog.1276.internal.techgarden.gg
