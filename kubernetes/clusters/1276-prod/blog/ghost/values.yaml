@@ -1,6 +1,6 @@
 existingSecret: ghost
 ghostEmail: me@techgarden.gg
-ghostHost: blog.techgarden.gg
+ghostHost: https://blog.techgarden.gg
 ghostEnableHttps: true
 
 ingress:
