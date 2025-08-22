@@ -1,0 +1,20 @@
+ingress:
+  enabled: true
+  hostname: ghost.1276.internal.techgarden.gg
+  annotations:
+    cert-manager.io/issuer-group: certmanager.step.sm
+    cert-manager.io/issuer-kind: StepClusterIssuer
+    cert-manager.io/issuer: step-issuer
+  tls: ghost.1276.internal.techgarden.gg
+  ingressClassName: nginx-public
+
+persistence:
+  enabled: false
+
+mysql:
+  enabled: false
+
+externalDatabase:
+  host: mysql
+  port: 3306
+  existingSecret: ghost-mysql

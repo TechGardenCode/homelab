@@ -1,0 +1,10 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+helmCharts:
+  - repo: oci://registry-1.docker.io/bitnamicharts/ghost
+    name: ghost
+    version: 25.0.3
+    releaseName: ghost
+    valuesFile: values.yaml
+    namespace: blog
