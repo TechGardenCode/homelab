@@ -72,7 +72,7 @@ tcpSocket:
   valueFrom:
     secretKeyRef:
       name: {{ include "generic-service.name" $ }}
-      key: {{ $kk | quote }}
+      key: {{ $vv | quote }}
 {{- end }}
 {{- end }}
 {{- range $k, $v := .Values.envs }}
