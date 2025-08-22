@@ -1,11 +1,15 @@
+ghostEmail: me@techgarden.gg
+ghostHost: blog.techgarden.gg
+ghostEnableHttps: true
+
 ingress:
   enabled: true
-  hostname: ghost.1276.internal.techgarden.gg
+  hostname: blog.1276.internal.techgarden.gg
   annotations:
     cert-manager.io/issuer-group: certmanager.step.sm
     cert-manager.io/issuer-kind: StepClusterIssuer
     cert-manager.io/issuer: step-issuer
-  tls: ghost.1276.internal.techgarden.gg
+  tls: blog.1276.internal.techgarden.gg
   ingressClassName: nginx-public
 
 persistence:
