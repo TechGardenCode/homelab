@@ -1,3 +1,4 @@
+existingSecret: ghost
 ghostEmail: me@techgarden.gg
 ghostHost: blog.techgarden.gg
 ghostEnableHttps: true
@@ -29,4 +30,4 @@ externalDatabase:
   port: 3306
   user: ghost
   database: ghost
-  existingSecret: ghost-mysql
+  existingSecret: ghost
