@@ -11,7 +11,7 @@ ingress:
     cert-manager.io/issuer: step-issuer
   tls: true
   extraHosts:
-    - blog.1276.internal.techgarden.gg
+    - host: blog.1276.internal.techgarden.gg
   ingressClassName: nginx-public
 
 persistence:
