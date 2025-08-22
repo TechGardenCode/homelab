@@ -3,11 +3,7 @@ image:
   tag: "6.0.4"
 
 secretEnvs:
- - name: 'database__connection__password'
-   valueFrom:
-     secretKeyRef:
-       name: ghost
-       key: db-password
+ - database__connection__password: db-password
 
 ingress:
   annotations:
