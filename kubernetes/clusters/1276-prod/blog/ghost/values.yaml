@@ -1,0 +1,18 @@
+image:
+  repository: "ghost"
+  tag: "6.0.4"
+
+secretEnvs:
+ - name: 'database__connection__password'
+   valueFrom:
+     secretKeyRef:
+       name: ghost
+       key: db-password
+
+ingress:
+  annotations:
+    cert-manager.io/issuer-group: certmanager.step.sm
+    cert-manager.io/issuer-kind: StepClusterIssuer
+    cert-manager.io/issuer: step-issuer
+  hosts: blog.1276.internal.techgarden.gg
+  public: true
