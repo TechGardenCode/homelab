@@ -15,6 +15,8 @@ mysql:
   enabled: false
 
 externalDatabase:
-  host: mysql
+  host: 10.0.60.81
   port: 3306
+  user: ghost
+  database: ghost
   existingSecret: ghost-mysql
