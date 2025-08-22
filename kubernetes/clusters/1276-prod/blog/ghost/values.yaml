@@ -12,6 +12,10 @@ ingress:
   tls: true
   extraHosts:
     - name: blog.1276.internal.techgarden.gg
+  extraTls:
+    - secretName: blog.1276.internal.techgarden.gg
+      hosts:
+        - blog.1276.internal.techgarden.gg
   ingressClassName: nginx-public
 
 persistence:
