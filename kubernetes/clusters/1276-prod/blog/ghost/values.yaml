@@ -1,10 +1,12 @@
 existingSecret: ghost
 ghostEmail: me@techgarden.gg
 ghostHost: https://blog.techgarden.gg
+ghostPath: /
 ghostEnableHttps: true
+ghostSkipInstall: true
 
 ingress:
-  enabled: false
+  enabled: true
   hostname: blog.techgarden.gg
   pathType: Prefix
   annotations:
