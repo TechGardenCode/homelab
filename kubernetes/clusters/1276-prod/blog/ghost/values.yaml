@@ -2,8 +2,14 @@ image:
   repository: "ghost"
   tag: "6.0.4"
 
+envs:
+  - database__connection__host: 10.0.60.81
+  - database__connection__user: ghost
+  - database__connection__database: ghost
+  - url: https://blog.techgarden.gg
+
 secretEnvs:
- - database__connection__password: db-password
+  - database__connection__password: db-password
 
 ingress:
   annotations:
