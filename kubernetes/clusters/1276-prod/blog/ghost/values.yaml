@@ -4,8 +4,8 @@ ghostHost: https://blog.techgarden.gg
 ghostEnableHttps: true
 
 ingress:
-  enabled: true
-  hostname: https://blog.techgarden.gg
+  enabled: false
+  hostname: blog.techgarden.gg
   pathType: Prefix
   annotations:
     cert-manager.io/issuer-group: certmanager.step.sm
