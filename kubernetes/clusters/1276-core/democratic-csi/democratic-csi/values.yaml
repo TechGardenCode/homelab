@@ -50,3 +50,5 @@ volumeSnapshotClasses: []
 
 driver:
   existingConfigSecret: democratic-csi-config
+  config:
+    driver: freenas-iscsi
