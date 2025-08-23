@@ -1,0 +1,14 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - base/externalsecret.yaml
+
+helmCharts:
+  - repo: https://democratic-csi.github.io/charts/
+    name: democratic-csi
+    version: 0.15.0
+    includeCRDs: true
+    releaseName: democratic-csi
+    valuesFile: values.yaml
+    namespace: democratic-csi
