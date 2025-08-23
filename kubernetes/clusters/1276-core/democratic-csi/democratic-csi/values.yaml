@@ -49,6 +49,6 @@ volumeSnapshotClasses: []
 #    snapshotter-secret:
 
 driver:
-  existingConfigSecret: democratic-csi-config
+  existingConfigSecret: democratic-csi-driver-config
   config:
     driver: freenas-iscsi
