@@ -1,0 +1,20 @@
+image:
+  repository: "ghcr.io/techgardencode/techgarden-www"
+  tag: "latest@sha256:75e4bef7dd390f6cab1329cd0ad1164f2d1eff69e88afbcf4c29c0b1953f14f5"
+
+ports:
+  - name: main
+    containerPort: 80
+
+service:
+  type: LoadBalancer
+
+ingress:
+  public: true
+  annotations:
+    cert-manager.io/issuer-group: certmanager.step.sm
+    cert-manager.io/issuer-kind: StepClusterIssuer
+    cert-manager.io/issuer: step-issuer
+  host: www.1276.internal.techgarden.gg
+  tls:
+    secretName: www.1276.internal.techgarden.gg
