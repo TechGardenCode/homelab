@@ -1,6 +1,6 @@
 image:
   repository: "ghcr.io/techgardencode/techgarden-www"
-  tag: "6dacb464c26fcd7b37ec4e80985c7848b71cde0a"
+  tag: "14a228a2d2e73b46a5945fdecc62e8f5ef4e0489"
 ports:
   - name: main
     containerPort: 80
