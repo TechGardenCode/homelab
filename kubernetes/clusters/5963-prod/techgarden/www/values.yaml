@@ -1,6 +1,6 @@
 image:
   repository: "ghcr.io/techgardencode/techgarden-www"
-  tag: "latest@sha256:d9589eaf84fefe5a34eb84e7a6ea5578eb7c40ab604b00759c4b32fab39c4635"
+  tag: "latest@sha256:78ce81c6524635243a7c5af4c51f581074bbb2300621ef8510ea7d03a50d10e7"
 
 ports:
   - name: main
