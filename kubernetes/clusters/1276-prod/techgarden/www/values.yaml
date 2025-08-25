@@ -1,14 +1,11 @@
 image:
   repository: "ghcr.io/techgardencode/techgarden-www"
-  tag: "latest@sha256:78ce81c6524635243a7c5af4c51f581074bbb2300621ef8510ea7d03a50d10e7"
-
+  tag: "3dbdeaec0335cd2f0750e82bd82259d26544132a"
 ports:
   - name: main
     containerPort: 80
-
 service:
   type: LoadBalancer
-
 ingress:
   public: true
   annotations:
