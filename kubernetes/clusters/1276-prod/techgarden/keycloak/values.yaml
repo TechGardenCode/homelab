@@ -1,0 +1,17 @@
+auth:
+  existingSecret: keycloak-existingSecret
+  passwordSecretKey: user-password
+ingress:
+  enabled: true
+  hostname: sso.1276.internal.techgarden.gg
+  ingressClassName: nginx-public
+  tls: true
+  annotations:
+    cert-manager.io/issuer-group: certmanager.step.sm
+    cert-manager.io/issuer-kind: StepClusterIssuer
+    cert-manager.io/issuer: step-issuer
+postgresql:
+  auth:
+    existingSecret: keycloak-existingSecret
+production: true
+proxy: edge
