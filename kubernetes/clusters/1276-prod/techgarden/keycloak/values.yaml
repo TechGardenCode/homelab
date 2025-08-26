@@ -1,6 +1,3 @@
-auth:
-  existingSecret: keycloak
-  passwordSecretKey: password
 ingress:
   enabled: true
   hostname: sso.1276.internal.techgarden.gg
