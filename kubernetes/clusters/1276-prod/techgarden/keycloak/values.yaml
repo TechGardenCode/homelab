@@ -1,5 +1,5 @@
 auth:
-  existingSecret: keycloak-externalsecret
+  existingSecret: keycloak
   passwordSecretKey: user-password
 ingress:
   enabled: true
@@ -17,6 +17,6 @@ tls:
   existingSecret: sso.1276.internal.techgarden.gg-tls
 postgresql:
   auth:
-    existingSecret: keycloak-externalsecret
+    existingSecret: keycloak
 production: true
 proxy: edge
