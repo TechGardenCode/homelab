@@ -18,5 +18,7 @@ tls:
 postgresql:
   auth:
     existingSecret: keycloak
+    secretKeys:
+      userPasswordKey: postgres-password
 production: true
 proxy: edge
