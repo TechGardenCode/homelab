@@ -19,6 +19,6 @@ postgresql:
   auth:
     existingSecret: keycloak
     secretKeys:
-      userPasswordKey: postgres-password
+      userPasswordKey: user-password
 production: true
 proxy: edge
