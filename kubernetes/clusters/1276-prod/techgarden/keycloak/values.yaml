@@ -5,13 +5,19 @@ service:
   type: LoadBalancer
 ingress:
   enabled: true
-  hostname: sso.1276.internal.techgarden.gg
+  hostname: sso.techgarden.gg
   ingressClassName: nginx-public
   tls: true
   annotations:
     cert-manager.io/issuer-group: certmanager.step.sm
     cert-manager.io/issuer-kind: StepClusterIssuer
     cert-manager.io/issuer: step-issuer
+extraHosts:
+  - sso.1276.internal.techgarden.gg
+extraTls:
+  - hosts:
+      - sso.1276.internal.techgarden.gg
+    secretName: sso.1276.internal.techgarden.gg-tls
 proxyHeaders: xforwarded
 postgresql:
   auth:
