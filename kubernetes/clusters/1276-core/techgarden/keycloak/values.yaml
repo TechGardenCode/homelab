@@ -13,7 +13,7 @@ ingress:
     # cert-manager.io/issuer-group: certmanager.step.sm
     # cert-manager.io/issuer-kind: StepClusterIssuer
     # cert-manager.io/issuer: step-issuer
-proxyHeaders: xforwarded
+# proxyHeaders: xforwarded
 proxy: edge
 postgresql:
   auth:
