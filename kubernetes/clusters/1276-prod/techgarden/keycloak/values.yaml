@@ -22,6 +22,17 @@ postgresql:
     existingSecret: keycloak
     secretKeys:
       userPasswordKey: password
+extraEnvVars:
+  - name: KC_HOSTNAME
+    value: "https://sso.techgarden.gg"
+  - name: KC_HOSTNAME_ADMIN
+    value: "https://sso.techgarden.gg"
+  - name: KC_PROXY_HEADERS
+    value: "xforwarded"
+  - name: KC_HOSTNAME_STRICT
+    value: "true"
+  - name: KC_HOSTNAME_STRICT_HTTPS
+    value: "true"
 production: true
 proxy: edge
 keycloakConfigCli:
