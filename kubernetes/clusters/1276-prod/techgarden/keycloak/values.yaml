@@ -5,19 +5,19 @@ auth:
   passwordSecretKey: password
 ingress:
   enabled: true
-  hostname: sso.techgarden.gg
+  hostname: sso.1276.internal.techgarden.gg
   ingressClassName: nginx-public
   tls: true
   annotations:
     cert-manager.io/issuer-group: certmanager.step.sm
     cert-manager.io/issuer-kind: StepClusterIssuer
     cert-manager.io/issuer: step-issuer
-  extraHosts:
-    - name: sso.1276.internal.techgarden.gg
-  extraTls:
-    - secretName: sso.1276.internal.techgarden.gg-tls
-      hosts:
-        - sso.1276.internal.techgarden.gg
+  # extraHosts:
+  #   - name: sso.1276.internal.techgarden.gg
+  # extraTls:
+  #   - secretName: sso.1276.internal.techgarden.gg-tls
+  #     hosts:
+  #       - sso.1276.internal.techgarden.gg
 proxyHeaders: xforwarded
 proxy: edge
 postgresql:
@@ -28,17 +28,16 @@ postgresql:
 extraEnvVars:
   - name: KC_HTTP_ENABLED
     value: "true"
-# extraEnvVars:
-#   - name: KC_HOSTNAME
-#     value: "https://sso.techgarden.gg"
-#   - name: KC_HOSTNAME_ADMIN
-#     value: "https://sso.techgarden.gg"
-#   - name: KC_PROXY_HEADERS
-#     value: "xforwarded"
-#   - name: KC_HOSTNAME_STRICT
-#     value: "true"
-#   - name: KC_HOSTNAME_STRICT_HTTPS
-#     value: "true"
+  - name: KC_HOSTNAME
+    value: "https://sso.techgarden.gg"
+  - name: KC_HOSTNAME_ADMIN
+    value: "https://sso.techgarden.gg"
+  - name: KC_PROXY_HEADERS
+    value: "xforwarded"
+  - name: KC_HOSTNAME_STRICT
+    value: "true"
+  - name: KC_HOSTNAME_STRICT_HTTPS
+    value: "true"
 production: true
 # keycloakConfigCli:
 #   enabled: true
