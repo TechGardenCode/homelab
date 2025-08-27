@@ -4,7 +4,7 @@ auth:
 service:
   type: LoadBalancer
 ingress:
-  enabled: false
+  enabled: true
   hostname: sso.techgarden.gg
   ingressClassName: nginx-public
   tls: true
@@ -13,8 +13,8 @@ ingress:
     # cert-manager.io/issuer-group: certmanager.step.sm
     # cert-manager.io/issuer-kind: StepClusterIssuer
     # cert-manager.io/issuer: step-issuer
-# proxyHeaders: xforwarded
-proxy: edge
+proxyHeaders: xforwarded
+# proxy: edge
 postgresql:
   auth:
     existingSecret: keycloak
