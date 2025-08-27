@@ -1,14 +1,14 @@
 projects:
-  1276-dev:
-    namespace: argocd
-    sourceRepos:
-      - https://github.com/techgardencode/homelab.git
-    destinations:
-      - name: 1276-dev
-        namespace: "*"
-    clusterResourceWhitelist:
-      - group: "*"
-        kind: "*"
+  # 1276-dev:
+  #   namespace: argocd
+  #   sourceRepos:
+  #     - https://github.com/techgardencode/homelab.git
+  #   destinations:
+  #     - name: 1276-dev
+  #       namespace: "*"
+  #   clusterResourceWhitelist:
+  #     - group: "*"
+  #       kind: "*"
   1276-prod:
     namespace: argocd
     sourceRepos:
