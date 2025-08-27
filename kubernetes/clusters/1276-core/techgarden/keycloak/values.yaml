@@ -4,7 +4,7 @@ auth:
 service:
   type: LoadBalancer
 ingress:
-  enabled: true
+  enabled: false
   hostname: sso.techgarden.gg
   ingressClassName: nginx-public
   tls: true
