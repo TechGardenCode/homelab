@@ -22,3 +22,17 @@ postgresql:
       userPasswordKey: password
 production: false
 proxy: edge
+keycloakConfigCli:
+  enabled: true
+  configuration:
+    master.yaml: |
+      realm: master
+      clients:
+        - clientId: security-admin-console
+          redirectUris:
+            - https://sso.techgarden.gg/*
+          webOrigins:
+            - https://sso.techgarden.gg
+          # optional: keep admin console tight; replace with ["+"] if you want it inferred
+          attributes:
+            "pkce.code.challenge.method": "S256"
