@@ -17,35 +17,35 @@ ingress:
       hosts:
         - sso.1276.internal.techgarden.gg
 proxyHeaders: xforwarded
+proxy: edge
 postgresql:
   auth:
     existingSecret: keycloak
-    secretKeys:
-      userPasswordKey: password
-extraEnvVars:
-  - name: KC_HOSTNAME
-    value: "https://sso.techgarden.gg"
-  - name: KC_HOSTNAME_ADMIN
-    value: "https://sso.techgarden.gg"
-  - name: KC_PROXY_HEADERS
-    value: "xforwarded"
-  - name: KC_HOSTNAME_STRICT
-    value: "true"
-  - name: KC_HOSTNAME_STRICT_HTTPS
-    value: "true"
+    # secretKeys:
+    #   userPasswordKey: password
+# extraEnvVars:
+#   - name: KC_HOSTNAME
+#     value: "https://sso.techgarden.gg"
+#   - name: KC_HOSTNAME_ADMIN
+#     value: "https://sso.techgarden.gg"
+#   - name: KC_PROXY_HEADERS
+#     value: "xforwarded"
+#   - name: KC_HOSTNAME_STRICT
+#     value: "true"
+#   - name: KC_HOSTNAME_STRICT_HTTPS
+#     value: "true"
 production: true
-proxy: edge
-keycloakConfigCli:
-  enabled: true
-  configuration:
-    master.yaml: |
-      realm: master
-      clients:
-        - clientId: security-admin-console
-          redirectUris:
-            - https://sso.techgarden.gg/*
-          webOrigins:
-            - https://sso.techgarden.gg
-          # optional: keep admin console tight; replace with ["+"] if you want it inferred
-          attributes:
-            "pkce.code.challenge.method": "S256"
+# keycloakConfigCli:
+#   enabled: true
+#   configuration:
+#     master.yaml: |
+#       realm: master
+#       clients:
+#         - clientId: security-admin-console
+#           redirectUris:
+#             - https://sso.techgarden.gg/*
+#           webOrigins:
+#             - https://sso.techgarden.gg
+#           # optional: keep admin console tight; replace with ["+"] if you want it inferred
+#           attributes:
+#             "pkce.code.challenge.method": "S256"
