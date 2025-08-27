@@ -20,7 +20,7 @@ postgresql:
     existingSecret: keycloak
     secretKeys:
       userPasswordKey: password
-production: false
+production: true
 proxy: edge
 keycloakConfigCli:
   enabled: true
