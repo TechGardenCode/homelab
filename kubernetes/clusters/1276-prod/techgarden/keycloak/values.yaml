@@ -13,11 +13,11 @@ ingress:
     cert-manager.io/issuer-kind: StepClusterIssuer
     cert-manager.io/issuer: step-issuer
   extraHosts:
-    - sso.1276.internal.techgarden.gg
+    - name: sso.1276.internal.techgarden.gg
   extraTls:
-    - hosts:
+    - secretName: sso.1276.internal.techgarden.gg-tls
+      hosts:
         - sso.1276.internal.techgarden.gg
-      secretName: sso.1276.internal.techgarden.gg-tls
 proxyHeaders: xforwarded
 postgresql:
   auth:
