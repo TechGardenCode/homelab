@@ -78,8 +78,6 @@ applicationsets:
           revision: main
           directories:
             - path: "kubernetes/clusters/1276-prod/**/*"
-            - path: "kubernetes/clusters/1276-prod/techgarden/keycloak"
-              exclude: true
             - path: "kubernetes/clusters/1276-prod/example/*"
               exclude: true
     template:
@@ -151,6 +149,8 @@ applicationsets:
           revision: main
           directories:
             - path: "kubernetes/clusters/1276-core/**/*"
+            - path: "kubernetes/clusters/1276-prod/techgarden/keycloak"
+              exclude: true
             - path: "kubernetes/clusters/1276-core/external-dns/*"
               exclude: true
             - path: "kubernetes/clusters/1276-core/example/*"

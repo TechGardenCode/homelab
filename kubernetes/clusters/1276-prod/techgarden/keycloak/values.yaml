@@ -1,8 +1,8 @@
-logging:
-  level: DEBUG
 auth:
   existingSecret: keycloak
   passwordSecretKey: password
+service:
+  type: LoadBalancer
 ingress:
   enabled: true
   hostname: sso.1276.internal.techgarden.gg
@@ -12,40 +12,8 @@ ingress:
     cert-manager.io/issuer-group: certmanager.step.sm
     cert-manager.io/issuer-kind: StepClusterIssuer
     cert-manager.io/issuer: step-issuer
-  # extraHosts:
-  #   - name: sso.1276.internal.techgarden.gg
-  # extraTls:
-  #   - secretName: sso.1276.internal.techgarden.gg-tls
-  #     hosts:
-  #       - sso.1276.internal.techgarden.gg
-# proxyHeaders: xforwarded
-proxy: edge
+proxyHeaders: xforwarded
 postgresql:
   auth:
     existingSecret: keycloak
-    # secretKeys:
-    #   userPasswordKey: password
-extraEnvVars:
-#   - name: KC_HTTP_ENABLED
-#     value: "true"
-  - name: KC_HOSTNAME
-    value: "https://sso.techgarden.gg"
-#   - name: KC_HOSTNAME_ADMIN
-#     value: "https://sso.techgarden.gg"
-#   - name: KC_PROXY_HEADERS
-#     value: "xforwarded"
 production: true
-# keycloakConfigCli:
-#   enabled: true
-#   configuration:
-#     master.yaml: |
-#       realm: master
-#       clients:
-#         - clientId: security-admin-console
-#           redirectUris:
-#             - https://sso.techgarden.gg/*
-#           webOrigins:
-#             - https://sso.techgarden.gg
-#           # optional: keep admin console tight; replace with ["+"] if you want it inferred
-#           attributes:
-#             "pkce.code.challenge.method": "S256"
