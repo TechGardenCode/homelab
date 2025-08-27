@@ -18,7 +18,7 @@ ingress:
   #   - secretName: sso.1276.internal.techgarden.gg-tls
   #     hosts:
   #       - sso.1276.internal.techgarden.gg
-proxyHeaders: xforwarded
+# proxyHeaders: xforwarded
 proxy: edge
 postgresql:
   auth:
@@ -26,18 +26,14 @@ postgresql:
     # secretKeys:
     #   userPasswordKey: password
 extraEnvVars:
-  - name: KC_HTTP_ENABLED
-    value: "true"
+#   - name: KC_HTTP_ENABLED
+#     value: "true"
   - name: KC_HOSTNAME
     value: "https://sso.techgarden.gg"
-  - name: KC_HOSTNAME_ADMIN
-    value: "https://sso.techgarden.gg"
-  - name: KC_PROXY_HEADERS
-    value: "xforwarded"
-  - name: KC_HOSTNAME_STRICT
-    value: "true"
-  - name: KC_HOSTNAME_STRICT_HTTPS
-    value: "true"
+#   - name: KC_HOSTNAME_ADMIN
+#     value: "https://sso.techgarden.gg"
+#   - name: KC_PROXY_HEADERS
+#     value: "xforwarded"
 production: true
 # keycloakConfigCli:
 #   enabled: true
