@@ -149,11 +149,7 @@ applicationsets:
           revision: main
           directories:
             - path: "kubernetes/clusters/1276-core/**/*"
-<<<<<<< HEAD
-            - path: "kubernetes/clusters/1276-prod/techgarden/keycloak"
-=======
             - path: "kubernetes/clusters/1276-core/techgarden/keycloak"
->>>>>>> 58cb0cf (feat(keycloak): init)
               exclude: true
             - path: "kubernetes/clusters/1276-core/external-dns/*"
               exclude: true
