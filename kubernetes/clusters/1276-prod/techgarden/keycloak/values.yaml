@@ -16,6 +16,7 @@ tls:
     enabled: false
   existingSecret: sso.1276.internal.techgarden.gg-tls
   usePemCerts: true
+proxyHeaders: xforwarded
 postgresql:
   auth:
     existingSecret: keycloak
