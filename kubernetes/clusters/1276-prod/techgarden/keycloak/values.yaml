@@ -12,6 +12,10 @@ ingress:
     cert-manager.io/issuer: step-issuer
   extraHosts:
     - name: sso.1276.internal.techgarden.gg
+  extraTls:
+    - secretName: sso.1276.internal.techgarden.gg-tls
+      hosts:
+        - sso.1276.internal.techgarden.gg
 service:
   type: LoadBalancer
 proxyHeaders: xforwarded
