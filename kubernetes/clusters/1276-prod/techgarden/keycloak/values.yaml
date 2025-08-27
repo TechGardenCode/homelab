@@ -25,6 +25,9 @@ postgresql:
     existingSecret: keycloak
     # secretKeys:
     #   userPasswordKey: password
+extraEnvVars:
+  - name: KC_HTTP_ENABLED
+    value: "true"
 # extraEnvVars:
 #   - name: KC_HOSTNAME
 #     value: "https://sso.techgarden.gg"
