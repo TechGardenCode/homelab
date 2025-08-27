@@ -1,6 +1,8 @@
 auth:
   existingSecret: keycloak
   passwordSecretKey: password
+service:
+  type: LoadBalancer
 ingress:
   enabled: true
   hostname: sso.techgarden.gg
