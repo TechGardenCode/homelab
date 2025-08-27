@@ -7,9 +7,10 @@ ingress:
   ingressClassName: nginx-public
   tls: true
   annotations:
-    cert-manager.io/issuer-group: certmanager.step.sm
-    cert-manager.io/issuer-kind: StepClusterIssuer
-    cert-manager.io/issuer: step-issuer
+    cert-manager.io/cluster-issuer: letsencrypt-production
+    # cert-manager.io/issuer-group: certmanager.step.sm
+    # cert-manager.io/issuer-kind: StepClusterIssuer
+    # cert-manager.io/issuer: step-issuer
 proxy: edge
 postgresql:
   auth:
