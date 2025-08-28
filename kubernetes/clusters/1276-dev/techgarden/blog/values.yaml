@@ -24,3 +24,5 @@ envs:
 secretEnvs:
   blog:
     PG_PASSWORD: PG_PASSWORD
+health:
+  path: /health
