@@ -16,14 +16,11 @@ ingress:
   tls:
     secretName: blog.1276.internal.techgarden.gg
 envs:
-  - name: PG_HOSTNAME
-    value: 10.0.60.80
-  - name: PG_PORT
-    value: "5432"
-  - name: PG_DATABASE
-    value: techgarden
-  - name: PG_USER
-    value: tg_blog
+  blog:
+    PG_HOSTNAME: 10.0.60.80
+    PG_PORT: "5432"
+    PG_DATABASE: techgarden
+    PG_USER: tg_blog
 secretEnvs:
   blog:
     PG_PASSWORD: PG_PASSWORD
