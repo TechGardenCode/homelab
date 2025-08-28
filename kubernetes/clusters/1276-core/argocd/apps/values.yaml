@@ -1,14 +1,14 @@
 projects:
-  # 1276-dev:
-  #   namespace: argocd
-  #   sourceRepos:
-  #     - https://github.com/techgardencode/homelab.git
-  #   destinations:
-  #     - name: 1276-dev
-  #       namespace: "*"
-  #   clusterResourceWhitelist:
-  #     - group: "*"
-  #       kind: "*"
+  1276-dev:
+    namespace: argocd
+    sourceRepos:
+      - https://github.com/techgardencode/homelab.git
+    destinations:
+      - name: 1276-dev
+        namespace: "*"
+    clusterResourceWhitelist:
+      - group: "*"
+        kind: "*"
   1276-prod:
     namespace: argocd
     sourceRepos:
@@ -31,44 +31,44 @@ projects:
         kind: "*"
 
 applicationsets:
-  # 1276-dev:
-  #   name: 1276-dev
-  #   namespace: argocd
-  #   generators:
-  #     - git:
-  #         repoURL: https://github.com/techgardencode/homelab.git
-  #         revision: main
-  #         directories:
-  #           - path: "kubernetes/clusters/1276-dev/**/*"
-  #           - path: "kubernetes/clusters/1276-dev/external-dns/*"
-  #             exclude: true
-  #           - path: "kubernetes/clusters/1276-dev/example/*"
-  #             exclude: true
-  #   template:
-  #     metadata:
-  #       # Keep your naming convention from core: "<namespace>.<leaf-folder>"
-  #       name: "{{path[2]}}.{{path[3]}}.{{path.basenameNormalized}}"
-  #     spec:
-  #       project: "1276-dev"
-  #       source:
-  #         repoURL: https://github.com/techgardencode/homelab.git
-  #         targetRevision: main
-  #         path: "{{path}}"
-  #         plugin:
-  #           name: kustomize-helm
-  #           parameters:
-  #             - name: NAMESPACE
-  #               string: "{{path[3]}}"
-  #       destination:
-  #         name: "1276-dev"
-  #         namespace: "{{path[3]}}"
-  #       syncPolicy:
-  #         automated:
-  #           selfHeal: true
-  #           prune: true
-  #         syncOptions:
-  #           - ApplyOutOfSyncOnly=true
-  #           - ServerSideApply=true
+  1276-dev:
+    name: 1276-dev
+    namespace: argocd
+    generators:
+      - git:
+          repoURL: https://github.com/techgardencode/homelab.git
+          revision: main
+          directories:
+            - path: "kubernetes/clusters/1276-dev/**/*"
+            - path: "kubernetes/clusters/1276-dev/external-dns/*"
+              exclude: true
+            - path: "kubernetes/clusters/1276-dev/example/*"
+              exclude: true
+    template:
+      metadata:
+        # Keep your naming convention from core: "<namespace>.<leaf-folder>"
+        name: "{{path[2]}}.{{path[3]}}.{{path.basenameNormalized}}"
+      spec:
+        project: "1276-dev"
+        source:
+          repoURL: https://github.com/techgardencode/homelab.git
+          targetRevision: main
+          path: "{{path}}"
+          plugin:
+            name: kustomize-helm
+            parameters:
+              - name: NAMESPACE
+                string: "{{path[3]}}"
+        destination:
+          name: "1276-dev"
+          namespace: "{{path[3]}}"
+        syncPolicy:
+          automated:
+            selfHeal: true
+            prune: true
+          syncOptions:
+            - ApplyOutOfSyncOnly=true
+            - ServerSideApply=true
   1276-prod:
     name: 1276-prod
     namespace: argocd
