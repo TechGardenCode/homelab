@@ -19,7 +19,7 @@ envs:
   blog:
     PG_HOSTNAME: 10.0.60.80
     PG_PORT: "5432"
-    PG_DB: techgarden
+    PG_DB: postgres
     PG_USER: tg_blog
 secretEnvs:
   blog:
