@@ -12,15 +12,14 @@ ingress:
     cert-manager.io/issuer-group: certmanager.step.sm
     cert-manager.io/issuer-kind: StepClusterIssuer
     cert-manager.io/issuer: step-issuer
-    nginx.ingress.kubernetes.io/rewrite-target: /$2
   host: www.dev.1276.internal.techgarden.gg
   tls:
     secretName: www.dev.1276.internal.techgarden.gg
-  # additionalPaths:
-  #   - pathType: Prefix
-  #     path: /api/blog(/|$)(.*)
-  #     backend:
-  #       service:
-  #         name: techgarden-blog
-  #         port:
-  #           name: main
+  additionalPaths:
+    - pathType: Prefix
+      path: /api/blog(/|$)(.*)
+      backend:
+        service:
+          name: techgarden-blog
+          port:
+            name: main
