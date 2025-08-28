@@ -15,11 +15,3 @@ ingress:
   host: www.dev.1276.internal.techgarden.gg
   tls:
     secretName: www.dev.1276.internal.techgarden.gg
-  additionalPaths:
-    - pathType: Prefix
-      path: /api/blog(/|$)(.*)
-      backend:
-        service:
-          name: techgarden-blog
-          port:
-            name: main
