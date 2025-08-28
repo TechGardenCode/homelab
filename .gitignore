@@ -2,3 +2,4 @@
 **/scripts/secrets
 **/out
 **/secrets
+kubernetes/bootstrap/secrets/shared
