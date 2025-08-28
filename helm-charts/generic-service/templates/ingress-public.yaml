@@ -33,6 +33,9 @@ spec:
             name: {{ include "generic-service.name" . }}
             port:
               name: {{ .Values.ingress.port }}
+      {{- with .Values.ingress.additionalPaths }}
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
   {{- with .Values.ingress.tls }}
   tls:
     - hosts:
