@@ -12,9 +12,9 @@ ingress:
     cert-manager.io/issuer-group: certmanager.step.sm
     cert-manager.io/issuer-kind: StepClusterIssuer
     cert-manager.io/issuer: step-issuer
-  host: blog.1276.internal.techgarden.gg
+  host: blog.dev.1276.internal.techgarden.gg
   tls:
-    secretName: blog.1276.internal.techgarden.gg
+    secretName: blog.dev.1276.internal.techgarden.gg
 envs:
   blog:
     PG_HOSTNAME: 10.0.60.80
