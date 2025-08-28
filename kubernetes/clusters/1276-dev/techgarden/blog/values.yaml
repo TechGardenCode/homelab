@@ -25,4 +25,5 @@ envs:
   - name: PG_USER
     value: tg_blog
 secretEnvs:
-  - PG_PASSWORD: PG_PASSWORD
+  blog:
+    PG_PASSWORD: PG_PASSWORD
