@@ -13,6 +13,7 @@ ingress:
     cert-manager.io/issuer: step-issuer
     external-dns.alpha.kubernetes.io/hostname: www.dev.techgarden.gg
     external-dns.alpha.kubernetes.io/target: 10.0.60.56
+    external-dns.alpha.kubernetes.io/ingress-hostname-source: annotation-only
   host: www.dev.1276.internal.techgarden.gg
   tls:
     secretName: www.dev.1276.internal.techgarden.gg
