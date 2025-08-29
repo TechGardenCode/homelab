@@ -11,4 +11,3 @@ helmCharts:
   - name: generic-service
     releaseName: techgarden-blog
     valuesFile: values.yaml
-    namespace: default
