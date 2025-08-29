@@ -6,7 +6,7 @@ crds:
 grafana:
   ingress:
     enabled: true
-    ingressClassName: nginx-public
+    ingressClassName: nginx-private
     annotations:
       cert-manager.io/cluster-issuer: letsencrypt-production
     hosts:
@@ -18,7 +18,7 @@ grafana:
 prometheus:
   ingress:
     enabled: true
-    ingressClassName: nginx-public
+    ingressClassName: nginx-private
     annotations:
       cert-manager.io/cluster-issuer: letsencrypt-production
     hosts:

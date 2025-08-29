@@ -6,7 +6,7 @@ service:
 ingress:
   enabled: true
   hostname: sso.techgarden.gg
-  ingressClassName: nginx-public
+  ingressClassName: nginx-private
   tls: true
   annotations:
     cert-manager.io/issuer-group: certmanager.step.sm

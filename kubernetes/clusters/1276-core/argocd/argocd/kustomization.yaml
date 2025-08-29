@@ -3,7 +3,7 @@ kind: Kustomization
 
 resources:
   - base/externalsecret.yaml
-  - base/webhook.ingress.yaml
+  # - base/webhook.ingress.yaml
   - base/configmap.yaml
 
 helmCharts:
