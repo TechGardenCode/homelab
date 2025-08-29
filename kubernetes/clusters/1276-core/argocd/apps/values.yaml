@@ -151,7 +151,7 @@ applicationsets:
             - path: "kubernetes/clusters/1276-core/**/*"
             - path: "kubernetes/clusters/1276-core/techgarden/keycloak"
               exclude: true
-            - path: "kubernetes/clusters/1276-core/external-dns/*"
+            - path: "kubernetes/clusters/1276-core/external-dns/external-dns-public"
               exclude: true
             - path: "kubernetes/clusters/1276-core/example/*"
               exclude: true

@@ -12,7 +12,7 @@ provider:
 sources:
   - service
   - ingress
-  - crd
+  # - crd
 
 triggerLoopOnEvent: true
 
