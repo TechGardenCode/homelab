@@ -11,4 +11,3 @@ helmCharts:
   - name: generic-service
     releaseName: techgarden-bff
     valuesFile: values.yaml
-    namespace: default
