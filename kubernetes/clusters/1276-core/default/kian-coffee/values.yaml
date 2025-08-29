@@ -14,6 +14,9 @@ ingress:
     cert-manager.io/issuer-group: certmanager.step.sm
     cert-manager.io/issuer-kind: StepClusterIssuer
     cert-manager.io/issuer: step-issuer
+    external-dns.alpha.kubernetes.io/hostname: coffee.core.techgarden.gg
+    external-dns.alpha.kubernetes.io/target: 10.0.60.56
+    external-dns.alpha.kubernetes.io/ingress-hostname-source: annotation-only
   host: coffee.core.internal.techgarden.gg
   tls:
     secretName: coffee.core.internal.techgarden.gg
