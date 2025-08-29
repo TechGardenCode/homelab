@@ -7,6 +7,7 @@ metadata:
     {{- include "generic-service.labels" . | nindent 4 }}
   annotations:
     # rate limiting
+    external-dns.alpha.kubernetes.io/target: 1276.alikhani.io
     nginx.ingress.kubernetes.io/limit-connections: "10"
     nginx.ingress.kubernetes.io/limit-rps: "15"
     {{- if .Values.ingress.basicAuth }}

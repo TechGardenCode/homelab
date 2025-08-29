@@ -8,24 +8,26 @@ grafana:
     enabled: true
     ingressClassName: nginx-private
     annotations:
-      cert-manager.io/cluster-issuer: letsencrypt-production
-      external-dns.alpha.kubernetes.io/hostname: grafana.techgarden.gg
+      cert-manager.io/issuer-group: certmanager.step.sm
+      cert-manager.io/issuer-kind: StepClusterIssuer
+      cert-manager.io/issuer: step-issuer
     hosts:
-      - grafana.techgarden.gg
+      - grafana.core.internal.techgarden.gg
     tls:
-      - secretName: grafana.techgarden.gg
+      - secretName: grafana.core.internal.techgarden.gg
         hosts:
-          - grafana.techgarden.gg
+          - grafana.core.internal.techgarden.gg
 prometheus:
   ingress:
     enabled: true
     ingressClassName: nginx-private
     annotations:
-      cert-manager.io/cluster-issuer: letsencrypt-production
-      external-dns.alpha.kubernetes.io/hostname: prometheus.techgarden.gg
+      cert-manager.io/issuer-group: certmanager.step.sm
+      cert-manager.io/issuer-kind: StepClusterIssuer
+      cert-manager.io/issuer: step-issuer
     hosts:
-      - prometheus.techgarden.gg
+      - prometheus.core.internal.techgarden.gg
     tls:
-      - secretName: prometheus.techgarden.gg
+      - secretName: prometheus.core.internal.techgarden.gg
         hosts:
-          - prometheus.techgarden.gg
+          - prometheus.core.internal.techgarden.gg
