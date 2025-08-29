@@ -16,6 +16,7 @@ ingress:
     cert-manager.io/issuer: step-issuer
     external-dns.alpha.kubernetes.io/hostname: coffee.dev.techgarden.gg
     external-dns.alpha.kubernetes.io/target: 10.0.60.56
+    external-dns.alpha.kubernetes.io/ingress-hostname-source: annotation-only
   host: coffee.dev.1276.internal.kian.sh
   tls:
     secretName: coffee.dev.1276.internal.kian.sh
