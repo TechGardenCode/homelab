@@ -15,11 +15,3 @@ ingress:
   host: www.dev.1276.internal.techgarden.gg
   tls:
     secretName: www.dev.1276.internal.techgarden.gg
-  additionalPaths:
-    - path: /api
-      pathType: Prefix
-      backend:
-        service:
-          name: techgarden-bff
-          port:
-            number: 8080
