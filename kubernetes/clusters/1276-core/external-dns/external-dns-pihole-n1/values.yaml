@@ -16,10 +16,10 @@ env:
   - name: EXTERNAL_DNS_PIHOLE_PASSWORD
     valueFrom:
       secretKeyRef:
-        name: pihole-password
+        name: pihole-n1
         key: EXTERNAL_DNS_PIHOLE_PASSWORD
   - name: EXTERNAL_DNS_PIHOLE_SERVER
     valueFrom:
       secretKeyRef:
-        name: pihole-password
+        name: pihole-n1
         key: EXTERNAL_DNS_PIHOLE_SERVER
