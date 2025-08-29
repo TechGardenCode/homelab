@@ -6,6 +6,8 @@ existingSecrets:
 
 service:
   type: LoadBalancer
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: ca.core.internal.techgarden.gg
 
 bootstrap:
   secrets: false
