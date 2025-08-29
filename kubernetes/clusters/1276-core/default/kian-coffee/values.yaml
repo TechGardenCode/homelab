@@ -8,15 +8,14 @@ ports:
 
 service:
   type: LoadBalancer
-  annotations:
-    external-dns.alpha.kubernetes.io/hostname: coffee.core.techgarden.gg
-    external-dns.alpha.kubernetes.io/target: 10.0.60.56
 
 ingress:
   annotations:
     cert-manager.io/issuer-group: certmanager.step.sm
     cert-manager.io/issuer-kind: StepClusterIssuer
     cert-manager.io/issuer: step-issuer
+    external-dns.alpha.kubernetes.io/hostname: coffee.core.techgarden.gg
+    external-dns.alpha.kubernetes.io/target: 10.0.60.56
   host: coffee.core.1276.internal.techgarden.gg
   tls:
     secretName: coffee.core.1276.internal.techgarden.gg
