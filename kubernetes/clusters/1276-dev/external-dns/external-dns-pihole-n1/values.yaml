@@ -1,0 +1,25 @@
+policy: upsert-only
+
+extraArgs:
+  - "--ingress-class=nginx-private"
+  - "--pihole-api-version=6"
+
+sources:
+  - service
+  - ingress
+  # - crd
+
+provider:
+  name: pihole
+
+env:
+  - name: EXTERNAL_DNS_PIHOLE_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: pihole-n1
+        key: EXTERNAL_DNS_PIHOLE_PASSWORD
+  - name: EXTERNAL_DNS_PIHOLE_SERVER
+    valueFrom:
+      secretKeyRef:
+        name: pihole-n1
+        key: EXTERNAL_DNS_PIHOLE_SERVER

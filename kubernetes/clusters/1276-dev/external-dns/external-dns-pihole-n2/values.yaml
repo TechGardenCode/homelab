@@ -7,7 +7,7 @@ extraArgs:
 sources:
   - service
   - ingress
-  - crd
+  # - crd
 
 provider:
   name: pihole
@@ -16,7 +16,10 @@ env:
   - name: EXTERNAL_DNS_PIHOLE_PASSWORD
     valueFrom:
       secretKeyRef:
-        name: pihole-password
+        name: pihole-n2
         key: EXTERNAL_DNS_PIHOLE_PASSWORD
   - name: EXTERNAL_DNS_PIHOLE_SERVER
-    value: http://10.0.60.18:8080
+    valueFrom:
+      secretKeyRef:
+        name: pihole-n2
+        key: EXTERNAL_DNS_PIHOLE_SERVER
