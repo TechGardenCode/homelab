@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: techgarden-www-api-public
+  namespace: techgarden
+  annotations:
+    cert-manager.io/issuer: step-issuer
+    cert-manager.io/issuer-group: certmanager.step.sm
+    cert-manager.io/issuer-kind: StepClusterIssuer
+spec:
+  ingressClassName: nginx-public
+  rules:
+    - host: www.dev.1276.internal.techgarden.gg
+      http:
+        paths:
+          - path: ^/api/?(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: techgarden-bff
+                port:
+                  number: 8080
+  tls:
+    - hosts: [www.dev.1276.internal.techgarden.gg]
+      secretName: www.dev.1276.internal.techgarden.gg
