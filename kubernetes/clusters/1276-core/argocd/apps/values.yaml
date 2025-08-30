@@ -44,7 +44,6 @@ applicationsets:
               exclude: true
     template:
       metadata:
-        # Keep your naming convention from core: "<namespace>.<leaf-folder>"
         name: "{{path[2]}}.{{path[3]}}.{{path.basenameNormalized}}"
       spec:
         project: "1276-dev"
@@ -80,7 +79,6 @@ applicationsets:
               exclude: true
     template:
       metadata:
-        # Keep your naming convention from core: "<namespace>.<leaf-folder>"
         name: "{{path[2]}}.{{path[3]}}.{{path.basenameNormalized}}"
       spec:
         project: "1276-prod"
@@ -116,7 +114,6 @@ applicationsets:
               exclude: true
     template:
       metadata:
-        # Keep your naming convention from core: "<namespace>.<leaf-folder>"
         name: "{{path[2]}}.{{path[3]}}.{{path.basenameNormalized}}"
       spec:
         project: "5963-prod"
@@ -155,7 +152,7 @@ applicationsets:
               exclude: true
     template:
       metadata:
-        name: "{{path[3]}}.{{path.basenameNormalized}}"
+        name: "{{path[2]}}.{{path[3]}}.{{path.basenameNormalized}}"
       spec:
         project: default
         source:
