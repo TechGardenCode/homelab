@@ -16,6 +16,7 @@ ingress:
     secretName: bff.dev.1276.internal.techgarden.gg
 envs:
   - BFF_BASE_URL: https://www.dev.techgarden.gg/api/login/oauth2/code/{registrationId}
+  - LOGGING_LEVEL_ROOT: debug
 secretEnvs:
   bff:
     BFF_CLIENT_SECRET: BFF_CLIENT_SECRET
