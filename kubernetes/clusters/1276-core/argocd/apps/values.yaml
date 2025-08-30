@@ -45,7 +45,7 @@ applicationsets:
               exclude: true
     template:
       metadata:
-        name: "{{path[2]}}.{{path[3]}}.{{path.basenameNormalized}}"
+        name: "1276-dev.{{path[3]}}.{{path.basenameNormalized}}"
       spec:
         project: "1276-dev"
         source:
@@ -81,7 +81,7 @@ applicationsets:
               exclude: true
     template:
       metadata:
-        name: "{{path[2]}}.{{path[3]}}.{{path.basenameNormalized}}"
+        name: "1276-prod.{{path[3]}}.{{path.basenameNormalized}}"
       spec:
         project: "1276-prod"
         source:
@@ -117,7 +117,7 @@ applicationsets:
               exclude: true
     template:
       metadata:
-        name: "{{path[2]}}.{{path[3]}}.{{path.basenameNormalized}}"
+        name: "5963-prod.{{path[3]}}.{{path.basenameNormalized}}"
       spec:
         project: "5963-prod"
         source:
@@ -154,7 +154,7 @@ applicationsets:
               exclude: true
     template:
       metadata:
-        name: "{{path[2]}}.{{path[3]}}.{{path.basenameNormalized}}"
+        name: "1276-core.{{path[3]}}.{{path.basenameNormalized}}"
       spec:
         project: default
         source:
