@@ -1,3 +1,0 @@
-bitwarden-sdk-server:
-  enabled: true
-  namespaceOverride: external-secrets

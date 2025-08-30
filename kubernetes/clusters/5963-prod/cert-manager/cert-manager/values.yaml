@@ -1,8 +1,0 @@
-installCRDs: true
-
-# cannot use kube-system since kustomize overwrites kube-system namespace :/
-global:
-  leaderElection:
-    namespace: "cert-manager"
-
-# enableCertificateOwnerRef: true
