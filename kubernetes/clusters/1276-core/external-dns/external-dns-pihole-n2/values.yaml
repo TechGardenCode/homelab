@@ -1,4 +1,4 @@
-policy: upsert-only
+policy: sync
 
 extraArgs:
   - "--ingress-class=nginx-private"
