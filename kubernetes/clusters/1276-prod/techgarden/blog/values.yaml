@@ -1,0 +1,27 @@
+image:
+  repository: "ghcr.io/techgardencode/techgarden-blog"
+  tag: "aa22ea622d24c483edb1247357872fe33d6e3340"
+ports:
+  - name: main
+    containerPort: 8080
+service:
+  type: LoadBalancer
+ingress:
+  annotations:
+    cert-manager.io/issuer-group: certmanager.step.sm
+    cert-manager.io/issuer-kind: StepClusterIssuer
+    cert-manager.io/issuer: step-issuer
+  host: blog.1276.internal.techgarden.gg
+  tls:
+    secretName: blog.1276.internal.techgarden.gg
+envs:
+  blog:
+    PG_HOSTNAME: 10.0.60.80
+    PG_PORT: "5432"
+    PG_DB: postgres
+    PG_USER: tg_blog
+secretEnvs:
+  blog:
+    PG_PASSWORD: PG_PASSWORD
+health:
+  path: /actuator/health
