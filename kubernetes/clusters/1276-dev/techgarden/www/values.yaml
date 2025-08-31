@@ -12,6 +12,6 @@ ingress:
     cert-manager.io/issuer-group: certmanager.step.sm
     cert-manager.io/issuer-kind: StepClusterIssuer
     cert-manager.io/issuer: step-issuer
-  host: www.dev.techgarden.gg
+  host: www.1276.internal.dev.techgarden.gg
   tls:
-    secretName: www.dev.techgarden.gg
+    secretName: www.1276.internal.dev.techgarden.gg

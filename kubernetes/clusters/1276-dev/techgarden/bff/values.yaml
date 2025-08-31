@@ -11,11 +11,10 @@ ingress:
     cert-manager.io/issuer-group: certmanager.step.sm
     cert-manager.io/issuer-kind: StepClusterIssuer
     cert-manager.io/issuer: step-issuer
-  host: bff.dev.techgarden.gg
+  host: bff.1276.internal.dev.techgarden.gg
   tls:
-    secretName: bff.dev.techgarden.gg
+    secretName: bff.1276.internal.dev.techgarden.gg
 envs:
-  - BFF_BASE_URL: https://www.dev.techgarden.gg/api/login/oauth2/code/{registrationId}
   - LOGGING_LEVEL_ROOT: debug
 secretEnvs:
   bff:
