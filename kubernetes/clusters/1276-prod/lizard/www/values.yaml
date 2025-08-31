@@ -1,6 +1,6 @@
 image:
   repository: "ghcr.io/techgardencode/lizard"
-  tag: "02326fd2212a0c3b7b82abf38634341778bf503f"
+  tag: "7699fd6484ba71250e6da71376d9bdea0f7a3cd4"
 ports:
   - name: main
     containerPort: 80
