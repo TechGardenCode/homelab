@@ -6,15 +6,19 @@ service:
 ingress:
   enabled: true
   hostname: sso.dev.techgarden.gg
-  ingressClassName: nginx-private
+  ingressClassName: nginx-public
   tls: true
   annotations:
-    # cert-manager.io/cluster-issuer: letsencrypt-production
     cert-manager.io/issuer-group: certmanager.step.sm
     cert-manager.io/issuer-kind: StepClusterIssuer
     cert-manager.io/issuer: step-issuer
+  extraHosts:
+    - name: sso.1276.internal.dev.techgarden.gg
+  extraTls:
+    - secretName: sso.1276.internal.dev.techgarden.gg-tls
+      hosts:
+        - sso.1276.internal.dev.techgarden.gg
 proxyHeaders: xforwarded
-# proxy: edge
 postgresql:
   auth:
     existingSecret: keycloak
