@@ -9,7 +9,7 @@ metadata:
     cert-manager.io/issuer-kind: StepClusterIssuer
     nginx.ingress.kubernetes.io/rewrite-target: /$2
 spec:
-  ingressClassName: nginx-private
+  ingressClassName: nginx-public
   rules:
     - host: www.1276.internal.dev.techgarden.gg
       http:
