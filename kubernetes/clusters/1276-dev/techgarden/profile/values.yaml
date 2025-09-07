@@ -20,6 +20,7 @@ envs:
     PG_PORT: "5432"
     PG_DB: postgres
     PG_USER: tg_profile
+    APP_BLOG_URL: http://techgarden-blog:8080
 secretEnvs:
   profile:
     PG_PASSWORD: PG_PASSWORD
