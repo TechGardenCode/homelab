@@ -1,0 +1,27 @@
+image:
+  repository: "ghcr.io/techgardencode/techgarden-profile"
+  tag: "9628a9f7c9cb141394297f21e9a2ca9cff60a79f"
+ports:
+  - name: main
+    containerPort: 8080
+service:
+  type: LoadBalancer
+ingress:
+  annotations:
+    cert-manager.io/issuer-group: certmanager.step.sm
+    cert-manager.io/issuer-kind: StepClusterIssuer
+    cert-manager.io/issuer: step-issuer
+  host: profile.1276.internal.dev.techgarden.gg
+  tls:
+    secretName: profile.1276.internal.dev.techgarden.gg
+envs:
+  profile:
+    PG_HOSTNAME: 10.0.60.80
+    PG_PORT: "5432"
+    PG_DB: postgres
+    PG_USER: tg_profile
+secretEnvs:
+  profile:
+    PG_PASSWORD: PG_PASSWORD
+health:
+  path: /actuator/health
