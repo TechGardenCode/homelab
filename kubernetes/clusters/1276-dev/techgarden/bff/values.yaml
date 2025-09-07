@@ -15,6 +15,7 @@ ingress:
   tls:
     secretName: bff.1276.internal.dev.techgarden.gg
 envs:
+  - LOGGING_LEVEL_ROOT: debug
   - SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_KEYCLOAK_ISSUER_URI: https://sso.dev.techgarden.gg/realms/techgarden
   - REDIS_HOST: redis.techgarden.svc.cluster.local
   - BFF_SERVICES_PROFILE: techgarden-profile:8080
