@@ -1,6 +1,6 @@
 image:
   repository: "ghcr.io/techgardencode/techgarden-bff"
-  tag: "c995987ec64f56b65fb6686614e21ada5c924069"
+  tag: "4540cd4bd32897c0c06612f78c7e9389e91025f6"
 ports:
   - name: main
     containerPort: 8080
