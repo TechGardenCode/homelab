@@ -17,6 +17,7 @@ ingress:
 envs:
   - SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_KEYCLOAK_ISSUER_URI: https://sso.dev.techgarden.gg/realms/techgarden
   - REDIS_HOST: redis.techgarden.svc.cluster.local
+  - BFF_SERVICES_PROFILE: techgarden-profile:8080
 secretEnvs:
   bff:
     CLIENT_SECRET: CLIENT_SECRET
