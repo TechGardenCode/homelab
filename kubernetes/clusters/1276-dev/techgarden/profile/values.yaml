@@ -21,6 +21,7 @@ envs:
     PG_DB: postgres
     PG_USER: tg_profile
     APP_BLOG_URL: http://techgarden-blog:8080
+    KEYCLOAK_ISSUER_URI: https://sso.dev.techgarden.gg/realms/techgarden
 secretEnvs:
   profile:
     PG_PASSWORD: PG_PASSWORD
