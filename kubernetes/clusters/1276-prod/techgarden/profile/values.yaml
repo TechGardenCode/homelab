@@ -1,6 +1,6 @@
 image:
-  repository: "ghcr.io/techgardencode/techgarden-blog"
-  tag: "06f911d509ebfe24bcb3f3112889186641357a61"
+  repository: "ghcr.io/techgardencode/techgarden-profile"
+  tag: "d5cf46e65a0dca54b28dd5a789ed92422af1de37"
 ports:
   - name: main
     containerPort: 8080
@@ -11,17 +11,19 @@ ingress:
     cert-manager.io/issuer-group: certmanager.step.sm
     cert-manager.io/issuer-kind: StepClusterIssuer
     cert-manager.io/issuer: step-issuer
-  host: blog.1276.internal.techgarden.gg
+  host: profile.1276.internal.techgarden.gg
   tls:
-    secretName: blog.1276.internal.techgarden.gg
+    secretName: profile.1276.internal.techgarden.gg
 envs:
-  blog:
+  profile:
     PG_HOSTNAME: 10.0.60.80
     PG_PORT: "5432"
     PG_DB: postgres
-    PG_USER: tg_blog
+    PG_USER: tg_profile
+    APP_BLOG_URL: http://techgarden-blog:8080
 secretEnvs:
-  blog:
+  profile:
     PG_PASSWORD: PG_PASSWORD
+    CLIENT_SECRET: CLIENT_SECRET
 health:
   path: /actuator/health

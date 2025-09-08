@@ -1,6 +1,6 @@
 image:
   repository: "ghcr.io/techgardencode/techgarden-bff"
-  tag: "fa8f1dfafda685124668a80cbbf9c4e719e74297"
+  tag: "4540cd4bd32897c0c06612f78c7e9389e91025f6"
 ports:
   - name: main
     containerPort: 8080
@@ -16,9 +16,11 @@ ingress:
     secretName: bff.1276.internal.techgarden.gg
 envs:
   - LOGGING_LEVEL_ROOT: debug
-    SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_KEYCLOAK_ISSUER_URI: https://sso.techgarden.gg/realms/techgarden
+  - SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_KEYCLOAK_ISSUER_URI: https://sso.dev.techgarden.gg/realms/techgarden
+  - REDIS_HOST: redis.techgarden.svc.cluster.local
+  - BFF_SERVICES_PROFILE: http://techgarden-profile:8080
 secretEnvs:
   bff:
-    BFF_CLIENT_SECRET: BFF_CLIENT_SECRET
+    CLIENT_SECRET: CLIENT_SECRET
 health:
   path: /actuator/health
