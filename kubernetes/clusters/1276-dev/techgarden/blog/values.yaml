@@ -24,5 +24,6 @@ envs:
 secretEnvs:
   blog:
     PG_PASSWORD: PG_PASSWORD
+    CLIENT_SECRET: CLIENT_SECRET
 health:
   path: /actuator/health
