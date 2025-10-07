@@ -20,6 +20,7 @@ envs:
     PG_PORT: "5432"
     PG_DB: postgres
     PG_USER: tg_blog
+    APP_PROFILE_URL: http://techgarden-profile:8080
     KEYCLOAK_ISSUER_URI: https://sso.dev.techgarden.gg/realms/techgarden
 secretEnvs:
   blog:
