@@ -146,12 +146,12 @@ applicationsets:
           repoURL: https://github.com/techgardencode/homelab.git
           revision: main
           directories:
+            # - path: "kubernetes/clusters/1276-core/**/*"
+            #   exclude: true
             - path: "kubernetes/clusters/shared/**/*"
             - path: "kubernetes/clusters/1276-core/argocd/apps"
             - path: "kubernetes/clusters/1276-core/argocd/argocd"
             - path: "kubernetes/clusters/1276-core/metallb-system/metallb"
-            - path: "kubernetes/clusters/1276-core/**/*"
-              exclude: true
     template:
       metadata:
         name: "1276-core.{{path[3]}}.{{path.basenameNormalized}}"
