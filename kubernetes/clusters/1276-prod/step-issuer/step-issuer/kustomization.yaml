@@ -8,7 +8,7 @@ resources:
 helmCharts:
   - repo: https://smallstep.github.io/helm-charts
     name: step-issuer
-    version: v1.9.9
+    version: 1.9.11
     releaseName: step-issuer
     valuesFile: values.yaml
     namespace: step-issuer
