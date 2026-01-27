@@ -148,6 +148,8 @@ applicationsets:
           directories:
             # - path: "kubernetes/clusters/1276-core/**/*"
             #   exclude: true
+            - path: "kubernetes/clusters/shared/external-dns/*"
+              exclude: true
             - path: "kubernetes/clusters/shared/**/*"
             - path: "kubernetes/clusters/1276-core/argocd/apps"
             - path: "kubernetes/clusters/1276-core/argocd/argocd"
