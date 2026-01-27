@@ -142,4 +142,6 @@ server:
     enabled: true
     minReplicas: 2
   service:
+    annotations:
+      metallb.universe.tf/address-pool: default-lb
     type: LoadBalancer
