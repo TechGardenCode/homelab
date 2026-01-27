@@ -1,2 +1,4 @@
 # MetalLB Helm chart values
 # Minimal configuration - IP pools are managed via CRDs
+speaker:
+  ignoreExcludeLB: true
