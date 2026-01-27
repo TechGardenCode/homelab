@@ -1,144 +1,144 @@
 projects:
-  1276-dev:
-    namespace: argocd
-    sourceRepos:
-      - https://github.com/techgardencode/homelab.git
-    destinations:
-      - name: 1276-dev
-        namespace: "*"
-    clusterResourceWhitelist:
-      - group: "*"
-        kind: "*"
-  1276-prod:
-    namespace: argocd
-    sourceRepos:
-      - https://github.com/techgardencode/homelab.git
-    destinations:
-      - name: 1276-prod
-        namespace: "*"
-    clusterResourceWhitelist:
-      - group: "*"
-        kind: "*"
-  5963-prod:
-    namespace: argocd
-    sourceRepos:
-      - https://github.com/techgardencode/homelab.git
-    destinations:
-      - name: 5963-prod
-        namespace: "*"
-    clusterResourceWhitelist:
-      - group: "*"
-        kind: "*"
+  # 1276-dev:
+  #   namespace: argocd
+  #   sourceRepos:
+  #     - https://github.com/techgardencode/homelab.git
+  #   destinations:
+  #     - name: 1276-dev
+  #       namespace: "*"
+  #   clusterResourceWhitelist:
+  #     - group: "*"
+  #       kind: "*"
+  # 1276-prod:
+  #   namespace: argocd
+  #   sourceRepos:
+  #     - https://github.com/techgardencode/homelab.git
+  #   destinations:
+  #     - name: 1276-prod
+  #       namespace: "*"
+  #   clusterResourceWhitelist:
+  #     - group: "*"
+  #       kind: "*"
+  # 5963-prod:
+  #   namespace: argocd
+  #   sourceRepos:
+  #     - https://github.com/techgardencode/homelab.git
+  #   destinations:
+  #     - name: 5963-prod
+  #       namespace: "*"
+  #   clusterResourceWhitelist:
+  #     - group: "*"
+  #       kind: "*"
 
 applicationsets:
-  1276-dev:
-    name: 1276-dev
-    namespace: argocd
-    generators:
-      - git:
-          repoURL: https://github.com/techgardencode/homelab.git
-          revision: main
-          directories:
-            - path: "kubernetes/clusters/shared/**/*"
-            - path: "kubernetes/clusters/1276-dev/**/*"
-            - path: "kubernetes/clusters/1276-dev/example/*"
-              exclude: true
-    template:
-      metadata:
-        name: "1276-dev.{{path[3]}}.{{path.basenameNormalized}}"
-      spec:
-        project: "1276-dev"
-        source:
-          repoURL: https://github.com/techgardencode/homelab.git
-          targetRevision: main
-          path: "{{path}}"
-          plugin:
-            name: kustomize-helm
-            parameters:
-              - name: NAMESPACE
-                string: "{{path[3]}}"
-        destination:
-          name: "1276-dev"
-          namespace: "{{path[3]}}"
-        syncPolicy:
-          automated:
-            selfHeal: true
-            prune: true
-          syncOptions:
-            - ApplyOutOfSyncOnly=true
-            - ServerSideApply=true
-  1276-prod:
-    name: 1276-prod
-    namespace: argocd
-    generators:
-      - git:
-          repoURL: https://github.com/techgardencode/homelab.git
-          revision: main
-          directories:
-            - path: "kubernetes/clusters/shared/**/*"
-            - path: "kubernetes/clusters/1276-prod/**/*"
-            - path: "kubernetes/clusters/1276-prod/example/*"
-              exclude: true
-    template:
-      metadata:
-        name: "1276-prod.{{path[3]}}.{{path.basenameNormalized}}"
-      spec:
-        project: "1276-prod"
-        source:
-          repoURL: https://github.com/techgardencode/homelab.git
-          targetRevision: main
-          path: "{{path}}"
-          plugin:
-            name: kustomize-helm
-            parameters:
-              - name: NAMESPACE
-                string: "{{path[3]}}"
-        destination:
-          name: "1276-prod"
-          namespace: "{{path[3]}}"
-        syncPolicy:
-          automated:
-            selfHeal: true
-            prune: true
-          syncOptions:
-            - ApplyOutOfSyncOnly=true
-            - ServerSideApply=true
-  5963-prod:
-    name: 5963-prod
-    namespace: argocd
-    generators:
-      - git:
-          repoURL: https://github.com/techgardencode/homelab.git
-          revision: main
-          directories:
-            - path: "kubernetes/clusters/shared/**/*"
-            - path: "kubernetes/clusters/5963-prod/**/*"
-            - path: "kubernetes/clusters/5963-prod/example/*"
-              exclude: true
-    template:
-      metadata:
-        name: "5963-prod.{{path[3]}}.{{path.basenameNormalized}}"
-      spec:
-        project: "5963-prod"
-        source:
-          repoURL: https://github.com/techgardencode/homelab.git
-          targetRevision: main
-          path: "{{path}}"
-          plugin:
-            name: kustomize-helm
-            parameters:
-              - name: NAMESPACE
-                string: "{{path[3]}}"
-        destination:
-          name: "5963-prod"
-          namespace: "{{path[3]}}"
-        syncPolicy:
-          automated:
-            selfHeal: true
-            prune: true
-          syncOptions:
-            - ApplyOutOfSyncOnly=true
-            - ServerSideApply=true
+  # 1276-dev:
+  #   name: 1276-dev
+  #   namespace: argocd
+  #   generators:
+  #     - git:
+  #         repoURL: https://github.com/techgardencode/homelab.git
+  #         revision: main
+  #         directories:
+  #           - path: "kubernetes/clusters/shared/**/*"
+  #           - path: "kubernetes/clusters/1276-dev/**/*"
+  #           - path: "kubernetes/clusters/1276-dev/example/*"
+  #             exclude: true
+  #   template:
+  #     metadata:
+  #       name: "1276-dev.{{path[3]}}.{{path.basenameNormalized}}"
+  #     spec:
+  #       project: "1276-dev"
+  #       source:
+  #         repoURL: https://github.com/techgardencode/homelab.git
+  #         targetRevision: main
+  #         path: "{{path}}"
+  #         plugin:
+  #           name: kustomize-helm
+  #           parameters:
+  #             - name: NAMESPACE
+  #               string: "{{path[3]}}"
+  #       destination:
+  #         name: "1276-dev"
+  #         namespace: "{{path[3]}}"
+  #       syncPolicy:
+  #         automated:
+  #           selfHeal: true
+  #           prune: true
+  #         syncOptions:
+  #           - ApplyOutOfSyncOnly=true
+  #           - ServerSideApply=true
+  # 1276-prod:
+  #   name: 1276-prod
+  #   namespace: argocd
+  #   generators:
+  #     - git:
+  #         repoURL: https://github.com/techgardencode/homelab.git
+  #         revision: main
+  #         directories:
+  #           - path: "kubernetes/clusters/shared/**/*"
+  #           - path: "kubernetes/clusters/1276-prod/**/*"
+  #           - path: "kubernetes/clusters/1276-prod/example/*"
+  #             exclude: true
+  #   template:
+  #     metadata:
+  #       name: "1276-prod.{{path[3]}}.{{path.basenameNormalized}}"
+  #     spec:
+  #       project: "1276-prod"
+  #       source:
+  #         repoURL: https://github.com/techgardencode/homelab.git
+  #         targetRevision: main
+  #         path: "{{path}}"
+  #         plugin:
+  #           name: kustomize-helm
+  #           parameters:
+  #             - name: NAMESPACE
+  #               string: "{{path[3]}}"
+  #       destination:
+  #         name: "1276-prod"
+  #         namespace: "{{path[3]}}"
+  #       syncPolicy:
+  #         automated:
+  #           selfHeal: true
+  #           prune: true
+  #         syncOptions:
+  #           - ApplyOutOfSyncOnly=true
+  #           - ServerSideApply=true
+  # 5963-prod:
+  #   name: 5963-prod
+  #   namespace: argocd
+  #   generators:
+  #     - git:
+  #         repoURL: https://github.com/techgardencode/homelab.git
+  #         revision: main
+  #         directories:
+  #           - path: "kubernetes/clusters/shared/**/*"
+  #           - path: "kubernetes/clusters/5963-prod/**/*"
+  #           - path: "kubernetes/clusters/5963-prod/example/*"
+  #             exclude: true
+  #   template:
+  #     metadata:
+  #       name: "5963-prod.{{path[3]}}.{{path.basenameNormalized}}"
+  #     spec:
+  #       project: "5963-prod"
+  #       source:
+  #         repoURL: https://github.com/techgardencode/homelab.git
+  #         targetRevision: main
+  #         path: "{{path}}"
+  #         plugin:
+  #           name: kustomize-helm
+  #           parameters:
+  #             - name: NAMESPACE
+  #               string: "{{path[3]}}"
+  #       destination:
+  #         name: "5963-prod"
+  #         namespace: "{{path[3]}}"
+  #       syncPolicy:
+  #         automated:
+  #           selfHeal: true
+  #           prune: true
+  #         syncOptions:
+  #           - ApplyOutOfSyncOnly=true
+  #           - ServerSideApply=true
   1276-core:
     name: 1276-core
     generators:
@@ -147,10 +147,10 @@ applicationsets:
           revision: main
           directories:
             - path: "kubernetes/clusters/shared/**/*"
+            - path: "kubernetes/clusters/1276-core/argocd/apps"
+            - path: "kubernetes/clusters/1276-core/argocd/argocd"
+            - path: "kubernetes/clusters/1276-core/metallb-system/metallb"
             - path: "kubernetes/clusters/1276-core/**/*"
-            - path: "kubernetes/clusters/1276-core/monitoring/*"
-              exclude: true
-            - path: "kubernetes/clusters/1276-core/example/*"
               exclude: true
     template:
       metadata:

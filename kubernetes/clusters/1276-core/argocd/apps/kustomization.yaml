@@ -3,7 +3,7 @@ kind: Kustomization
 
 helmCharts:
   - name: argocd-apps
-    version: 2.0.2
+    version: 2.0.4
     releaseName: argocd-apps
     repo: https://argoproj.github.io/argo-helm
     valuesFile: values.yaml

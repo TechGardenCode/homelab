@@ -1,0 +1,17 @@
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: system-pool
+  namespace: metallb-system
+spec:
+  addresses:
+    - 10.0.61.2-10.0.61.11
+---
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: default-pool
+  namespace: metallb-system
+spec:
+  addresses:
+    - 10.0.60.12-10.0.60.127
