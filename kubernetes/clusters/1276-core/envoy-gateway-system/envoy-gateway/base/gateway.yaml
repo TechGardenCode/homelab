@@ -6,7 +6,7 @@ metadata:
   annotations:
     metallb.universe.tf/ip-pool: system-pool
 spec:
-  gatewayClassName: envoy-gateway
+  gatewayClassName: eg
   addresses:
     - type: IPAddress
       value: 10.0.61.2
