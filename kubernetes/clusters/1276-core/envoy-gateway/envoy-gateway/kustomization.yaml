@@ -9,12 +9,12 @@ helmCharts:
   # Install CRDs first (cluster-scoped, no namespace needed)
   - name: gateway-crds
     version: v1.6.3
-    releaseName: envoy-gateway-crds
+    releaseName: gateway-crds-helm
     repo: oci://docker.io/envoyproxy
   # Install Envoy Gateway controller
   - name: gateway-helm
     version: v1.6.3
-    releaseName: envoy-gateway-helm
+    releaseName: gateway-helm
     repo: oci://docker.io/envoyproxy
     valuesFile: values.yaml
     namespace: envoy-gateway
