@@ -6,4 +6,4 @@ helmCharts:
   - name: gateway-crds-helm
     version: v1.6.3
     releaseName: gateway-crds-helm
-    repo: oci://docker.io/envoyproxy/gateway-crds
+    repo: oci://docker.io/envoyproxy
