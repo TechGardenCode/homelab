@@ -153,7 +153,7 @@ applicationsets:
             - path: "kubernetes/clusters/shared/**/*"
             - path: "kubernetes/clusters/1276-core/argocd/*"
             - path: "kubernetes/clusters/1276-core/metallb-system/*"
-            # - path: "kubernetes/clusters/1276-core/envoy-gateway-system/*"
+            - path: "kubernetes/clusters/1276-core/envoy-gateway-system/*"
     template:
       metadata:
         name: "1276-core.{{path[3]}}.{{path.basenameNormalized}}"
