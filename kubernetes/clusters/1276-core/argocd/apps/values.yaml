@@ -154,6 +154,7 @@ applicationsets:
             - path: "kubernetes/clusters/1276-core/argocd/*"
             - path: "kubernetes/clusters/1276-core/metallb-system/*"
             - path: "kubernetes/clusters/1276-core/envoy-gateway-system/*"
+            - path: "kubernetes/clusters/1276-core/democratic-csi/*"
     template:
       metadata:
         name: "1276-core.{{path[3]}}.{{path.basenameNormalized}}"
