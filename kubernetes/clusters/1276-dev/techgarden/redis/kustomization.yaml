@@ -3,7 +3,7 @@ kind: Kustomization
 
 helmCharts:
   - name: redis
-    version: 0.2.0
+    version: 0.25.2
     releaseName: redis
     repo: oci://registry-1.docker.io/cloudpirates
     namespace: redis
