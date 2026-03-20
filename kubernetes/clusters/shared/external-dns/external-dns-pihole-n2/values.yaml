@@ -1,13 +1,12 @@
 policy: upsert-only
 
 extraArgs:
-  - "--ingress-class=nginx-private"
   - "--pihole-api-version=6"
 
 sources:
   - service
   - ingress
-  # - crd
+  - gateway-httproute
 
 provider:
   name: pihole

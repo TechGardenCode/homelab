@@ -41,15 +41,15 @@ health:
   type: HTTP
   path: /
 
-ingress:
-  host: ""
+httpRoute:
+  enabled: false
+  hostname: ""
   path: /
-  public: false
-  publicPath: /
-  port: main
+  pathType: PathPrefix
+  gatewayRef:
+    name: eg
+    namespace: envoy-gateway-system
   annotations: {}
-  annotationsPublic: {}
-  annotationsPrivate: {}
 
 replicas: 1
 strategyType: RollingUpdate
