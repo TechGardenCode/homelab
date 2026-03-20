@@ -1,0 +1,13 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: test-claim-iscsi-ssd
+  annotations:
+    volume.beta.kubernetes.io/storage-class: "freenas-iscsi-ssd-csi"
+spec:
+  storageClassName: freenas-iscsi-ssd-csi
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi

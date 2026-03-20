@@ -1,0 +1,13 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: test-claim-nfs-ssd
+  annotations:
+    volume.beta.kubernetes.io/storage-class: "freenas-nfs-ssd-csi"
+spec:
+  storageClassName: freenas-nfs-ssd-csi
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi

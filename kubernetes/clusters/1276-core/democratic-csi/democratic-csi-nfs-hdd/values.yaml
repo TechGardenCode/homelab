@@ -30,6 +30,12 @@ storageClasses:
       node-publish-secret:
       controller-expand-secret:
 
+node:
+  driver:
+    extraEnv:
+      - name: MOUNT_HOST_STRATEGY
+        value: nsenter
+
 driver:
   existingConfigSecret: democratic-csi-nfs-driver-config
   config:
