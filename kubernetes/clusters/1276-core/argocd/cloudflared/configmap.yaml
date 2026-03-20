@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cloudflared-config
+data:
+  config.yaml: |
+    tunnel: cd7dfdc4-003d-4ab0-a879-02abdf43e94a
+    credentials-file: /etc/cloudflared/credentials.json
+    no-autoupdate: true
+    ingress:
+      - hostname: argocd-webhook.kian.sh
+        path: /api/webhook
+        service: http://argocd-server.argocd.svc.cluster.local:80
+      - service: http_status:404
