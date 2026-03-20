@@ -8,7 +8,7 @@ resources:
 helmCharts:
   - repo: https://democratic-csi.github.io/charts/
     name: democratic-csi
-    version: 0.15.0
+    version: 0.15.1
     includeCRDs: true
     releaseName: democratic-csi-nfs
     valuesFile: values.yaml
