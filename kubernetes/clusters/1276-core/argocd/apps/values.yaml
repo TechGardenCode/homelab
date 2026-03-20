@@ -19,12 +19,12 @@ projects:
   #   clusterResourceWhitelist:
   #     - group: "*"
   #       kind: "*"
-  # 5963-prod:
+  # 1501-prod:
   #   namespace: argocd
   #   sourceRepos:
   #     - https://github.com/techgardencode/homelab.git
   #   destinations:
-  #     - name: 5963-prod
+  #     - name: 1501-prod
   #       namespace: "*"
   #   clusterResourceWhitelist:
   #     - group: "*"
@@ -103,8 +103,8 @@ applicationsets:
   #         syncOptions:
   #           - ApplyOutOfSyncOnly=true
   #           - ServerSideApply=true
-  # 5963-prod:
-  #   name: 5963-prod
+  # 1501-prod:
+  #   name: 1501-prod
   #   namespace: argocd
   #   generators:
   #     - git:
@@ -112,14 +112,14 @@ applicationsets:
   #         revision: main
   #         directories:
   #           - path: "kubernetes/clusters/shared/**/*"
-  #           - path: "kubernetes/clusters/5963-prod/**/*"
-  #           - path: "kubernetes/clusters/5963-prod/example/*"
+  #           - path: "kubernetes/clusters/1501-prod/**/*"
+  #           - path: "kubernetes/clusters/1501-prod/example/*"
   #             exclude: true
   #   template:
   #     metadata:
-  #       name: "5963-prod.{{path[3]}}.{{path.basenameNormalized}}"
+  #       name: "1501-prod.{{path[3]}}.{{path.basenameNormalized}}"
   #     spec:
-  #       project: "5963-prod"
+  #       project: "1501-prod"
   #       source:
   #         repoURL: https://github.com/techgardencode/homelab.git
   #         targetRevision: main
@@ -130,7 +130,7 @@ applicationsets:
   #             - name: NAMESPACE
   #               string: "{{path[3]}}"
   #       destination:
-  #         name: "5963-prod"
+  #         name: "1501-prod"
   #         namespace: "{{path[3]}}"
   #       syncPolicy:
   #         automated:
