@@ -17,6 +17,8 @@ spec:
         app.kubernetes.io/name: wiki
         app.kubernetes.io/component: web
     spec:
+      imagePullSecrets:
+        - name: ghcr-credentials
       containers:
         - name: wiki
           image: ghcr.io/techgardencode/kian-sh-docs:latest
