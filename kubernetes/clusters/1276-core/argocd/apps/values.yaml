@@ -156,6 +156,8 @@ applicationsets:
             - path: "kubernetes/clusters/1276-core/envoy-gateway-system/*"
             - path: "kubernetes/clusters/1276-core/democratic-csi/*"
             - path: "kubernetes/clusters/1276-core/default/*"
+            - path: "kubernetes/clusters/1276-core/step-ca/*"
+            - path: "kubernetes/clusters/1276-core/step-issuer/*"
             - path: "kubernetes/clusters/1276-core/wiki/*"
     template:
       metadata:
