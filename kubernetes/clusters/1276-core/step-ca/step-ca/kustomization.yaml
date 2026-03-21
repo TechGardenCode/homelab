@@ -6,7 +6,7 @@ resources:
 helmCharts:
   - repo: https://smallstep.github.io/helm-charts
     name: step-certificates
-    version: v1.28.4
+    version: v1.30.0
     releaseName: step-ca
     valuesFile: values.yaml
     namespace: step-ca
