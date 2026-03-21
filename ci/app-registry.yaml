@@ -1,0 +1,51 @@
+# App Registry — maps dispatch app names to their manifest paths.
+# Used by .github/workflows/update-image-tag.yml to update image tags
+# when a side-project CI dispatches an "update-image" event.
+#
+# Types:
+#   values        — updates image.tag in a Helm values.yaml
+#   kustomization — updates images[].newTag in a kustomization.yaml
+
+apps:
+  wiki:
+    type: kustomization
+    paths:
+      - kubernetes/clusters/1276-core/wiki/wiki/kustomization.yaml
+
+  kian-coffee:
+    type: values
+    paths:
+      - kubernetes/clusters/1276-core/default/kian-coffee/values.yaml
+      - kubernetes/clusters/1276-dev/default/kian-coffee/values.yaml
+      - kubernetes/clusters/1276-prod/default/kian-coffee/values.yaml
+      - kubernetes/clusters/1501-prod/default/kian-coffee/values.yaml
+
+  techgarden-www:
+    type: values
+    paths:
+      - kubernetes/clusters/1276-dev/techgarden/www/values.yaml
+      - kubernetes/clusters/1276-prod/techgarden/www/values.yaml
+      - kubernetes/clusters/1501-prod/techgarden/www/values.yaml
+
+  techgarden-bff:
+    type: values
+    paths:
+      - kubernetes/clusters/1276-dev/techgarden/bff/values.yaml
+      - kubernetes/clusters/1276-prod/techgarden/bff/values.yaml
+
+  techgarden-blog:
+    type: values
+    paths:
+      - kubernetes/clusters/1276-dev/techgarden/blog/values.yaml
+      - kubernetes/clusters/1276-prod/techgarden/blog/values.yaml
+
+  techgarden-profile:
+    type: values
+    paths:
+      - kubernetes/clusters/1276-dev/techgarden/profile/values.yaml
+      - kubernetes/clusters/1276-prod/techgarden/profile/values.yaml
+
+  lizard-www:
+    type: values
+    paths:
+      - kubernetes/clusters/1276-prod/lizard/www/values.yaml
