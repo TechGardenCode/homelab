@@ -11,9 +11,9 @@ ingress:
     cert-manager.io/issuer-group: certmanager.step.sm
     cert-manager.io/issuer-kind: StepClusterIssuer
     cert-manager.io/issuer: step-issuer
-  host: profile.1276.internal.techgarden.gg
+  host: profile.1276.internal.kian.sh
   tls:
-    secretName: profile.1276.internal.techgarden.gg
+    secretName: profile.1276.internal.kian.sh
 envs:
   profile:
     PG_HOSTNAME: 10.0.60.80

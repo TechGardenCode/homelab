@@ -12,6 +12,6 @@ ingress:
     cert-manager.io/issuer-group: certmanager.step.sm
     cert-manager.io/issuer-kind: StepClusterIssuer
     cert-manager.io/issuer: step-issuer
-  host: www.1501.internal.techgarden.gg
+  host: www.1501.internal.kian.sh
   tls:
-    secretName: www.1501.internal.techgarden.gg
+    secretName: www.1501.internal.kian.sh

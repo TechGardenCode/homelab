@@ -12,6 +12,6 @@ ingress:
     cert-manager.io/issuer-group: certmanager.step.sm
     cert-manager.io/issuer-kind: StepClusterIssuer
     cert-manager.io/issuer: step-issuer
-  host: lizard.1276.internal.techgarden.gg
+  host: lizard.1276.internal.kian.sh
   tls:
-    secretName: lizard.1276.internal.techgarden.gg
+    secretName: lizard.1276.internal.kian.sh

@@ -10,4 +10,4 @@ spec:
     kind: StepClusterIssuer
     name: step-issuer
   dnsNames:
-    - "*.core.internal.techgarden.gg"
+    - "*.core.internal.kian.sh"

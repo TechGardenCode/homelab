@@ -19,4 +19,4 @@ controller:
 
   service:
     annotations:
-      external-dns.alpha.kubernetes.io/hostname: nginx-public.1276.internal.techgarden.gg
+      external-dns.alpha.kubernetes.io/hostname: nginx-public.1276.internal.kian.sh
