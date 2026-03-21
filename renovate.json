@@ -1,11 +1,71 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:recommended"],
+  "platformAutomerge": false,
+  "schedule": ["before 6am every weekday"],
 
   "packageRules": [
     {
+      "description": "Auto-merge custom app images from GHCR",
       "matchPackageNames": ["ghcr.io/techgardencode/*"],
       "automerge": true
+    },
+    {
+      "description": "Auto-merge patch updates for helm charts",
+      "matchDatasources": ["helm"],
+      "matchUpdateTypes": ["patch"],
+      "automerge": true,
+      "automergeType": "pr"
+    },
+    {
+      "description": "Auto-merge digest updates for base images",
+      "matchUpdateTypes": ["digest", "pin"],
+      "automerge": true,
+      "automergeType": "pr",
+      "groupName": "base-image-digests"
+    },
+    {
+      "description": "Manual review for minor/major helm chart bumps",
+      "matchDatasources": ["helm"],
+      "matchUpdateTypes": ["minor", "major"],
+      "automerge": false,
+      "labels": ["manual-review"]
+    },
+    {
+      "description": "Group external-dns instances",
+      "matchPackageNames": ["external-dns"],
+      "groupName": "external-dns"
+    },
+    {
+      "description": "Group ingress-nginx instances",
+      "matchPackageNames": ["ingress-nginx"],
+      "groupName": "ingress-nginx"
+    },
+    {
+      "description": "Group step-issuer instances",
+      "matchPackageNames": ["step-issuer"],
+      "groupName": "step-issuer"
+    },
+    {
+      "description": "Group democratic-csi instances",
+      "matchPackageNames": ["democratic-csi"],
+      "groupName": "democratic-csi"
+    },
+    {
+      "description": "Block external-secrets (needs migration plan)",
+      "matchPackageNames": ["external-secrets"],
+      "enabled": false
+    },
+    {
+      "description": "Pin keycloak below v25 (major bump deferred)",
+      "matchPackageNames": ["keycloak"],
+      "allowedVersions": "<25.0.0"
+    },
+    {
+      "description": "Pin redis below 1.0 (major bump deferred)",
+      "matchPackageNames": ["redis"],
+      "matchDatasources": ["helm"],
+      "allowedVersions": "<1.0.0"
     }
   ]
 }
