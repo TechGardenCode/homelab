@@ -7,4 +7,5 @@ helmCharts:
     version: 0.13.0
     includeCRDs: true
     releaseName: mongodb-operator
+    valuesFile: values.yaml
     namespace: mongodb
