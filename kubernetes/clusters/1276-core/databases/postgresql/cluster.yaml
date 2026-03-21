@@ -20,6 +20,7 @@ spec:
       postInitApplicationSQLRefs:
         configMapRefs:
           - name: postgresql-init-sql
+            key: 01-create-roles.sql
 
   monitoring:
     enablePodMonitor: false
