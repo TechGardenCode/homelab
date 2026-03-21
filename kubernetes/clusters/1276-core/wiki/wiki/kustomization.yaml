@@ -7,4 +7,4 @@ resources:
 
 images:
   - name: ghcr.io/techgardencode/kian-sh-docs
-    newTag: "test-dispatch-1e69cd8"
+    newTag: "036b9e2442a356cca09facfa3e4a33293ee87b1a"
