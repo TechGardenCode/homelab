@@ -1,10 +1,8 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-
 resources:
   - deployment.yaml
   - externalsecret.yaml
-
 images:
   - name: ghcr.io/techgardencode/kian-sh-docs
-    newTag: "036b9e2442a356cca09facfa3e4a33293ee87b1a"
+    newTag: "4df3d8e47f525aa7ed1378a1339f5ffa2fe4a8c8"
