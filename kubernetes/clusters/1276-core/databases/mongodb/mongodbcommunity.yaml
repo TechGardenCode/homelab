@@ -32,6 +32,7 @@ spec:
       db: admin
       passwordSecretRef:
         name: mongodb-admin-credentials
+      scramCredentialsSecretName: mongodb-admin-scram
       roles:
         - name: root
           db: admin
@@ -40,6 +41,7 @@ spec:
       db: appdb
       passwordSecretRef:
         name: mongodb-app-credentials
+      scramCredentialsSecretName: mongodb-appuser-scram
       roles:
         - name: readWrite
           db: appdb
