@@ -21,6 +21,15 @@ spec:
             resources:
               requests:
                 storage: 10Gi
+        - metadata:
+            name: logs-volume
+          spec:
+            accessModes:
+              - ReadWriteOnce
+            storageClassName: freenas-iscsi-ssd-csi
+            resources:
+              requests:
+                storage: 2Gi
 
   security:
     authentication:
