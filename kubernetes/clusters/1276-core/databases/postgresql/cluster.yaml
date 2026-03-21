@@ -22,7 +22,8 @@ spec:
           - name: postgresql-init-sql
 
   monitoring:
-    enabled: true
+    enablePodMonitor: false
+    disableDefaultQueries: false
 
   resources:
     requests:

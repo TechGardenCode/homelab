@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
         - name: dbgate
-          image: dbgate/dbgate:5.6.4
+          image: dbgate/dbgate:7.1.4-alpine
           ports:
             - name: http
               containerPort: 3000
