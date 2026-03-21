@@ -7,6 +7,9 @@ metadata:
 spec:
   instances: 1
 
+  superuserSecret:
+    name: postgresql-superuser
+
   storage:
     size: 10Gi
     storageClass: freenas-iscsi-ssd-csi
