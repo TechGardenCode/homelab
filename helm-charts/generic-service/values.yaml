@@ -3,6 +3,8 @@ image:
   pullPolicy: IfNotPresent
   tag: ""
 
+imagePullSecrets: []
+
 serviceAccount:
   annotations: {}
 

@@ -39,6 +39,10 @@ spec:
       enableServiceLinks: false
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       securityContext: {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       hostNetwork: {{ .Values.hostNetwork }}
       {{- if .Values.hostNetwork }}
       dnsPolicy: ClusterFirstWithHostNet
