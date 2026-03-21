@@ -1,0 +1,64 @@
+name: update-image-tag
+
+on:
+  repository_dispatch:
+    types: [update-image]
+
+jobs:
+  update-tag:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install yq
+        uses: mikefarah/yq@v4
+
+      - name: Read app registry and update tags
+        env:
+          APP_NAME: ${{ github.event.client_payload.app }}
+          NEW_TAG: ${{ github.event.client_payload.tag }}
+        run: |
+          REGISTRY="ci/app-registry.yaml"
+
+          if ! yq e ".apps.\"${APP_NAME}\"" "$REGISTRY" | grep -q "type:"; then
+            echo "::error::App '${APP_NAME}' not found in ${REGISTRY}"
+            exit 1
+          fi
+
+          TYPE=$(yq e ".apps.\"${APP_NAME}\".type" "$REGISTRY")
+          PATHS=$(yq e ".apps.\"${APP_NAME}\".paths[]" "$REGISTRY")
+
+          for FILE_PATH in $PATHS; do
+            if [ ! -f "$FILE_PATH" ]; then
+              echo "::warning::Path ${FILE_PATH} does not exist, skipping"
+              continue
+            fi
+
+            if [ "$TYPE" = "kustomization" ]; then
+              yq e -i "(. | .images[] | select(.name == \"*\")).newTag = \"${NEW_TAG}\"" "$FILE_PATH"
+              echo "Updated newTag in ${FILE_PATH}"
+            elif [ "$TYPE" = "values" ]; then
+              yq e -i ".image.tag = \"${NEW_TAG}\"" "$FILE_PATH"
+              echo "Updated image.tag in ${FILE_PATH}"
+            else
+              echo "::error::Unknown type '${TYPE}' for app '${APP_NAME}'"
+              exit 1
+            fi
+          done
+
+      - name: Commit and push
+        env:
+          APP_NAME: ${{ github.event.client_payload.app }}
+          NEW_TAG: ${{ github.event.client_payload.tag }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git commit -m "chore: update ${APP_NAME} image to ${NEW_TAG}"
+          git push
