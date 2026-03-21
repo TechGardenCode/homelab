@@ -4,3 +4,7 @@ kind: Kustomization
 resources:
   - deployment.yaml
   - externalsecret.yaml
+
+images:
+  - name: ghcr.io/techgardencode/kian-sh-docs
+    newTag: "036b9e2442a356cca09facfa3e4a33293ee87b1a"

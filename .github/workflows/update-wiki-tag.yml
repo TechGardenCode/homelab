@@ -1,0 +1,24 @@
+name: update-wiki-tag
+
+on:
+  repository_dispatch:
+    types: [update-wiki-image]
+
+jobs:
+  update-tag:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Update kustomization image tag
+        run: |
+          cd kubernetes/clusters/1276-core/wiki/wiki
+          sed -i "s|newTag: .*|newTag: \"${{ github.event.client_payload.tag }}\"|" kustomization.yaml
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add kubernetes/clusters/1276-core/wiki/wiki/kustomization.yaml
+          git commit -m "chore: update wiki image to ${{ github.event.client_payload.tag }}"
+          git push
