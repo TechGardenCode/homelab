@@ -5,4 +5,4 @@ resources:
   - externalsecret.yaml
 images:
   - name: ghcr.io/techgardencode/kian-sh-docs
-    newTag: "4df3d8e47f525aa7ed1378a1339f5ffa2fe4a8c8"
+    newTag: "a784da8c421733b216aaa13b83e8dcdd85ca860d"
