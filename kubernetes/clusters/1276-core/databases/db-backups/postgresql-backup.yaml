@@ -1,0 +1,52 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: postgresql-backup
+  namespace: databases
+  labels:
+    app.kubernetes.io/name: postgresql-backup
+spec:
+  schedule: "0 3 * * *"
+  timeZone: Europe/Berlin
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 2
+  jobTemplate:
+    spec:
+      completions: 1
+      parallelism: 1
+      template:
+        spec:
+          restartPolicy: OnFailure
+          terminationGracePeriodSeconds: 30
+          containers:
+            - name: pg-backup
+              image: postgres:17
+              command:
+                - /bin/bash
+                - -c
+                - |
+                  set -euo pipefail
+                  TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+                  mkdir -p /backups/postgresql
+                  echo "[$(date)] Starting PostgreSQL backup..."
+                  pg_dumpall -h postgresql-rw.databases.svc -U postgres \
+                    | gzip > /backups/postgresql/pg-dump-${TIMESTAMP}.sql.gz
+                  echo "[$(date)] Backup complete: pg-dump-${TIMESTAMP}.sql.gz"
+                  echo "[$(date)] Cleaning up backups older than 7 days..."
+                  find /backups/postgresql -name "*.sql.gz" -mtime +7 -delete
+                  echo "[$(date)] Done."
+              env:
+                - name: PGPASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: postgresql-superuser
+                      key: password
+              volumeMounts:
+                - name: backups
+                  mountPath: /backups
+          volumes:
+            - name: backups
+              persistentVolumeClaim:
+                claimName: db-backups

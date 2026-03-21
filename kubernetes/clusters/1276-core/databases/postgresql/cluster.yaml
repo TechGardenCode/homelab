@@ -1,0 +1,32 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: postgresql
+  namespace: databases
+spec:
+  instances: 1
+
+  storage:
+    size: 10Gi
+    storageClass: freenas-iscsi-ssd-csi
+
+  bootstrap:
+    initdb:
+      database: appdb
+      owner: appuser
+      secret:
+        name: postgresql-app-credentials
+      postInitApplicationSQLRefs:
+        configMapRefs:
+          - name: postgresql-init-sql
+
+  monitoring:
+    enabled: true
+
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      memory: 512Mi

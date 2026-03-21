@@ -1,0 +1,58 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: mongodb-backup
+  namespace: databases
+  labels:
+    app.kubernetes.io/name: mongodb-backup
+spec:
+  schedule: "30 3 * * *"
+  timeZone: Europe/Berlin
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 2
+  jobTemplate:
+    spec:
+      completions: 1
+      parallelism: 1
+      template:
+        spec:
+          restartPolicy: OnFailure
+          terminationGracePeriodSeconds: 30
+          containers:
+            - name: mongo-backup
+              image: mongo:7.0
+              command:
+                - /bin/bash
+                - -c
+                - |
+                  set -euo pipefail
+                  TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+                  mkdir -p /backups/mongodb
+                  echo "[$(date)] Starting MongoDB backup..."
+                  mongodump \
+                    --host mongodb-svc.databases.svc \
+                    --port 27017 \
+                    --username admin \
+                    --password "${MONGO_ADMIN_PASSWORD}" \
+                    --authenticationDatabase admin \
+                    --archive --gzip \
+                    > /backups/mongodb/mongo-dump-${TIMESTAMP}.gz
+                  echo "[$(date)] Backup complete: mongo-dump-${TIMESTAMP}.gz"
+                  echo "[$(date)] Cleaning up backups older than 7 days..."
+                  find /backups/mongodb -name "*.gz" -mtime +7 -delete
+                  echo "[$(date)] Done."
+              env:
+                - name: MONGO_ADMIN_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: mongodb-admin-credentials
+                      key: password
+              volumeMounts:
+                - name: backups
+                  mountPath: /backups
+          volumes:
+            - name: backups
+              persistentVolumeClaim:
+                claimName: db-backups

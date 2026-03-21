@@ -1,0 +1,45 @@
+---
+apiVersion: mongodbcommunity.mongodb.com/v1
+kind: MongoDBCommunity
+metadata:
+  name: mongodb
+  namespace: databases
+spec:
+  members: 1
+  type: ReplicaSet
+  version: "7.0.3"
+
+  statefulSet:
+    spec:
+      volumeClaimTemplates:
+        - metadata:
+            name: data-volume
+          spec:
+            accessModes:
+              - ReadWriteOnce
+            storageClassName: freenas-iscsi-ssd-csi
+            resources:
+              requests:
+                storage: 10Gi
+
+  security:
+    authentication:
+      modes:
+        - SCRAM
+
+  users:
+    - name: admin
+      db: admin
+      passwordSecretRef:
+        name: mongodb-admin-credentials
+      roles:
+        - name: root
+          db: admin
+
+    - name: appuser
+      db: appdb
+      passwordSecretRef:
+        name: mongodb-app-credentials
+      roles:
+        - name: readWrite
+          db: appdb

@@ -1,0 +1,19 @@
+---
+apiVersion: mysql.oracle.com/v2
+kind: InnoDBCluster
+metadata:
+  name: mysql
+  namespace: databases
+spec:
+  secretName: mysql-credentials
+  tlsUseSelfSigned: true
+  instances: 1
+  router:
+    instances: 1
+  datadirVolumeClaimTemplate:
+    accessModes:
+      - ReadWriteOnce
+    storageClassName: freenas-iscsi-ssd-csi
+    resources:
+      requests:
+        storage: 10Gi

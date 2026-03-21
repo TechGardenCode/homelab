@@ -159,6 +159,7 @@ applicationsets:
             - path: "kubernetes/clusters/1276-core/step-ca/*"
             - path: "kubernetes/clusters/1276-core/step-issuer/*"
             - path: "kubernetes/clusters/1276-core/wiki/*"
+            - path: "kubernetes/clusters/1276-core/databases/*"
     template:
       metadata:
         name: "1276-core.{{path[3]}}.{{path.basenameNormalized}}"
