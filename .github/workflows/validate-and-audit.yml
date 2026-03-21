@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read
+  issues: write
+
 jobs:
   kustomize-build:
     runs-on: ubuntu-latest
@@ -32,6 +36,7 @@ jobs:
           DIRS=$(find "kubernetes/clusters/${{ matrix.cluster }}" \
             -name kustomization.yaml -exec dirname {} \; \
             | grep -v '_namespace' \
+            | grep -v 'example' \
             | sort)
           echo "dirs<<EOF" >> "$GITHUB_OUTPUT"
           echo "$DIRS" >> "$GITHUB_OUTPUT"
@@ -119,5 +124,5 @@ jobs:
               repo: context.repo.repo,
               title: `Validation failed on main (${commit})`,
               body: `## Automated validation failure\n\nCommit: ${context.sha}\nWorkflow run: ${run_url}\n\nKustomize build or Helm template failed after merge to main. Check the workflow run for details.\n\nThis may have been caused by a Renovate auto-merge.`,
-              labels: ['bug', 'automated']
+              labels: []
             });
