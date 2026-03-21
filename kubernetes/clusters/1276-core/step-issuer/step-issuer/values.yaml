@@ -1,3 +1,8 @@
+kubeRBACproxy:
+  image:
+    repository: registry.k8s.io/kubebuilder/kube-rbac-proxy
+    tag: v0.15.0
+
 stepClusterIssuer:
   create: true
   caUrl: https://ca.core.internal.techgarden.gg

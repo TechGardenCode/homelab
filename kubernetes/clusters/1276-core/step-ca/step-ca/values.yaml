@@ -14,5 +14,9 @@ bootstrap:
   enabled: false
   configmaps: false
 
+ca:
+  db:
+    storageClass: freenas-iscsi-csi
+
 inject:
   enabled: false
