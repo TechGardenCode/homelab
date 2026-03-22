@@ -22,7 +22,7 @@ jobs:
           - 1501-prod
       fail-fast: false
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Install kustomize
         uses: imranismail/setup-kustomize@v2
@@ -62,7 +62,7 @@ jobs:
   shared-build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Install kustomize
         uses: imranismail/setup-kustomize@v2
@@ -90,7 +90,7 @@ jobs:
   helm-template:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Install helm
         uses: azure/setup-helm@v4
@@ -111,7 +111,7 @@ jobs:
     needs: [kustomize-build, shared-build, helm-template]
     if: failure() && github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Create GitHub issue for broken main
         uses: actions/github-script@v8
