@@ -1,7 +1,7 @@
 kubeRBACproxy:
   image:
     repository: registry.k8s.io/kubebuilder/kube-rbac-proxy
-    tag: v0.15.0
+    tag: v0.16.0
 
 stepClusterIssuer:
   create: true
