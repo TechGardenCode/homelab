@@ -8,9 +8,9 @@
 
 apps:
   wiki:
-    type: kustomization
+    type: values
     paths:
-      - kubernetes/clusters/1276-core/wiki/wiki/kustomization.yaml
+      - kubernetes/clusters/1276-core/wiki/wiki/values.yaml
 
   kian-coffee:
     type: values
