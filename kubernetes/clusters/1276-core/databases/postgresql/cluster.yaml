@@ -10,14 +10,19 @@ spec:
   superuserSecret:
     name: postgresql-superuser
 
+  postgresql:
+    pg_hba:
+      - host all postgres all scram-sha-256
+      - host all all all scram-sha-256
+
   storage:
     size: 10Gi
     storageClass: freenas-iscsi-ssd-csi
 
   bootstrap:
     initdb:
-      database: appdb
-      owner: appuser
+      database: techgarden
+      owner: techgardencode
       secret:
         name: postgresql-app-credentials
       postInitApplicationSQLRefs:

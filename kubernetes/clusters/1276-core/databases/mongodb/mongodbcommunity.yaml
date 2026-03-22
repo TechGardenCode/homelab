@@ -46,11 +46,13 @@ spec:
         - name: root
           db: admin
 
-    - name: appuser
-      db: appdb
+    - name: techgardencode
+      db: techgarden
       passwordSecretRef:
         name: mongodb-app-credentials
-      scramCredentialsSecretName: mongodb-appuser-scram
+      scramCredentialsSecretName: mongodb-techgardencode-scram
       roles:
         - name: readWrite
-          db: appdb
+          db: techgarden
+        - name: dbAdmin
+          db: techgarden

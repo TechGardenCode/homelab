@@ -6,6 +6,7 @@ metadata:
   namespace: databases
 data:
   01-create-roles.sql: |
+    ALTER ROLE techgardencode CREATEDB CREATEROLE;
     CREATE ROLE readonly_role;
-    GRANT CONNECT ON DATABASE appdb TO readonly_role;
+    GRANT CONNECT ON DATABASE techgarden TO readonly_role;
     ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO readonly_role;
