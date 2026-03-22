@@ -13,4 +13,6 @@ data:
         service: https://argocd-server.argocd.svc.cluster.local:443
         originRequest:
           noTLSVerify: true
+      - hostname: ntfy.kian.sh
+        service: http://10.0.60.160:8090
       - service: http_status:404
