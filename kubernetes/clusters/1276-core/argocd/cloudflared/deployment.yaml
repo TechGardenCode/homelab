@@ -17,12 +17,27 @@ spec:
       automountServiceAccountToken: false
       containers:
         - name: cloudflared
-          image: cloudflare/cloudflared:2025.2.1
+          image: cloudflare/cloudflared:2026.3.0
           args:
             - tunnel
             - --config
             - /etc/cloudflared/config.yaml
+            - --metrics
+            - 0.0.0.0:20241
             - run
+          livenessProbe:
+            httpGet:
+              path: /ready
+              port: 20241
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 20241
+            initialDelaySeconds: 5
+            periodSeconds: 10
           resources:
             requests:
               cpu: 50m
