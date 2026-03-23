@@ -43,8 +43,8 @@ secret:
 # -- Environment overrides (only non-default values, chart handles DB_HOST/PORT/SSL/DRIVER)
 environment:
   auth:
-    GOTRUE_SITE_URL: https://supabase.kian.sh
-    GOTRUE_URI_ALLOW_LIST: ""
+    GOTRUE_SITE_URL: https://hausparty.techgarden.gg
+    GOTRUE_URI_ALLOW_LIST: "https://hausparty.techgarden.gg/**"
     GOTRUE_DISABLE_SIGNUP: "false"
     API_EXTERNAL_URL: https://supabase.kian.sh
 
