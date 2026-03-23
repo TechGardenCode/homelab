@@ -1,10 +1,11 @@
 # -- Supabase Community Helm Chart
-# -- Configured for 1276-core with external CNPG database and Envoy Gateway routing
+# -- Configured for 1276-core with Envoy Gateway routing
+# -- Uses bundled PostgreSQL (supabase/postgres image via StatefulSet)
 
-# -- Disable bundled components we don't need
+# -- Disable components we don't need
 deployment:
   db:
-    enabled: false
+    enabled: true
   kong:
     enabled: false
   analytics:
@@ -37,11 +38,12 @@ secret:
     secretRefKey:
       username: username
       password: password
+      openAiApiKey: openai-api-key
 
-# -- Database connection (external CNPG cluster)
+# -- Database connection (bundled supabase/postgres)
 environment:
   auth:
-    DB_HOST: supabase-db-rw.supabase.svc
+    DB_HOST: supabase-supabase-db.supabase.svc
     DB_PORT: "5432"
     DB_USER: supabase_auth_admin
     DB_SSL: disable
@@ -52,7 +54,7 @@ environment:
     API_EXTERNAL_URL: https://supabase.techgarden.gg
 
   rest:
-    DB_HOST: supabase-db-rw.supabase.svc
+    DB_HOST: supabase-supabase-db.supabase.svc
     DB_PORT: "5432"
     DB_USER: authenticator
     DB_SSL: disable
@@ -60,14 +62,14 @@ environment:
     PGRST_DB_SCHEMAS: public,storage,graphql_public
 
   realtime:
-    DB_HOST: supabase-db-rw.supabase.svc
+    DB_HOST: supabase-supabase-db.supabase.svc
     DB_PORT: "5432"
     DB_USER: supabase_admin
     DB_SSL: disable
     DB_DRIVER: postgres
 
   storage:
-    DB_HOST: supabase-db-rw.supabase.svc
+    DB_HOST: supabase-supabase-db.supabase.svc
     DB_PORT: "5432"
     DB_USER: supabase_storage_admin
     DB_SSL: disable
@@ -76,7 +78,7 @@ environment:
     FILE_SIZE_LIMIT: "52428800"
 
   meta:
-    DB_HOST: supabase-db-rw.supabase.svc
+    DB_HOST: supabase-supabase-db.supabase.svc
     DB_PORT: "5432"
     DB_USER: supabase_admin
     DB_SSL: disable
@@ -86,10 +88,14 @@ environment:
     SUPABASE_PUBLIC_URL: https://supabase.techgarden.gg
     STUDIO_PORT: "3000"
 
-# -- Persistence
+# -- Persistence (all on democratic-csi storage)
 persistence:
   db:
-    enabled: false
+    enabled: true
+    storageClassName: freenas-iscsi-ssd-csi
+    size: 20Gi
+    accessModes:
+      - ReadWriteOnce
   storage:
     enabled: true
     storageClassName: freenas-nfs-ssd-csi
