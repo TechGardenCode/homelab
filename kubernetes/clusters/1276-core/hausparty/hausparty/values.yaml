@@ -22,6 +22,7 @@ resources:
     memory: 256Mi
 envs:
   - NEXT_PUBLIC_SUPABASE_URL: "https://supabase.kian.sh"
+  - NODE_TLS_REJECT_UNAUTHORIZED: "0"
 secretEnvs:
   - NEXT_PUBLIC_SUPABASE_ANON_KEY: "anon-key"
   - SUPABASE_SERVICE_ROLE_KEY: "service-role-key"
