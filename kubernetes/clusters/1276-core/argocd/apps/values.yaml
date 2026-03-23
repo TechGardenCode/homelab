@@ -161,6 +161,7 @@ applicationsets:
             - path: "kubernetes/clusters/1276-core/wiki/*"
             - path: "kubernetes/clusters/1276-core/databases/*"
             - path: "kubernetes/clusters/1276-core/supabase/*"
+            - path: "kubernetes/clusters/1276-core/hausparty/*"
     template:
       metadata:
         name: "1276-core.{{path[3]}}.{{path.basenameNormalized}}"

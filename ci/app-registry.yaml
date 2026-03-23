@@ -45,6 +45,11 @@ apps:
       - kubernetes/clusters/1276-dev/techgarden/profile/values.yaml
       - kubernetes/clusters/1276-prod/techgarden/profile/values.yaml
 
+  hausparty:
+    type: values
+    paths:
+      - kubernetes/clusters/1276-core/hausparty/hausparty/values.yaml
+
   lizard-www:
     type: values
     paths:
