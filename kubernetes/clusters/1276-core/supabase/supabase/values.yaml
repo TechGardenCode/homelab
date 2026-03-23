@@ -1,0 +1,95 @@
+# -- Supabase Community Helm Chart
+# -- Configured for 1276-core with external CNPG database and Envoy Gateway routing
+
+# -- Disable bundled components we don't need
+deployment:
+  db:
+    enabled: false
+  kong:
+    enabled: false
+  analytics:
+    enabled: false
+  functions:
+    enabled: false
+  imgproxy:
+    enabled: false
+  minio:
+    enabled: false
+  vector:
+    enabled: false
+
+# -- Secrets (reference ExternalSecret-created K8s Secrets)
+secret:
+  jwt:
+    secretRef: supabase-jwt
+    secretRefKey:
+      anonKey: anon-key
+      serviceKey: service-role-key
+      secret: secret
+  db:
+    secretRef: supabase-db-credentials
+    secretRefKey:
+      password: password
+    database: supabase
+  dashboard:
+    secretRef: supabase-dashboard
+    secretRefKey:
+      username: username
+      password: password
+
+# -- Database connection (external CNPG cluster)
+environment:
+  auth:
+    DB_HOST: supabase-db-rw.supabase.svc
+    DB_PORT: "5432"
+    DB_USER: supabase_auth_admin
+    DB_SSL: disable
+    DB_DRIVER: postgres
+    GOTRUE_SITE_URL: https://supabase.techgarden.gg
+    GOTRUE_URI_ALLOW_LIST: ""
+    GOTRUE_DISABLE_SIGNUP: "false"
+    API_EXTERNAL_URL: https://supabase.techgarden.gg
+
+  rest:
+    DB_HOST: supabase-db-rw.supabase.svc
+    DB_PORT: "5432"
+    DB_USER: authenticator
+    DB_SSL: disable
+    DB_DRIVER: postgres
+    PGRST_DB_SCHEMAS: public,storage,graphql_public
+
+  realtime:
+    DB_HOST: supabase-db-rw.supabase.svc
+    DB_PORT: "5432"
+    DB_USER: supabase_admin
+    DB_SSL: disable
+    DB_DRIVER: postgres
+
+  storage:
+    DB_HOST: supabase-db-rw.supabase.svc
+    DB_PORT: "5432"
+    DB_USER: supabase_storage_admin
+    DB_SSL: disable
+    DB_DRIVER: postgres
+    FILE_STORAGE_BACKEND_PATH: /var/lib/storage
+    FILE_SIZE_LIMIT: "52428800"
+
+  meta:
+    DB_HOST: supabase-db-rw.supabase.svc
+    DB_PORT: "5432"
+    DB_USER: supabase_admin
+    DB_SSL: disable
+    DB_DRIVER: postgres
+
+  studio:
+    SUPABASE_PUBLIC_URL: https://supabase.techgarden.gg
+    STUDIO_PORT: "3000"
+
+# -- Storage persistence (file blobs on NFS)
+persistence:
+  storage:
+    enabled: true
+    storageClassName: freenas-nfs-ssd-csi
+    size: 20Gi
+    accessModes:
+      - ReadWriteOnce

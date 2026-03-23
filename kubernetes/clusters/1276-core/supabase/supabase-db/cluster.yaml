@@ -1,0 +1,47 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: supabase-db
+  namespace: supabase
+spec:
+  instances: 1
+
+  imageName: supabase/postgres:15.8.1.060
+
+  enableSuperuserAccess: true
+  superuserSecret:
+    name: supabase-db-superuser
+
+  postgresql:
+    pg_hba:
+      - host all postgres all scram-sha-256
+      - host all all all scram-sha-256
+    parameters:
+      shared_preload_libraries: "pg_stat_statements, pgaudit, pg_net, pgjwt"
+
+  storage:
+    size: 20Gi
+    storageClass: freenas-iscsi-ssd-csi
+
+  bootstrap:
+    initdb:
+      database: supabase
+      owner: supabase_admin
+      secret:
+        name: supabase-db-credentials
+      postInitApplicationSQLRefs:
+        configMapRefs:
+          - name: supabase-init-sql
+            key: 01-supabase-roles.sql
+
+  monitoring:
+    enablePodMonitor: false
+    disableDefaultQueries: false
+
+  resources:
+    requests:
+      cpu: 200m
+      memory: 512Mi
+    limits:
+      memory: 1Gi
