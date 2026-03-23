@@ -5,14 +5,14 @@ metadata:
   name: supabase
   namespace: supabase
   annotations:
-    external-dns.alpha.kubernetes.io/hostname: supabase.techgarden.gg
+    external-dns.alpha.kubernetes.io/hostname: supabase.kian.sh
     external-dns.alpha.kubernetes.io/ingress-hostname-source: annotation-only
 spec:
   parentRefs:
     - name: eg
       namespace: envoy-gateway-system
   hostnames:
-    - supabase.techgarden.gg
+    - supabase.kian.sh
   rules:
     - matches:
         - path:

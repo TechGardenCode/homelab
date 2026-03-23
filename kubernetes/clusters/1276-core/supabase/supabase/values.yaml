@@ -43,10 +43,10 @@ secret:
 # -- Environment overrides (only non-default values, chart handles DB_HOST/PORT/SSL/DRIVER)
 environment:
   auth:
-    GOTRUE_SITE_URL: https://supabase.techgarden.gg
+    GOTRUE_SITE_URL: https://supabase.kian.sh
     GOTRUE_URI_ALLOW_LIST: ""
     GOTRUE_DISABLE_SIGNUP: "false"
-    API_EXTERNAL_URL: https://supabase.techgarden.gg
+    API_EXTERNAL_URL: https://supabase.kian.sh
 
   rest:
     PGRST_DB_SCHEMAS: public,storage,graphql_public
@@ -56,7 +56,7 @@ environment:
     FILE_SIZE_LIMIT: "52428800"
 
   studio:
-    SUPABASE_PUBLIC_URL: https://supabase.techgarden.gg
+    SUPABASE_PUBLIC_URL: https://supabase.kian.sh
     STUDIO_PORT: "3000"
 
 # -- Persistence (all on democratic-csi storage)
