@@ -30,6 +30,7 @@ secret:
     secretRef: supabase-db-credentials
     secretRefKey:
       password: password
+      database: database
     database: supabase
   dashboard:
     secretRef: supabase-dashboard
@@ -85,11 +86,25 @@ environment:
     SUPABASE_PUBLIC_URL: https://supabase.techgarden.gg
     STUDIO_PORT: "3000"
 
-# -- Storage persistence (file blobs on NFS)
+# -- Persistence
 persistence:
+  db:
+    enabled: false
   storage:
     enabled: true
     storageClassName: freenas-nfs-ssd-csi
     size: 20Gi
+    accessModes:
+      - ReadWriteOnce
+  functions:
+    enabled: true
+    storageClassName: freenas-iscsi-ssd-csi
+    size: 1Gi
+    accessModes:
+      - ReadWriteOnce
+  snippets:
+    enabled: true
+    storageClassName: freenas-iscsi-ssd-csi
+    size: 1Gi
     accessModes:
       - ReadWriteOnce

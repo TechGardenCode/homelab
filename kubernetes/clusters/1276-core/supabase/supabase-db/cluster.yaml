@@ -17,8 +17,6 @@ spec:
     pg_hba:
       - host all postgres all scram-sha-256
       - host all all all scram-sha-256
-    parameters:
-      shared_preload_libraries: "pg_stat_statements, pgaudit, pg_net, pgjwt"
 
   storage:
     size: 20Gi
