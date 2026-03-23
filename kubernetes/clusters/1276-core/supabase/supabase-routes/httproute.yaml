@@ -18,6 +18,12 @@ spec:
         - path:
             type: PathPrefix
             value: /rest/v1
+      filters:
+        - type: URLRewrite
+          urlRewrite:
+            path:
+              type: ReplacePrefixMatch
+              replacePrefixMatch: /
       backendRefs:
         - name: supabase-supabase-rest
           port: 3000
@@ -25,6 +31,12 @@ spec:
         - path:
             type: PathPrefix
             value: /auth/v1
+      filters:
+        - type: URLRewrite
+          urlRewrite:
+            path:
+              type: ReplacePrefixMatch
+              replacePrefixMatch: /
       backendRefs:
         - name: supabase-supabase-auth
           port: 9999
@@ -32,6 +44,12 @@ spec:
         - path:
             type: PathPrefix
             value: /realtime/v1
+      filters:
+        - type: URLRewrite
+          urlRewrite:
+            path:
+              type: ReplacePrefixMatch
+              replacePrefixMatch: /
       backendRefs:
         - name: supabase-supabase-realtime
           port: 4000
@@ -39,6 +57,12 @@ spec:
         - path:
             type: PathPrefix
             value: /storage/v1
+      filters:
+        - type: URLRewrite
+          urlRewrite:
+            path:
+              type: ReplacePrefixMatch
+              replacePrefixMatch: /
       backendRefs:
         - name: supabase-supabase-storage
           port: 5000
