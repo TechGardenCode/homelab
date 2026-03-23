@@ -40,49 +40,20 @@ secret:
       password: password
       openAiApiKey: openai-api-key
 
-# -- Database connection (bundled supabase/postgres)
+# -- Environment overrides (only non-default values, chart handles DB_HOST/PORT/SSL/DRIVER)
 environment:
   auth:
-    DB_HOST: supabase-supabase-db.supabase.svc
-    DB_PORT: "5432"
-    DB_USER: supabase_auth_admin
-    DB_SSL: disable
-    DB_DRIVER: postgres
     GOTRUE_SITE_URL: https://supabase.techgarden.gg
     GOTRUE_URI_ALLOW_LIST: ""
     GOTRUE_DISABLE_SIGNUP: "false"
     API_EXTERNAL_URL: https://supabase.techgarden.gg
 
   rest:
-    DB_HOST: supabase-supabase-db.supabase.svc
-    DB_PORT: "5432"
-    DB_USER: authenticator
-    DB_SSL: disable
-    DB_DRIVER: postgres
     PGRST_DB_SCHEMAS: public,storage,graphql_public
 
-  realtime:
-    DB_HOST: supabase-supabase-db.supabase.svc
-    DB_PORT: "5432"
-    DB_USER: supabase_admin
-    DB_SSL: disable
-    DB_DRIVER: postgres
-
   storage:
-    DB_HOST: supabase-supabase-db.supabase.svc
-    DB_PORT: "5432"
-    DB_USER: supabase_storage_admin
-    DB_SSL: disable
-    DB_DRIVER: postgres
     FILE_STORAGE_BACKEND_PATH: /var/lib/storage
     FILE_SIZE_LIMIT: "52428800"
-
-  meta:
-    DB_HOST: supabase-supabase-db.supabase.svc
-    DB_PORT: "5432"
-    DB_USER: supabase_admin
-    DB_SSL: disable
-    DB_DRIVER: postgres
 
   studio:
     SUPABASE_PUBLIC_URL: https://supabase.techgarden.gg
