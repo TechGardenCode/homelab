@@ -96,12 +96,6 @@ persistence:
     size: 20Gi
     accessModes:
       - ReadWriteOnce
-  functions:
-    enabled: true
-    storageClassName: freenas-iscsi-ssd-csi
-    size: 1Gi
-    accessModes:
-      - ReadWriteOnce
   snippets:
     enabled: true
     storageClassName: freenas-iscsi-ssd-csi

@@ -3,6 +3,7 @@ kind: Kustomization
 
 resources:
   - base/externalsecret.yaml
+  - base/functions-pvc.yaml
 
 helmCharts:
   - name: supabase
