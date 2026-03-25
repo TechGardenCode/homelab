@@ -5,10 +5,10 @@ resources:
   - base/externalsecret.yaml
 
 helmCharts:
-  - repo: https://smallstep.github.io/helm-charts
-    name: step-issuer
-    version: 1.10.2
+  - repo: https://democratic-csi.github.io/charts/
+    name: democratic-csi
+    version: 0.15.1
     includeCRDs: true
-    releaseName: step-issuer
+    releaseName: democratic-csi-iscsi
     valuesFile: values.yaml
-    namespace: step-issuer
+    namespace: democratic-csi

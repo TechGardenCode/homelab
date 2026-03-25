@@ -2,13 +2,13 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-  - base/crds.yaml
   - base/externalsecret.yaml
 
 helmCharts:
   - repo: https://smallstep.github.io/helm-charts
     name: step-issuer
     version: 1.10.2
+    includeCRDs: true
     releaseName: step-issuer
     valuesFile: values.yaml
     namespace: step-issuer
