@@ -20,4 +20,4 @@ spec:
       - OPTIONS
     allowHeaders:
       - "*"
-    maxAge: "86400"
+    maxAge: "24h"
