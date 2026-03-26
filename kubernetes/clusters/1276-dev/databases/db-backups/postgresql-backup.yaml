@@ -40,9 +40,8 @@ spec:
                       > /backups/postgresql/${DB}-${TIMESTAMP}.dump
                     echo "[$(date)] Done: ${DB}-${TIMESTAMP}.dump"
                   done
-                  echo "[$(date)] Cleaning up backups older than 7 days..."
-                  find /backups/postgresql -name "*.dump" -mtime +7 -delete
-                  find /backups/postgresql -name "*.sql.gz" -mtime +7 -delete
+                  echo "[$(date)] Cleaning up backups older than 3 days..."
+                  find /backups/postgresql -name "*.dump" -mtime +3 -delete
                   echo "[$(date)] Done."
               env:
                 - name: PGPASSWORD

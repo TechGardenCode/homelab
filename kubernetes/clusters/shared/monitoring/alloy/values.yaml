@@ -1,0 +1,77 @@
+alloy:
+  configMap:
+    content: |
+      // Kubernetes metrics scraping
+      prometheus.scrape "kube_state_metrics" {
+        targets = [{
+          __address__ = "kube-state-metrics.monitoring.svc:8080",
+        }]
+        forward_to = [prometheus.remote_write.lgtm.receiver]
+        scrape_interval = "30s"
+      }
+
+      prometheus.scrape "kubelet" {
+        targets = discovery.kubernetes.nodes.targets
+        scheme = "https"
+        bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
+        tls_config {
+          insecure_skip_verify = true
+        }
+        forward_to = [prometheus.remote_write.lgtm.receiver]
+        scrape_interval = "30s"
+      }
+
+      prometheus.scrape "cadvisor" {
+        targets = discovery.kubernetes.nodes.targets
+        scheme = "https"
+        metrics_path = "/metrics/cadvisor"
+        bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
+        tls_config {
+          insecure_skip_verify = true
+        }
+        forward_to = [prometheus.remote_write.lgtm.receiver]
+        scrape_interval = "30s"
+      }
+
+      discovery.kubernetes "nodes" {
+        role = "node"
+      }
+
+      discovery.kubernetes "pods" {
+        role = "pod"
+      }
+
+      // Pod log collection
+      loki.source.kubernetes "pods" {
+        targets = discovery.kubernetes.pods.targets
+        forward_to = [loki.write.lgtm.receiver]
+      }
+
+      // Remote write to LGTM stack
+      prometheus.remote_write "lgtm" {
+        endpoint {
+          url = "http://10.0.60.160:9090/api/v1/write"
+        }
+      }
+
+      loki.write "lgtm" {
+        endpoint {
+          url = "http://10.0.60.160:3100/loki/api/v1/push"
+        }
+      }
+
+controller:
+  type: daemonset
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    memory: 256Mi
+
+serviceAccount:
+  create: true
+
+rbac:
+  create: true

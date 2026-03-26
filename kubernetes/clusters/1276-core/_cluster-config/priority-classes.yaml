@@ -1,0 +1,20 @@
+---
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: infrastructure-critical
+value: 1000000
+globalDefault: false
+description: >-
+  Core infrastructure services that other clusters depend on:
+  ArgoCD, MetalLB, Democratic-CSI, step-ca.
+---
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: networking-critical
+value: 900000
+globalDefault: false
+description: >-
+  Networking services that handle ingress and tunnel traffic:
+  Envoy Gateway, cloudflared.

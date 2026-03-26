@@ -20,6 +20,11 @@ ingress:
         - sso.1276.internal.dev.techgarden.gg
 proxyHeaders: xforwarded
 postgresql:
-  auth:
-    existingSecret: keycloak
+  enabled: false
+externalDatabase:
+  host: postgresql-rw.databases.svc
+  port: 5432
+  database: keycloak
+  existingSecret: keycloak
+  existingSecretPasswordKey: db-password
 production: true

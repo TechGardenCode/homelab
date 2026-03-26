@@ -4,6 +4,7 @@ kind: Kustomization
 resources:
   - base/gateway-class.yaml
   - base/envoy-proxy.yaml
+  - base/pdb.yaml
 
 helmCharts:
   # Install Envoy Gateway controller

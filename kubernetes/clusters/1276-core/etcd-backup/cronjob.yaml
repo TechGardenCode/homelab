@@ -1,0 +1,59 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: etcd-snapshot
+  namespace: kube-system
+  labels:
+    app.kubernetes.io/name: etcd-snapshot
+spec:
+  schedule: "0 * * * *"
+  timeZone: Europe/Berlin
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 2
+  jobTemplate:
+    spec:
+      completions: 1
+      parallelism: 1
+      template:
+        spec:
+          restartPolicy: OnFailure
+          terminationGracePeriodSeconds: 30
+          containers:
+            - name: etcd-snapshot
+              image: ghcr.io/siderolabs/talosctl:v1.9.5
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  set -eu
+                  TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+                  mkdir -p /snapshots
+                  echo "[$(date)] Taking etcd snapshot..."
+                  talosctl etcd snapshot /snapshots/etcd-${TIMESTAMP}.snapshot \
+                    --nodes ${TALOS_NODE} \
+                    --endpoints ${TALOS_ENDPOINT}
+                  echo "[$(date)] Snapshot saved: etcd-${TIMESTAMP}.snapshot"
+                  echo "[$(date)] Cleaning up snapshots older than 24 hours..."
+                  find /snapshots -name "*.snapshot" -mtime +1 -delete
+                  echo "[$(date)] Done. Current snapshots:"
+                  ls -lh /snapshots/
+              env:
+                - name: TALOS_NODE
+                  value: "10.0.60.64"
+                - name: TALOS_ENDPOINT
+                  value: "10.0.60.130"
+              volumeMounts:
+                - name: snapshots
+                  mountPath: /snapshots
+                - name: talosconfig
+                  mountPath: /var/run/secrets/talos.dev
+                  readOnly: true
+          volumes:
+            - name: snapshots
+              persistentVolumeClaim:
+                claimName: etcd-snapshots
+            - name: talosconfig
+              secret:
+                secretName: talosconfig

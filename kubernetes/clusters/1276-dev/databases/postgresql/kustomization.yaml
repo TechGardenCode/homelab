@@ -5,4 +5,3 @@ resources:
   - externalsecret.yaml
   - cluster.yaml
   - init-sql.yaml
-  - pdb.yaml
