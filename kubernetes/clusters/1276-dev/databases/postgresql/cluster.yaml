@@ -30,6 +30,10 @@ spec:
         configMapRefs:
           - name: postgresql-init-sql
             key: 01-create-roles.sql
+      postInitSQLRefs:
+        configMapRefs:
+          - name: postgresql-init-sql
+            key: 02-create-databases.sql
 
   monitoring:
     enablePodMonitor: true

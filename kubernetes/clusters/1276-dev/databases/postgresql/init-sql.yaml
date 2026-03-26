@@ -10,5 +10,6 @@ data:
     CREATE ROLE readonly_role;
     GRANT CONNECT ON DATABASE techgarden TO readonly_role;
     ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO readonly_role;
-    -- Create keycloak database for identity provider
-    CREATE DATABASE keycloak OWNER techgardencode;
+  02-create-databases.sql: |
+    SELECT 'CREATE DATABASE keycloak OWNER techgardencode'
+    WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'keycloak')\gexec
