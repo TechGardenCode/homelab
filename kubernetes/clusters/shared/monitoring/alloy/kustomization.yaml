@@ -3,7 +3,7 @@ kind: Kustomization
 
 helmCharts:
   - name: alloy
-    version: 0.12.0
+    version: 0.12.6
     releaseName: alloy
     repo: https://grafana.github.io/helm-charts
     valuesFile: values.yaml
