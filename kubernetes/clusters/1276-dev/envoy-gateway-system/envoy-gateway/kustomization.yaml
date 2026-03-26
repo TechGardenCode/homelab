@@ -3,7 +3,8 @@ kind: Kustomization
 
 resources:
   - base/gateway-class.yaml
-  - base/envoy-proxy.yaml
+  - base/envoy-proxy-internal.yaml
+  - base/envoy-proxy-public.yaml
 
 helmCharts:
   - name: gateway-helm

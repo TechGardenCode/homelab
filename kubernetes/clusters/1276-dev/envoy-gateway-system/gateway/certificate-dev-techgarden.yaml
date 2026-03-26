@@ -6,8 +6,7 @@ metadata:
 spec:
   secretName: eg-tls-dev-techgarden
   issuerRef:
-    group: certmanager.step.sm
-    kind: StepClusterIssuer
-    name: step-issuer
+    name: letsencrypt-production
+    kind: ClusterIssuer
   dnsNames:
     - "*.dev.techgarden.gg"

@@ -5,7 +5,7 @@ metadata:
   namespace: databases
 spec:
   parentRefs:
-    - name: eg
+    - name: eg-internal
       namespace: envoy-gateway-system
       sectionName: postgres
   rules:

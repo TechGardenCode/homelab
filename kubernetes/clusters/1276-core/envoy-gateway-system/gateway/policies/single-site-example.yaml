@@ -1,0 +1,14 @@
+# Example: Single-site routing — all traffic to one backend, no persistence
+# Copy and modify targetRef to apply to your HTTPRoute
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: BackendTrafficPolicy
+metadata:
+  name: single-site-example
+  namespace: envoy-gateway-system
+spec:
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: REPLACE_WITH_ROUTE_NAME
+  loadBalancer:
+    type: RoundRobin

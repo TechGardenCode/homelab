@@ -1,0 +1,30 @@
+# Example: Active-active routing with health checks across AZs
+# Copy and modify targetRef to apply to your HTTPRoute
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: BackendTrafficPolicy
+metadata:
+  name: active-active-example
+  namespace: envoy-gateway-system
+spec:
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: REPLACE_WITH_ROUTE_NAME
+  loadBalancer:
+    type: RoundRobin
+  healthCheck:
+    active:
+      type: HTTP
+      http:
+        path: /healthz
+        expectedResponse:
+          type: StatusCode
+          statusCodes:
+            - 200
+      interval: "5s"
+      timeout: "3s"
+      unhealthyThreshold: 3
+      healthyThreshold: 1
+    passive:
+      consecutiveGatewayErrors: 3
+      interval: "30s"

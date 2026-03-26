@@ -1,7 +1,7 @@
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
-  name: eg
+  name: eg-public
   namespace: envoy-gateway-system
 spec:
   gatewayClassName: eg
@@ -9,7 +9,7 @@ spec:
     parametersRef:
       group: gateway.envoyproxy.io
       kind: EnvoyProxy
-      name: proxy-config
+      name: proxy-config-public
   listeners:
     - name: http
       protocol: HTTP
@@ -27,14 +27,4 @@ spec:
         mode: Terminate
         certificateRefs:
           - kind: Secret
-            name: eg-tls-cert
-          - kind: Secret
-            name: eg-tls-dev-kian
-          - kind: Secret
-            name: eg-tls-dev-techgarden
-    - name: postgres
-      protocol: TCP
-      port: 5432
-      allowedRoutes:
-        namespaces:
-          from: All
+            name: eg-tls-public

@@ -1,0 +1,43 @@
+{{- if .Values.backendTrafficPolicy.enabled -}}
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: BackendTrafficPolicy
+metadata:
+  name: {{ include "generic-service.name" . }}
+  labels:
+    {{- include "generic-service.labels" . | nindent 4 }}
+spec:
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: {{ include "generic-service.name" . }}
+  {{- if eq .Values.backendTrafficPolicy.routingMode "sticky" }}
+  loadBalancer:
+    type: ConsistentHash
+    consistentHash:
+      type: Cookie
+      cookie:
+        name: __az_affinity
+        ttl: {{ .Values.backendTrafficPolicy.stickyTTL | default "3600s" | quote }}
+        attributes:
+          SameSite: Lax
+  {{- else if eq .Values.backendTrafficPolicy.routingMode "active-active" }}
+  loadBalancer:
+    type: RoundRobin
+  healthCheck:
+    active:
+      type: HTTP
+      http:
+        path: {{ .Values.backendTrafficPolicy.healthCheckPath | default "/healthz" }}
+        expectedResponse:
+          type: StatusCode
+          statusCodes:
+            - 200
+      interval: "5s"
+      timeout: "3s"
+      unhealthyThreshold: 3
+      healthyThreshold: 1
+  {{- else }}
+  loadBalancer:
+    type: RoundRobin
+  {{- end }}
+{{- end }}

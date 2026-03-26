@@ -49,9 +49,15 @@ httpRoute:
   path: /
   pathType: PathPrefix
   gatewayRef:
-    name: eg
+    name: eg-internal
     namespace: envoy-gateway-system
   annotations: {}
+
+backendTrafficPolicy:
+  enabled: false
+  routingMode: single  # single | active-active | sticky
+  healthCheckPath: /healthz
+  stickyTTL: "3600s"
 
 replicas: 1
 strategyType: RollingUpdate

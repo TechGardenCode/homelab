@@ -9,7 +9,7 @@ metadata:
     external-dns.alpha.kubernetes.io/ingress-hostname-source: annotation-only
 spec:
   parentRefs:
-    - name: eg
+    - name: eg-internal
       namespace: envoy-gateway-system
   hostnames:
     - supabase.dev.kian.sh

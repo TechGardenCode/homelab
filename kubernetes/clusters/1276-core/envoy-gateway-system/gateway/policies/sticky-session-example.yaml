@@ -1,0 +1,21 @@
+# Example: Sticky session routing with cookie-based AZ affinity
+# Copy and modify targetRef to apply to your HTTPRoute
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: BackendTrafficPolicy
+metadata:
+  name: sticky-session-example
+  namespace: envoy-gateway-system
+spec:
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: REPLACE_WITH_ROUTE_NAME
+  loadBalancer:
+    type: ConsistentHash
+    consistentHash:
+      type: Cookie
+      cookie:
+        name: __az_affinity
+        ttl: "3600s"
+        attributes:
+          SameSite: Lax

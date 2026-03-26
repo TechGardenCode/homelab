@@ -1,7 +1,7 @@
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
-  name: eg
+  name: eg-internal
   namespace: envoy-gateway-system
 spec:
   gatewayClassName: eg
@@ -9,7 +9,7 @@ spec:
     parametersRef:
       group: gateway.envoyproxy.io
       kind: EnvoyProxy
-      name: proxy-config
+      name: proxy-config-internal
   listeners:
     - name: http
       protocol: HTTP
@@ -27,9 +27,20 @@ spec:
         mode: Terminate
         certificateRefs:
           - kind: Secret
-            name: eg-tls-cert
-          - kind: Secret
             name: eg-tls-kian
+          - kind: Secret
+            name: eg-tls-cert
+    - name: https-s2s
+      protocol: HTTPS
+      port: 8443
+      allowedRoutes:
+        namespaces:
+          from: All
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: eg-tls-cert
     - name: postgres
       protocol: TCP
       port: 5432

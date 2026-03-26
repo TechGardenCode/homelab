@@ -175,7 +175,7 @@ server:
   httproute:
     enabled: true
     parentRefs:
-      - name: eg
+      - name: eg-internal
         namespace: envoy-gateway-system
         sectionName: https
     hostnames:
