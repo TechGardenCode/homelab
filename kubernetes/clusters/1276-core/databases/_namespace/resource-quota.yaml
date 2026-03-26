@@ -6,8 +6,8 @@ metadata:
   namespace: databases
 spec:
   hard:
-    requests.cpu: "2"
-    limits.cpu: "4"
+    requests.cpu: "4"
+    limits.cpu: "8"
     requests.memory: 4Gi
-    limits.memory: 8Gi
+    limits.memory: 10Gi
     persistentvolumeclaims: "10"
