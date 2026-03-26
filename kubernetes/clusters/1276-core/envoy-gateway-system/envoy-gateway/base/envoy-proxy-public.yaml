@@ -11,3 +11,4 @@ spec:
         type: LoadBalancer
         annotations:
           metallb.io/address-pool: system-pool
+          metallb.io/loadBalancerIPs: 10.0.61.3
