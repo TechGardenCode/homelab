@@ -96,9 +96,9 @@ redis-ha:
   enabled: true
 
 repoServer:
+  replicas: 2
   autoscaling:
-    enabled: true
-    minReplicas: 2
+    enabled: false
   extraContainers:
     - name: cmp-kustomize-helm
       command: ["/var/run/argocd/argocd-cmp-server"]
@@ -138,9 +138,9 @@ global:
   domain: argocd.techgarden.gg
 
 server:
+  replicas: 2
   autoscaling:
-    enabled: true
-    minReplicas: 2
+    enabled: false
   service:
     annotations:
       metallb.io/address-pool: default-pool
