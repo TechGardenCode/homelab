@@ -15,33 +15,18 @@ spec:
         action: Allow
         principal:
           clientCIDRs:
-            - addressPrefix: "173.245.48.0"
-              prefixLength: 20
-            - addressPrefix: "103.21.244.0"
-              prefixLength: 22
-            - addressPrefix: "103.22.200.0"
-              prefixLength: 22
-            - addressPrefix: "103.31.4.0"
-              prefixLength: 22
-            - addressPrefix: "141.101.64.0"
-              prefixLength: 18
-            - addressPrefix: "108.162.192.0"
-              prefixLength: 18
-            - addressPrefix: "190.93.240.0"
-              prefixLength: 20
-            - addressPrefix: "188.114.96.0"
-              prefixLength: 20
-            - addressPrefix: "197.234.240.0"
-              prefixLength: 22
-            - addressPrefix: "198.41.128.0"
-              prefixLength: 17
-            - addressPrefix: "162.158.0.0"
-              prefixLength: 15
-            - addressPrefix: "104.16.0.0"
-              prefixLength: 13
-            - addressPrefix: "104.24.0.0"
-              prefixLength: 14
-            - addressPrefix: "172.64.0.0"
-              prefixLength: 13
-            - addressPrefix: "131.0.72.0"
-              prefixLength: 22
+            - "173.245.48.0/20"
+            - "103.21.244.0/22"
+            - "103.22.200.0/22"
+            - "103.31.4.0/22"
+            - "141.101.64.0/18"
+            - "108.162.192.0/18"
+            - "190.93.240.0/20"
+            - "188.114.96.0/20"
+            - "197.234.240.0/22"
+            - "198.41.128.0/17"
+            - "162.158.0.0/15"
+            - "104.16.0.0/13"
+            - "104.24.0.0/14"
+            - "172.64.0.0/13"
+            - "131.0.72.0/22"

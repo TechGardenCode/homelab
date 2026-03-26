@@ -10,10 +10,8 @@ spec:
     name: eg-internal
   cors:
     allowOrigins:
-      - type: RegularExpression
-        value: "https://.*\\.kian\\.sh"
-      - type: RegularExpression
-        value: "https://.*\\.dev\\.kian\\.sh"
+      - "https://*.kian.sh"
+      - "https://*.dev.kian.sh"
     allowMethods:
       - GET
       - POST
