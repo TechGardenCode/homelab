@@ -160,10 +160,7 @@ applicationsets:
             - path: "kubernetes/clusters/1276-core/default/*"
             - path: "kubernetes/clusters/1276-core/step-ca/*"
             - path: "kubernetes/clusters/1276-core/step-issuer/*"
-            - path: "kubernetes/clusters/1276-core/wiki/*"
             - path: "kubernetes/clusters/1276-core/databases/*"
-            - path: "kubernetes/clusters/1276-core/supabase/*"
-            - path: "kubernetes/clusters/1276-core/hausparty/*"
             - path: "kubernetes/clusters/1276-core/cluster-config/*"
             - path: "kubernetes/clusters/1276-core/etcd-backup/*"
     template:
