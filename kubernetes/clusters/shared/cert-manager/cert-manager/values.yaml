@@ -5,4 +5,10 @@ global:
   leaderElection:
     namespace: "cert-manager"
 
+# Use public recursive nameservers for DNS-01 challenge propagation checks.
+# The kian.sh NS record points to an internal hostname (rpi-n1) that isn't
+# resolvable from inside the cluster, so we bypass the NS chain entirely.
+dns01RecursiveNameservers: "1.1.1.1:53,8.8.8.8:53"
+dns01RecursiveNameserversOnly: true
+
 # enableCertificateOwnerRef: true
