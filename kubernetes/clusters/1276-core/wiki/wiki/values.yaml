@@ -1,6 +1,6 @@
 image:
   repository: "ghcr.io/techgardencode/kian-sh-docs"
-  tag: "43c254cbe9350a3909f971b91b55476f7d54a6e5"
+  tag: "10206bfe399bd4f8ea63e7a3ca35533dc138ab32"
 imagePullSecrets:
   - name: ghcr-credentials
 ports:
