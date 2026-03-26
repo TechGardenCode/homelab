@@ -1,5 +1,11 @@
 applicationSet:
   replicas: 2
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      memory: 128Mi
 
 configs:
   params:
@@ -99,6 +105,12 @@ repoServer:
   replicas: 2
   autoscaling:
     enabled: false
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      memory: 384Mi
   extraContainers:
     - name: cmp-kustomize-helm
       command: ["/var/run/argocd/argocd-cmp-server"]
@@ -132,7 +144,13 @@ repoServer:
         name: argocd-cmp-cm
 
 controller:
-  replicas: 1 # maybe not needed?
+  replicas: 1
+  resources:
+    requests:
+      cpu: 100m
+      memory: 384Mi
+    limits:
+      memory: 768Mi
 
 global:
   domain: argocd.techgarden.gg
@@ -141,6 +159,28 @@ server:
   replicas: 2
   autoscaling:
     enabled: false
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      memory: 192Mi
+
+notifications:
+  resources:
+    requests:
+      cpu: 20m
+      memory: 32Mi
+    limits:
+      memory: 96Mi
+
+dex:
+  resources:
+    requests:
+      cpu: 10m
+      memory: 32Mi
+    limits:
+      memory: 96Mi
   service:
     annotations:
       metallb.io/address-pool: default-pool
