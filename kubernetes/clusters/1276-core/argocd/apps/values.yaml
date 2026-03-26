@@ -164,7 +164,7 @@ applicationsets:
             - path: "kubernetes/clusters/1276-core/databases/*"
             - path: "kubernetes/clusters/1276-core/supabase/*"
             - path: "kubernetes/clusters/1276-core/hausparty/*"
-            - path: "kubernetes/clusters/1276-core/_cluster-config/*"
+            - path: "kubernetes/clusters/1276-core/cluster-config/*"
             - path: "kubernetes/clusters/1276-core/etcd-backup/*"
     template:
       metadata:
