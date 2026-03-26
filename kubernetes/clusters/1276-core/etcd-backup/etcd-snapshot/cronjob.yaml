@@ -43,6 +43,8 @@ spec:
                   echo "[$(date)] Done. Current snapshots:"
                   ls -lh /snapshots/
               env:
+                - name: TALOSCONFIG
+                  value: /var/run/secrets/talos.dev/talosconfig
                 - name: TALOS_NODE
                   value: "10.0.60.64"
                 - name: TALOS_ENDPOINT
