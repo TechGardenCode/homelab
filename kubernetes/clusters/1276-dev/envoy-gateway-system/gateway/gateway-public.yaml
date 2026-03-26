@@ -27,4 +27,6 @@ spec:
         mode: Terminate
         certificateRefs:
           - kind: Secret
-            name: eg-tls-dev-public
+            name: eg-tls-dev-kian
+          - kind: Secret
+            name: eg-tls-dev-techgarden

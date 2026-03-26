@@ -7,5 +7,4 @@ resources:
   - certificate.yaml
   - certificate-dev-kian.yaml
   - certificate-dev-techgarden.yaml
-  - certificate-dev-public.yaml
   - clienttrafficpolicy-public.yaml
