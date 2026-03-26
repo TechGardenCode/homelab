@@ -104,9 +104,9 @@ controller:
 resources:
   requests:
     cpu: 100m
-    memory: 128Mi
+    memory: 384Mi
   limits:
-    memory: 256Mi
+    memory: 768Mi
 
 serviceAccount:
   create: true
