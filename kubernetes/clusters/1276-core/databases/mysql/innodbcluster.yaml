@@ -8,6 +8,15 @@ spec:
   secretName: mysql-credentials
   tlsUseSelfSigned: true
   instances: 1
+  podSpec:
+    containers:
+      - name: mysql
+        resources:
+          requests:
+            cpu: 100m
+            memory: 768Mi
+          limits:
+            memory: 1536Mi
   router:
     instances: 1
   datadirVolumeClaimTemplate:
