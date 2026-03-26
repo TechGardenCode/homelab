@@ -55,13 +55,14 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: allow-dns-egress
+  name: allow-essential-egress
   namespace: databases
 spec:
   podSelector: {}
   policyTypes:
     - Egress
   egress:
+    # DNS resolution
     - to:
         - namespaceSelector:
             matchLabels:
@@ -71,5 +72,21 @@ spec:
           port: 53
         - protocol: TCP
           port: 53
+    # Intra-namespace (CNPG replication, streaming)
     - to:
         - podSelector: {}
+    # Kubernetes API server (CNPG leader election, fencing)
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: default
+      ports:
+        - protocol: TCP
+          port: 443
+    # iSCSI storage (cm-nas at 10.0.60.24)
+    - to:
+        - ipBlock:
+            cidr: 10.0.60.24/32
+      ports:
+        - protocol: TCP
+          port: 3260
