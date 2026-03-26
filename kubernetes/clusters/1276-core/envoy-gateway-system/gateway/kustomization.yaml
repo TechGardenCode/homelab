@@ -4,3 +4,4 @@ kind: Kustomization
 resources:
   - gateway.yaml
   - certificate.yaml
+  - certificate-kian.yaml

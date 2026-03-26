@@ -28,6 +28,8 @@ spec:
         certificateRefs:
           - kind: Secret
             name: eg-tls-cert
+          - kind: Secret
+            name: eg-tls-kian
     - name: postgres
       protocol: TCP
       port: 5432
