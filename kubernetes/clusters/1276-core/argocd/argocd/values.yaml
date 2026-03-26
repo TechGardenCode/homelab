@@ -165,6 +165,13 @@ server:
       memory: 64Mi
     limits:
       memory: 192Mi
+  certificate:
+    enabled: true
+    domain: argocd-server.argocd.svc.cluster.local
+    issuer:
+      group: certmanager.step.sm
+      kind: StepClusterIssuer
+      name: step-issuer
   httproute:
     enabled: true
     parentRefs:
@@ -173,6 +180,19 @@ server:
         sectionName: https
     hostnames:
       - argocd.kian.sh
+  backendTLSPolicy:
+    enabled: true
+    targetRefs:
+      - group: ""
+        kind: Service
+        name: argocd-server
+        sectionName: https
+    validation:
+      hostname: argocd-server.argocd.svc.cluster.local
+      caCertificateRefs:
+        - name: step-ca-root-cert
+          group: ""
+          kind: ConfigMap
 
 notifications:
   resources:

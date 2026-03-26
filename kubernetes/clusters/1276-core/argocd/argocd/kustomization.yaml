@@ -5,6 +5,7 @@ resources:
   - base/externalsecret.yaml
   - base/configmap.yaml
   - base/pdb.yaml
+  - base/step-ca-configmap.yaml
 
 helmCharts:
   - name: argo-cd
