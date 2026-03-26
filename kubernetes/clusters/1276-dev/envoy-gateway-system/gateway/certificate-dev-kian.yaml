@@ -1,0 +1,13 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: eg-tls-dev-kian
+  namespace: envoy-gateway-system
+spec:
+  secretName: eg-tls-dev-kian
+  issuerRef:
+    group: certmanager.step.sm
+    kind: StepClusterIssuer
+    name: step-issuer
+  dnsNames:
+    - "*.dev.kian.sh"

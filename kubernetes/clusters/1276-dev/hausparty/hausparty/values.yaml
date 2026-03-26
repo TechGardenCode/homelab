@@ -1,0 +1,35 @@
+image:
+  repository: "ghcr.io/techgardencode/hausparty"
+  tag: "ad50172d49b1e86dbd1bdb070328e40ae2e27b15"
+imagePullSecrets:
+  - name: ghcr-credentials
+ports:
+  - name: main
+    containerPort: 3000
+service:
+  type: ClusterIP
+health:
+  enabled: true
+  startupProbeSeconds: 60
+  port: main
+  type: HTTP
+  path: /
+resources:
+  requests:
+    cpu: 50m
+    memory: 128Mi
+  limits:
+    memory: 256Mi
+envs:
+  - NEXT_PUBLIC_SUPABASE_URL: "https://supabase.dev.kian.sh"
+  - NODE_TLS_REJECT_UNAUTHORIZED: "0"
+secretEnvs:
+  - NEXT_PUBLIC_SUPABASE_ANON_KEY: "anon-key"
+  - SUPABASE_SERVICE_ROLE_KEY: "service-role-key"
+  - ADMIN_API_KEY: "admin-api-key"
+  - EDMTRAIN_API_KEY: "edmtrain-api-key"
+httpRoute:
+  enabled: true
+  hostname: hausparty.dev.techgarden.gg
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: hausparty.dev.techgarden.gg

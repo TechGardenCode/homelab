@@ -1,0 +1,81 @@
+# -- Supabase Community Helm Chart
+# -- Configured for 1276-dev with Envoy Gateway routing
+# -- Uses bundled PostgreSQL (supabase/postgres image via StatefulSet)
+
+# -- Disable components we don't need
+deployment:
+  db:
+    enabled: true
+  kong:
+    enabled: false
+  analytics:
+    enabled: false
+  functions:
+    enabled: false
+  imgproxy:
+    enabled: false
+  minio:
+    enabled: false
+  vector:
+    enabled: false
+
+# -- Secrets (reference ExternalSecret-created K8s Secrets)
+secret:
+  jwt:
+    secretRef: supabase-jwt
+    secretRefKey:
+      anonKey: anon-key
+      serviceKey: service-role-key
+      secret: secret
+  db:
+    secretRef: supabase-db-credentials
+    secretRefKey:
+      password: password
+      database: database
+    database: supabase
+  dashboard:
+    secretRef: supabase-dashboard
+    secretRefKey:
+      username: username
+      password: password
+      openAiApiKey: openai-api-key
+
+# -- Environment overrides (only non-default values, chart handles DB_HOST/PORT/SSL/DRIVER)
+environment:
+  auth:
+    GOTRUE_SITE_URL: https://hausparty.dev.techgarden.gg
+    GOTRUE_URI_ALLOW_LIST: "https://hausparty.dev.techgarden.gg/**"
+    GOTRUE_DISABLE_SIGNUP: "false"
+    API_EXTERNAL_URL: https://supabase.dev.kian.sh
+
+  rest:
+    PGRST_DB_SCHEMAS: public,storage,graphql_public
+
+  storage:
+    FILE_STORAGE_BACKEND_PATH: /var/lib/storage
+    FILE_SIZE_LIMIT: "52428800"
+
+  studio:
+    SUPABASE_PUBLIC_URL: https://supabase.dev.kian.sh
+    STUDIO_PORT: "3000"
+
+# -- Persistence (reduced sizes for dev, all on democratic-csi storage)
+persistence:
+  db:
+    enabled: true
+    storageClassName: freenas-iscsi-ssd-csi
+    size: 5Gi
+    accessModes:
+      - ReadWriteOnce
+  storage:
+    enabled: true
+    storageClassName: freenas-nfs-ssd-csi
+    size: 5Gi
+    accessModes:
+      - ReadWriteOnce
+  snippets:
+    enabled: true
+    storageClassName: freenas-iscsi-ssd-csi
+    size: 1Gi
+    accessModes:
+      - ReadWriteOnce

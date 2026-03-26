@@ -1,0 +1,25 @@
+image:
+  repository: "ghcr.io/techgardencode/kian-sh-docs"
+  tag: "10206bfe399bd4f8ea63e7a3ca35533dc138ab32"
+imagePullSecrets:
+  - name: ghcr-credentials
+ports:
+  - name: main
+    containerPort: 80
+service:
+  type: ClusterIP
+health:
+  enabled: true
+  startupProbeSeconds: 60
+  port: main
+  type: HTTP
+  path: /
+resources:
+  requests:
+    cpu: 10m
+    memory: 32Mi
+  limits:
+    memory: 64Mi
+httpRoute:
+  enabled: true
+  hostname: wiki.dev.kian.sh
