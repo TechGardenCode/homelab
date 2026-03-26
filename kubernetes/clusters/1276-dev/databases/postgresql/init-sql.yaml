@@ -11,5 +11,4 @@ data:
     GRANT CONNECT ON DATABASE techgarden TO readonly_role;
     ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO readonly_role;
   02-create-databases.sql: |
-    SELECT 'CREATE DATABASE keycloak OWNER techgardencode'
-    WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'keycloak')\gexec
+    CREATE DATABASE keycloak OWNER techgardencode;
