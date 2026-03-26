@@ -1,17 +1,36 @@
 alloy:
   configMap:
     content: |
-      // Kubernetes metrics scraping
+      // ── Discovery ──
+      discovery.kubernetes "nodes" {
+        role = "node"
+      }
+
+      discovery.kubernetes "pods" {
+        role = "pod"
+      }
+
+      // Add cluster label from node name (talos-core-s1 → talos-core)
+      discovery.relabel "nodes_with_cluster" {
+        targets = discovery.kubernetes.nodes.targets
+        rule {
+          source_labels = ["__meta_kubernetes_node_name"]
+          regex = "(.+)-s\\d+"
+          target_label = "cluster"
+        }
+      }
+
+      // ── Metrics scraping ──
       prometheus.scrape "kube_state_metrics" {
         targets = [{
           __address__ = "kube-state-metrics.monitoring.svc:8080",
         }]
-        forward_to = [prometheus.remote_write.lgtm.receiver]
+        forward_to = [prometheus.relabel.add_cluster.receiver]
         scrape_interval = "30s"
       }
 
       prometheus.scrape "kubelet" {
-        targets = discovery.kubernetes.nodes.targets
+        targets = discovery.relabel.nodes_with_cluster.output
         scheme = "https"
         bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
         tls_config {
@@ -22,7 +41,7 @@ alloy:
       }
 
       prometheus.scrape "cadvisor" {
-        targets = discovery.kubernetes.nodes.targets
+        targets = discovery.relabel.nodes_with_cluster.output
         scheme = "https"
         metrics_path = "/metrics/cadvisor"
         bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
@@ -33,21 +52,40 @@ alloy:
         scrape_interval = "30s"
       }
 
-      discovery.kubernetes "nodes" {
-        role = "node"
+      // Add cluster label to kube-state-metrics (derives from node label)
+      prometheus.relabel "add_cluster" {
+        forward_to = [prometheus.remote_write.lgtm.receiver]
+        rule {
+          source_labels = ["node"]
+          regex = "(.+)-s\\d+"
+          target_label = "cluster"
+        }
       }
 
-      discovery.kubernetes "pods" {
-        role = "pod"
-      }
-
-      // Pod log collection
+      // ── Pod log collection ──
       loki.source.kubernetes "pods" {
-        targets = discovery.kubernetes.pods.targets
+        targets = discovery.relabel.pods_with_cluster.output
         forward_to = [loki.write.lgtm.receiver]
       }
 
-      // Remote write to LGTM stack
+      discovery.relabel "pods_with_cluster" {
+        targets = discovery.kubernetes.pods.targets
+        rule {
+          source_labels = ["__meta_kubernetes_pod_node_name"]
+          regex = "(.+)-s\\d+"
+          target_label = "cluster"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_namespace"]
+          target_label = "namespace"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_pod_name"]
+          target_label = "pod"
+        }
+      }
+
+      // ── Remote write to LGTM stack ──
       prometheus.remote_write "lgtm" {
         endpoint {
           url = "http://10.0.60.160:9090/api/v1/write"
