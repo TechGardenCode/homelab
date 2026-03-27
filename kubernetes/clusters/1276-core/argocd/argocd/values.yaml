@@ -151,6 +151,14 @@ controller:
       memory: 384Mi
     limits:
       memory: 768Mi
+  volumes:
+    - name: dshm
+      emptyDir:
+        medium: Memory
+        sizeLimit: 256Mi
+  volumeMounts:
+    - name: dshm
+      mountPath: /dev/shm
 
 global:
   domain: argocd.techgarden.gg
