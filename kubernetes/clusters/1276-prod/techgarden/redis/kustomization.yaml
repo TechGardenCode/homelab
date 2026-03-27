@@ -9,5 +9,4 @@ helmCharts:
     version: 0.2.0
     releaseName: redis
     repo: oci://registry-1.docker.io/cloudpirates
-    namespace: redis
     valuesFile: values.yaml
