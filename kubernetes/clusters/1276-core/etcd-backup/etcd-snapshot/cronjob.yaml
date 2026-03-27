@@ -29,7 +29,7 @@ spec:
                   set -eu
                   echo "[$(date)] Installing talosctl..."
                   wget -qO /usr/local/bin/talosctl \
-                    https://github.com/siderolabs/talos/releases/download/v1.12.1/talosctl-linux-amd64
+                    https://github.com/siderolabs/talos/releases/download/v1.12.6/talosctl-linux-amd64
                   chmod +x /usr/local/bin/talosctl
                   TIMESTAMP=$(date +%Y%m%d-%H%M%S)
                   mkdir -p /snapshots
