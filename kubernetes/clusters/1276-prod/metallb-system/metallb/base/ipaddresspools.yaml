@@ -5,7 +5,14 @@ metadata:
   namespace: metallb-system
 spec:
   addresses:
-    - 10.0.62.2-10.0.62.49
+    # 10.0.62.2-10.0.62.49 expressed as non-overlapping CIDRs
+    # (workaround for MetalLB v0.15.3 webhook CIDR decomposition bug)
+    - 10.0.62.2/31
+    - 10.0.62.4/30
+    - 10.0.62.8/29
+    - 10.0.62.16/28
+    - 10.0.62.32/28
+    - 10.0.62.48/31
 ---
 apiVersion: metallb.io/v1beta1
 kind: IPAddressPool
@@ -14,4 +21,8 @@ metadata:
   namespace: metallb-system
 spec:
   addresses:
-    - 10.0.62.50-10.0.62.127
+    # 10.0.62.50-10.0.62.127 expressed as non-overlapping CIDRs
+    - 10.0.62.50/31
+    - 10.0.62.52/30
+    - 10.0.62.56/29
+    - 10.0.62.64/26
