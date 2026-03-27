@@ -1,0 +1,20 @@
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: ClientTrafficPolicy
+metadata:
+  name: internal-client-policy
+  namespace: envoy-gateway-system
+spec:
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: Gateway
+    name: eg-internal
+  tls:
+    minVersion: "1.2"
+  timeout:
+    http:
+      requestReceivedTimeout: "60s"
+  connection:
+    connectionLimit:
+      value: 5000
+  headers:
+    enableEnvoyHeaders: false

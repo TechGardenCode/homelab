@@ -12,7 +12,17 @@ data:
         path: /api/webhook
         service: https://argocd-server.argocd.svc.cluster.local:443
         originRequest:
-          noTLSVerify: true
+          noTLSVerify: false
+          caPool: /etc/cloudflared/ca/ca.crt
+      - hostname: www.techgarden.gg
+        service: http://10.0.62.3:80
+      - hostname: blog.techgarden.gg
+        service: http://10.0.62.3:80
+      - hostname: sso.techgarden.gg
+        service: https://10.0.62.3:443
+        originRequest:
+          noTLSVerify: false
+          caPool: /etc/cloudflared/ca/ca.crt
       - hostname: ntfy.kian.sh
         service: http://10.0.60.160:8090
       - service: http_status:404

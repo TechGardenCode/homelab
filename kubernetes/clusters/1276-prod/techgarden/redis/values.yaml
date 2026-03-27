@@ -1,5 +1,5 @@
 auth:
-  enabled: false
+  enabled: true
   existingSecret: redis
   existingSecretPasswordKey: password
 persistence:

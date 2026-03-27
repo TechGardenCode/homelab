@@ -8,3 +8,9 @@ resources:
   - certificate-dev-kian.yaml
   - certificate-dev-techgarden.yaml
   - clienttrafficpolicy-public.yaml
+  - clienttrafficpolicy-internal.yaml
+  - securitypolicy-public.yaml
+  - securitypolicy-internal.yaml
+  - backendtrafficpolicy-ratelimit-public.yaml
+  - backendtrafficpolicy-ratelimit-internal.yaml
+  - httproute-redirect-https.yaml

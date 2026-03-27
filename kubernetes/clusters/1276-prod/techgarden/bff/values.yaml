@@ -5,15 +5,7 @@ ports:
   - name: main
     containerPort: 8080
 service:
-  type: LoadBalancer
-ingress:
-  annotations:
-    cert-manager.io/issuer-group: certmanager.step.sm
-    cert-manager.io/issuer-kind: StepClusterIssuer
-    cert-manager.io/issuer: step-issuer
-  host: bff.1276.internal.kian.sh
-  tls:
-    secretName: bff.1276.internal.kian.sh
+  type: ClusterIP
 envs:
   - LOGGING_LEVEL_ROOT: debug
   - SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_KEYCLOAK_ISSUER_URI: https://sso.techgarden.gg/realms/techgarden
@@ -23,5 +15,6 @@ envs:
 secretEnvs:
   bff:
     CLIENT_SECRET: CLIENT_SECRET
+    REDIS_PASSWORD: REDIS_PASSWORD
 health:
   path: /actuator/health

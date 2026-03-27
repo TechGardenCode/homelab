@@ -8,6 +8,7 @@ resources:
   - base/pdb.yaml
 
 helmCharts:
+  # Install Envoy Gateway controller
   - name: gateway-helm
     version: v1.7.1
     releaseName: gateway-helm

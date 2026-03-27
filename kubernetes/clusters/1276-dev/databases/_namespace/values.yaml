@@ -1,1 +1,2 @@
-
+labels:
+  gateway.kian.sh/tcp-access: "true"

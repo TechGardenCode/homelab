@@ -1,0 +1,2 @@
+# Proxy service config (LoadBalancer, MetalLB) is in base/envoy-proxy.yaml
+# via the EnvoyProxy CRD, not helm values.

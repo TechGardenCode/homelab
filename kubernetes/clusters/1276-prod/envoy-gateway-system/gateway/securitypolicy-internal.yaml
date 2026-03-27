@@ -11,7 +11,7 @@ spec:
   cors:
     allowOrigins:
       - "https://*.kian.sh"
-      - "https://*.dev.kian.sh"
+      - "https://*.prod.kian.sh"
     allowMethods:
       - GET
       - POST

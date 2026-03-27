@@ -5,13 +5,10 @@ ports:
   - name: main
     containerPort: 80
 service:
-  type: LoadBalancer
-ingress:
-  public: true
-  annotations:
-    cert-manager.io/issuer-group: certmanager.step.sm
-    cert-manager.io/issuer-kind: StepClusterIssuer
-    cert-manager.io/issuer: step-issuer
-  host: lizard.1276.internal.kian.sh
-  tls:
-    secretName: lizard.1276.internal.kian.sh
+  type: ClusterIP
+httpRoute:
+  enabled: true
+  hostname: lizard.prod.internal.kian.sh
+  gatewayRef:
+    name: eg-internal
+    namespace: envoy-gateway-system

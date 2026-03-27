@@ -1,0 +1,17 @@
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: ClientTrafficPolicy
+metadata:
+  name: public-client-policy
+  namespace: envoy-gateway-system
+spec:
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: Gateway
+    name: eg-public
+  tls:
+    minVersion: "1.2"
+  connection:
+    connectionLimit:
+      value: 1000
+  headers:
+    enableEnvoyHeaders: false

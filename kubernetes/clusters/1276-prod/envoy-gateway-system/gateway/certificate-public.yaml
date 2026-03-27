@@ -1,0 +1,13 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: eg-tls-public
+  namespace: envoy-gateway-system
+spec:
+  secretName: eg-tls-public
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+  dnsNames:
+    - "*.techgarden.gg"
+    - "*.kian.sh"

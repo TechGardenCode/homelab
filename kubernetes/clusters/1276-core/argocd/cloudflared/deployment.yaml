@@ -62,6 +62,9 @@ spec:
               mountPath: /etc/cloudflared/credentials.json
               subPath: credentials.json
               readOnly: true
+            - name: step-ca-root
+              mountPath: /etc/cloudflared/ca
+              readOnly: true
       volumes:
         - name: config
           configMap:
@@ -69,3 +72,6 @@ spec:
         - name: credentials
           secret:
             secretName: cloudflared-tunnel-credentials
+        - name: step-ca-root
+          configMap:
+            name: step-ca-root-cert

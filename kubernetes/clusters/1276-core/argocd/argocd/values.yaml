@@ -203,13 +203,4 @@ notifications:
       memory: 96Mi
 
 dex:
-  resources:
-    requests:
-      cpu: 10m
-      memory: 32Mi
-    limits:
-      memory: 96Mi
-  service:
-    annotations:
-      metallb.io/address-pool: default-pool
-    type: LoadBalancer
+  enabled: false
