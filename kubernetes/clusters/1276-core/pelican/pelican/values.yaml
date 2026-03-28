@@ -30,12 +30,11 @@ resources:
     memory: 512Mi
 
 database:
-  enabled: true
-  type: mariadb
+  enabled: false
 
 envs:
   pelican:
-    DB_HOST: "localhost"
+    DB_HOST: "mariadb"
     DB_PORT: "3306"
     DB_DATABASE: "pelican"
     DB_USERNAME: "pelican"
