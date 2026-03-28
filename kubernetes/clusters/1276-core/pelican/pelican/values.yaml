@@ -46,6 +46,7 @@ envs:
     APP_URL: "https://pelican.techgarden.gg"
     APP_TIMEZONE: "America/Vancouver"
     TRUSTED_PROXIES: "*"
+    BEHIND_PROXY: "true"
     APP_ENV: "production"
     APP_INSTALLED: "true"
 
