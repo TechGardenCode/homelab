@@ -12,6 +12,7 @@ spec:
     allowOrigins:
       - "https://*.kian.sh"
       - "https://*.dev.kian.sh"
+      - "https://*.techgarden.gg"
     allowMethods:
       - GET
       - POST
