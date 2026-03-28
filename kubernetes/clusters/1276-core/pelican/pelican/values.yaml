@@ -12,7 +12,7 @@ service:
 health:
   enabled: true
   startupProbeSeconds: 120
-  path: /
+  path: /up
   type: HTTP
 
 httpRoute:
