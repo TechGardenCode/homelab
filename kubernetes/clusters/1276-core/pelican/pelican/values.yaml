@@ -45,6 +45,9 @@ envs:
     REDIS_PORT: "6379"
     APP_URL: "https://pelican.techgarden.gg"
     APP_TIMEZONE: "America/Vancouver"
+    TRUSTED_PROXIES: "*"
+    APP_ENV: "production"
+    APP_INSTALLED: "true"
 
 secretEnvs:
   pelican:
