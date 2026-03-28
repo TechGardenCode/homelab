@@ -166,7 +166,6 @@ applicationsets:
             - path: "kubernetes/clusters/1276-core/step-issuer/*"
             - path: "kubernetes/clusters/1276-core/cluster-config/*"
             - path: "kubernetes/clusters/1276-core/etcd-backup/*"
-            - path: "kubernetes/clusters/1276-core/pelican/*"
     template:
       metadata:
         name: "1276-core.{{path[3]}}.{{path.basenameNormalized}}"
