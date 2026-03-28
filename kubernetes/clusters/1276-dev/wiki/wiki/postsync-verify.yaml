@@ -9,7 +9,7 @@ metadata:
     argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
 spec:
   backoffLimit: 3
-  activeDeadlineSeconds: 120
+  activeDeadlineSeconds: 180
   template:
     spec:
       restartPolicy: Never
@@ -26,12 +26,22 @@ spec:
           args:
             - |
               set -e
-              sleep 10
-              SHA=$(curl -sf --retry 5 --retry-delay 5 \
-                "http://wiki.wiki.svc.cluster.local/version.json" | \
-                sed -n 's/.*"sha":"\([^"]*\)".*/\1/p')
+              URL="http://wiki.wiki.svc.cluster.local/version.json"
+              ATTEMPTS=12
+              INTERVAL=10
+              SHA=""
+              echo "Waiting for version.json to become available..."
+              for i in $(seq 1 $ATTEMPTS); do
+                SHA=$(curl -s "$URL" 2>/dev/null | sed -n 's/.*"sha":"\([^"]*\)".*/\1/p')
+                if [ -n "$SHA" ]; then
+                  echo "Attempt $i: found SHA=$SHA"
+                  break
+                fi
+                echo "Attempt $i/$ATTEMPTS: version.json not ready, retrying in ${INTERVAL}s..."
+                sleep $INTERVAL
+              done
               if [ -z "$SHA" ]; then
-                echo "ERROR: Could not read version.json"
+                echo "ERROR: version.json not available after $ATTEMPTS attempts"
                 exit 1
               fi
               echo "Deployed SHA: $SHA"
