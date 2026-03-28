@@ -1,0 +1,36 @@
+csiDriver:
+  name: "org.democratic-csi.iscsi"
+
+storageClasses:
+  - name: freenas-iscsi-csi
+    defaultClass: false
+    reclaimPolicy: Delete
+    volumeBindingMode: Immediate
+    allowVolumeExpansion: true
+    parameters:
+      fsType: ext4
+    mountOptions: []
+    secrets:
+      provisioner-secret:
+      controller-publish-secret:
+      node-stage-secret:
+      node-publish-secret:
+      controller-expand-secret:
+
+volumeSnapshotClasses: []
+
+node:
+  hostPID: true
+  driver:
+    extraEnv:
+      - name: ISCSIADM_HOST_STRATEGY
+        value: nsenter
+      - name: ISCSIADM_HOST_PATH
+        value: /usr/local/sbin/iscsiadm
+    iscsiDirHostPath: /etc/iscsi
+    iscsiDirHostPathType: ""
+
+driver:
+  existingConfigSecret: democratic-csi-iscsi-driver-config
+  config:
+    driver: freenas-iscsi
