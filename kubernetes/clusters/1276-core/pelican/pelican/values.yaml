@@ -1,0 +1,54 @@
+image:
+  repository: ghcr.io/pelican-dev/panel
+  tag: "latest"
+
+ports:
+  - name: main
+    containerPort: 80
+
+service:
+  type: ClusterIP
+
+health:
+  enabled: true
+  startupProbeSeconds: 120
+  path: /
+  type: HTTP
+
+httpRoute:
+  enabled: true
+  hostname: pelican.techgarden.gg
+  gatewayRef:
+    name: eg-public
+    namespace: envoy-gateway-system
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    memory: 512Mi
+
+database:
+  enabled: true
+  type: mariadb
+
+envs:
+  pelican:
+    DB_HOST: "localhost"
+    DB_PORT: "3306"
+    DB_DATABASE: "pelican"
+    DB_USERNAME: "pelican"
+    CACHE_DRIVER: "redis"
+    SESSION_DRIVER: "redis"
+    QUEUE_CONNECTION: "redis"
+    REDIS_HOST: "redis"
+    REDIS_PORT: "6379"
+    APP_URL: "https://pelican.techgarden.gg"
+    APP_TIMEZONE: "America/Vancouver"
+
+secretEnvs:
+  pelican:
+    DB_PASSWORD: db-password
+    APP_KEY: app-key
+    REDIS_PASSWORD: redis-password
