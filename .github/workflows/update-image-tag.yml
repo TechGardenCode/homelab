@@ -19,6 +19,7 @@ jobs:
         env:
           APP_NAME: ${{ github.event.client_payload.app }}
           NEW_TAG: ${{ github.event.client_payload.tag }}
+          ENV_FILTER: ${{ github.event.client_payload.env }}
         run: |
           REGISTRY="ci/app-registry.yaml"
 
@@ -28,7 +29,26 @@ jobs:
           fi
 
           TYPE=$(yq e ".apps.\"${APP_NAME}\".type" "$REGISTRY")
-          PATHS=$(yq e ".apps.\"${APP_NAME}\".paths[]" "$REGISTRY")
+
+          # Detect path format: objects ({path, env}) vs plain strings
+          HAS_PATH_FIELD=$(yq e ".apps.\"${APP_NAME}\".paths[0].path // \"\"" "$REGISTRY")
+
+          if [ -n "$HAS_PATH_FIELD" ]; then
+            # Object format — filter by env if provided, otherwise update all
+            if [ -n "$ENV_FILTER" ]; then
+              PATHS=$(yq e ".apps.\"${APP_NAME}\".paths[] | select(.env == \"${ENV_FILTER}\") | .path" "$REGISTRY")
+            else
+              PATHS=$(yq e ".apps.\"${APP_NAME}\".paths[].path" "$REGISTRY")
+            fi
+          else
+            # Legacy flat string format — update all paths
+            PATHS=$(yq e ".apps.\"${APP_NAME}\".paths[]" "$REGISTRY")
+          fi
+
+          if [ -z "$PATHS" ]; then
+            echo "::error::No paths found for app '${APP_NAME}' (env filter: '${ENV_FILTER}')"
+            exit 1
+          fi
 
           for FILE_PATH in $PATHS; do
             if [ ! -f "$FILE_PATH" ]; then

@@ -10,7 +10,10 @@ apps:
   wiki:
     type: values
     paths:
-      - kubernetes/clusters/1276-dev/wiki/wiki/values.yaml
+      - path: kubernetes/clusters/1276-dev/wiki/wiki/values.yaml
+        env: dev
+      - path: kubernetes/clusters/1276-prod/wiki/wiki/values.yaml
+        env: prod
 
   kian-coffee:
     type: values

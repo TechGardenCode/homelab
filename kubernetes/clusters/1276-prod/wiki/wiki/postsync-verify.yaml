@@ -1,0 +1,49 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: wiki-post-deploy-verify
+  namespace: wiki
+  annotations:
+    argocd.argoproj.io/hook: PostSync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+spec:
+  backoffLimit: 3
+  activeDeadlineSeconds: 120
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: verify
+          image: curlimages/curl:8.12.1
+          env:
+            - name: GITHUB_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: github-deploy-token
+                  key: token
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -e
+              sleep 10
+              SHA=$(curl -sf --retry 5 --retry-delay 5 \
+                "http://wiki.wiki.svc.cluster.local/version.json" | \
+                sed -n 's/.*"sha":"\([^"]*\)".*/\1/p')
+              if [ -z "$SHA" ]; then
+                echo "ERROR: Could not read version.json"
+                exit 1
+              fi
+              echo "Deployed SHA: $SHA"
+              curl -sf -X POST \
+                -H "Authorization: token $GITHUB_TOKEN" \
+                -H "Accept: application/vnd.github+json" \
+                "https://api.github.com/repos/techgardencode/kian.sh/dispatches" \
+                -d "{\"event_type\":\"deploy-verified\",\"client_payload\":{\"app\":\"wiki\",\"env\":\"prod\",\"sha\":\"$SHA\"}}"
+              echo "Dispatched deploy-verified event"
+          resources:
+            requests:
+              cpu: 5m
+              memory: 16Mi
+            limits:
+              memory: 32Mi
