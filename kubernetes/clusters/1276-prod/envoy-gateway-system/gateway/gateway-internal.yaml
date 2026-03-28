@@ -27,11 +27,11 @@ spec:
         mode: Terminate
         certificateRefs:
           - kind: Secret
+            name: eg-tls-public
+          - kind: Secret
             name: eg-tls-kian
           - kind: Secret
             name: eg-tls-cert
-          - kind: Secret
-            name: eg-tls-public
     - name: https-s2s
       protocol: HTTPS
       port: 8443
