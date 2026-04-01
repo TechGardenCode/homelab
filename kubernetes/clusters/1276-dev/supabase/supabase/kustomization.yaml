@@ -7,7 +7,7 @@ resources:
 
 helmCharts:
   - name: supabase
-    version: 0.5.2
+    version: 0.5.3
     releaseName: supabase
     repo: https://supabase-community.github.io/supabase-kubernetes
     namespace: supabase
