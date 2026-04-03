@@ -18,9 +18,9 @@ health:
 httpRoute:
   enabled: true
   hostname: pelican.techgarden.gg
-  gatewayRef:
-    name: eg-public
-    namespace: envoy-gateway-system
+gateway:
+  public:
+    enabled: true
 
 resources:
   requests:

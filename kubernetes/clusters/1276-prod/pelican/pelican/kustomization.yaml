@@ -3,7 +3,6 @@ kind: Kustomization
 
 resources:
   - base/externalsecret.yaml
-  - base/httproute-internal.yaml
 
 helmGlobals:
   chartHome: ../../../../../helm-charts

@@ -44,18 +44,24 @@ health:
   path: /
 
 # Exposure tiers:
-#   Tier 1 (Internal):  gatewayRef.name: eg-internal (default)
-#   Tier 2 (Public):    gatewayRef.name: eg-public (Cloudflare IPs only)
+#   Tier 1 (Internal):  gateway.internal.enabled: true (default)
+#   Tier 2 (Public):    gateway.public.enabled: true (Cloudflare IPs only)
 #   Tier 3 (Tunnel):    Tier 2 + entry in cluster's cloudflared configmap
 httpRoute:
   enabled: false
   hostname: ""
   path: /
   pathType: PathPrefix
-  gatewayRef:
-    name: eg-internal
-    namespace: envoy-gateway-system
   annotations: {}
+
+gateway:
+  namespace: envoy-gateway-system
+  internal:
+    enabled: true
+    name: eg-internal
+  public:
+    enabled: false
+    name: eg-public
 
 backendTrafficPolicy:
   enabled: false

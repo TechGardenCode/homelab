@@ -9,9 +9,6 @@ service:
 httpRoute:
   enabled: true
   hostname: profile.prod.internal.kian.sh
-  gatewayRef:
-    name: eg-internal
-    namespace: envoy-gateway-system
 envs:
   profile:
     PG_HOSTNAME: 10.0.60.80

@@ -10,6 +10,6 @@ service:
 httpRoute:
   enabled: true
   hostname: lizard.techgarden.gg
-  gatewayRef:
-    name: eg-public
-    namespace: envoy-gateway-system
+gateway:
+  public:
+    enabled: true
