@@ -1,3 +1,20 @@
 reloader:
   watchGlobally: true
   reloadOnCreate: true
+  reloadStrategy: annotations
+  syncAfterRestart: true
+
+  deployment:
+    resources:
+      requests:
+        cpu: 10m
+        memory: 128Mi
+      limits:
+        cpu: 100m
+        memory: 256Mi
+
+    containerSecurityContext:
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+          - ALL
