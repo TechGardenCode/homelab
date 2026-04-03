@@ -21,7 +21,7 @@ spec:
           serviceAccountName: nas-recovery
           containers:
             - name: nas-recovery
-              image: bitnami/kubectl:1.32
+              image: bitnami/kubectl:1.32.3
               command: ["/bin/bash", "-c"]
               args:
                 - |
