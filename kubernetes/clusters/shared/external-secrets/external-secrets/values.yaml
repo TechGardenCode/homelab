@@ -1,8 +1,8 @@
-podAnnotations:
+deploymentAnnotations:
   secret.reloader.stakater.com/reload: "bitwarden-tls-certs"
 
 bitwarden-sdk-server:
   enabled: true
   namespaceOverride: external-secrets
-  podAnnotations:
+  deploymentAnnotations:
     secret.reloader.stakater.com/reload: "bitwarden-tls-certs"
