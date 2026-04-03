@@ -8,4 +8,4 @@ helmCharts:
     includeCRDs: true
     releaseName: mongodb-operator
     valuesFile: values.yaml
-    namespace: mongodb
+    namespace: db-operators

@@ -7,4 +7,4 @@ helmCharts:
     version: 0.28.0
     includeCRDs: true
     releaseName: cnpg
-    namespace: cnpg-system
+    namespace: db-operators

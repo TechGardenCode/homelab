@@ -7,4 +7,4 @@ helmCharts:
     version: 2.2.7
     includeCRDs: true
     releaseName: mysql-operator
-    namespace: mysql-operator
+    namespace: db-operators
