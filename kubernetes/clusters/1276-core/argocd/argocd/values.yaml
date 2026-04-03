@@ -165,6 +165,8 @@ global:
 
 server:
   replicas: 2
+  deploymentAnnotations:
+    secret.reloader.stakater.com/reload: "argocd-server-tls"
   autoscaling:
     enabled: false
   resources:
@@ -175,6 +177,8 @@ server:
       memory: 192Mi
   certificate:
     enabled: true
+    duration: 24h
+    renewBefore: 8h
     domain: argocd-server.argocd.svc.cluster.local
     issuer:
       group: certmanager.step.sm

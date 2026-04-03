@@ -4,6 +4,8 @@ metadata:
   name: eg-tls-cert
   namespace: envoy-gateway-system
 spec:
+  duration: 24h
+  renewBefore: 8h
   secretName: eg-tls-cert
   issuerRef:
     group: certmanager.step.sm
