@@ -73,6 +73,8 @@ spec:
                   # ── Phase 3: Test each mount for read-only ──
                   DELETED=0
                   DEFERRED=""
+                  PV_FILE=$(mktemp)
+                  echo "$ISCSI_PVS" > "$PV_FILE"
 
                   while IFS='|' read -r PV_NAME PVC_NS PVC_NAME; do
                     [ -z "$PV_NAME" ] && continue
@@ -88,7 +90,7 @@ spec:
                     for POD in $PODS; do
                       [ -z "$POD" ] && continue
 
-                      # Find mount path: resolve PVC → volume name → mountPath across all containers
+                      # Find mount path: resolve PVC -> volume name -> mountPath across all containers
                       MOUNT_PATH=$(kubectl get pod -n "$PVC_NS" "$POD" -o json | jq -r --arg pvc "$PVC_NAME" '
                         .spec as $spec |
                         ($spec.volumes[] | select(.persistentVolumeClaim.claimName == $pvc) | .name) as $volName |
@@ -127,7 +129,8 @@ spec:
                         log "OK: Pod ${PVC_NS}/${POD} volume at ${MOUNT_PATH} is writable."
                       fi
                     done
-                  done <<< "$ISCSI_PVS"
+                  done < "$PV_FILE"
+                  rm -f "$PV_FILE"
 
                   # ── Summary ──
                   if [ "$DELETED" -gt 0 ]; then
