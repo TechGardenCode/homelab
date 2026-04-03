@@ -99,7 +99,10 @@ alloy:
       loki.write "lgtm" {
         endpoint {
           url = "http://10.0.60.160:3100/loki/api/v1/push"
+          batch_wait  = "5s"
+          batch_size  = "1048576"
         }
+        external_labels = {}
       }
 
   resources:
