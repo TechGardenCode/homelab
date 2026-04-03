@@ -5,6 +5,5 @@ metadata:
   namespace: supabase
 spec:
   strategy:
-    $retainKeys:
-      - type
     type: Recreate
+    rollingUpdate: null
