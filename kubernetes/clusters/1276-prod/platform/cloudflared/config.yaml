@@ -5,28 +5,15 @@ ingress:
   # Tier 3: techgarden.gg apps via eg-public HTTPS
   - hostname: www.techgarden.gg
     service: https://10.0.62.3:443
-    originRequest:
-      noTLSVerify: true
   - hostname: blog.techgarden.gg
     service: https://10.0.62.3:443
-    originRequest:
-      noTLSVerify: true
   - hostname: lizard.techgarden.gg
     service: https://10.0.62.3:443
-    originRequest:
-      noTLSVerify: true
   - hostname: sso.techgarden.gg
     service: https://10.0.62.3:443
-    originRequest:
-      noTLSVerify: false
-      caPool: /etc/cloudflared/ca/ca.crt
   # kian.coffee via eg-public HTTPS
   - hostname: kian.coffee
     service: https://10.0.62.3:443
-    originRequest:
-      noTLSVerify: true
   - hostname: www.kian.coffee
     service: https://10.0.62.3:443
-    originRequest:
-      noTLSVerify: true
   - service: http_status:404
