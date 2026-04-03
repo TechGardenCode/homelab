@@ -14,7 +14,11 @@ helmCharts:
     valuesFile: values.yaml
 
 patches:
-  - path: base/studio-recreate-strategy-patch.yaml
-    target:
+  - target:
       kind: Deployment
       name: supabase-supabase-studio
+    patch: |-
+      - op: add
+        path: /spec/strategy
+        value:
+          type: Recreate
