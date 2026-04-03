@@ -83,6 +83,10 @@ alloy:
           source_labels = ["__meta_kubernetes_pod_name"]
           target_label = "pod"
         }
+        rule {
+          source_labels = ["__meta_kubernetes_pod_container_name"]
+          target_label = "container"
+        }
       }
 
       // ── Remote write to LGTM stack ──
