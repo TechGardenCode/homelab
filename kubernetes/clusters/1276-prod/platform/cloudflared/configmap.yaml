@@ -8,13 +8,19 @@ data:
     credentials-file: /etc/cloudflared/credentials.json
     no-autoupdate: true
     ingress:
-      # Tier 3: techgarden.gg apps via eg-public (cluster-internal)
+      # Tier 3: techgarden.gg apps via eg-public HTTPS
       - hostname: www.techgarden.gg
-        service: http://10.0.62.3:80
+        service: https://10.0.62.3:443
+        originRequest:
+          noTLSVerify: true
       - hostname: blog.techgarden.gg
-        service: http://10.0.62.3:80
+        service: https://10.0.62.3:443
+        originRequest:
+          noTLSVerify: true
       - hostname: lizard.techgarden.gg
-        service: http://10.0.62.3:80
+        service: https://10.0.62.3:443
+        originRequest:
+          noTLSVerify: true
       - hostname: sso.techgarden.gg
         service: https://10.0.62.3:443
         originRequest:
