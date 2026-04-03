@@ -10,13 +10,13 @@ data:
     ingress:
       # Tier 3: techgarden.gg apps via eg-public (cluster-internal)
       - hostname: www.techgarden.gg
-        service: http://envoy-envoy-gateway-system-eg-public.envoy-gateway-system.svc.cluster.local:80
+        service: http://10.0.62.3:80
       - hostname: blog.techgarden.gg
-        service: http://envoy-envoy-gateway-system-eg-public.envoy-gateway-system.svc.cluster.local:80
+        service: http://10.0.62.3:80
       - hostname: lizard.techgarden.gg
-        service: http://envoy-envoy-gateway-system-eg-public.envoy-gateway-system.svc.cluster.local:80
+        service: http://10.0.62.3:80
       - hostname: sso.techgarden.gg
-        service: https://envoy-envoy-gateway-system-eg-public.envoy-gateway-system.svc.cluster.local:443
+        service: https://10.0.62.3:443
         originRequest:
           noTLSVerify: false
           caPool: /etc/cloudflared/ca/ca.crt
