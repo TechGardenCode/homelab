@@ -12,3 +12,9 @@ helmCharts:
     repo: https://supabase-community.github.io/supabase-kubernetes
     namespace: supabase
     valuesFile: values.yaml
+
+patches:
+  - path: base/studio-recreate-strategy-patch.yaml
+    target:
+      kind: Deployment
+      name: supabase-supabase-studio

@@ -1,0 +1,8 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: supabase-supabase-studio
+  namespace: supabase
+spec:
+  strategy:
+    type: Recreate
