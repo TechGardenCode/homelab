@@ -4,4 +4,6 @@ no-autoupdate: true
 ingress:
   - hostname: "*.dev.techgarden.gg"
     service: https://envoy-envoy-gateway-system-eg-public.envoy-gateway-system.svc.cluster.local:443
+    originRequest:
+      originServerName: dev.techgarden.gg
   - service: http_status:404
