@@ -7,5 +7,5 @@ stepClusterIssuer:
     kid: szIBW41Ks9KIAP6qLI1NOXBUXDTVCG_-kBuGJIR9IN4
     passwordRef:
       name: step-issuer-provisioner-password
-      namespace: step-issuer
+      namespace: pki
       key: password

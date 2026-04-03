@@ -3,7 +3,7 @@ apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
   name: step-ca-pdb
-  namespace: step-ca
+  namespace: pki
 spec:
   minAvailable: 1
   selector:

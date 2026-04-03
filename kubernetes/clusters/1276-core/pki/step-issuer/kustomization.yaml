@@ -11,4 +11,4 @@ helmCharts:
     includeCRDs: true
     releaseName: step-issuer
     valuesFile: values.yaml
-    namespace: step-issuer
+    namespace: pki

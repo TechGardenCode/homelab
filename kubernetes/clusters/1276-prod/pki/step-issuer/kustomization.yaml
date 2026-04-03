@@ -11,4 +11,4 @@ helmCharts:
     version: 1.10.2
     releaseName: step-issuer
     valuesFile: values.yaml
-    namespace: step-issuer
+    namespace: pki
