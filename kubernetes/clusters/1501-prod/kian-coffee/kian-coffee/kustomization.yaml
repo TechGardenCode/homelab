@@ -8,4 +8,4 @@ helmCharts:
   - name: generic-service
     releaseName: kian-coffee
     valuesFile: values.yaml
-    namespace: default
+    namespace: kian-coffee
