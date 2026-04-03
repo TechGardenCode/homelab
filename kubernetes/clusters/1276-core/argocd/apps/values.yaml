@@ -161,8 +161,7 @@ applicationsets:
             - path: "kubernetes/clusters/1276-core/democratic-csi/*"
             - path: "kubernetes/clusters/1276-core/step-ca/*"
             - path: "kubernetes/clusters/1276-core/step-issuer/*"
-            - path: "kubernetes/clusters/1276-core/cluster-config/*"
-            - path: "kubernetes/clusters/1276-core/etcd-backup/*"
+            - path: "kubernetes/clusters/1276-core/cluster-ops/*"
     template:
       metadata:
         name: "1276-core.{{path[3]}}.{{path.basenameNormalized}}"
