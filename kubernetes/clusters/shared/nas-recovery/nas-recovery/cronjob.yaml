@@ -1,0 +1,154 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: nas-recovery
+  labels:
+    app.kubernetes.io/name: nas-recovery
+spec:
+  schedule: "*/2 * * * *"
+  timeZone: Europe/Berlin
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      activeDeadlineSeconds: 90
+      template:
+        spec:
+          restartPolicy: Never
+          terminationGracePeriodSeconds: 10
+          serviceAccountName: nas-recovery
+          containers:
+            - name: nas-recovery
+              image: bitnami/kubectl:1.32
+              command: ["/bin/bash", "-c"]
+              args:
+                - |
+                  set -euo pipefail
+
+                  log() { echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] $*"; }
+
+                  NAS_HOST="${NAS_HOST}"
+                  ISCSI_PORT="${ISCSI_PORT}"
+                  NFS_PORT="${NFS_PORT}"
+                  MAX_DELETIONS="${MAX_DELETIONS_PER_RUN:-3}"
+                  DRY_RUN="${DRY_RUN:-false}"
+
+                  # ── Phase 1: Check NAS availability ──
+                  log "Checking NAS availability at ${NAS_HOST}..."
+
+                  if ! timeout 5 bash -c "echo > /dev/tcp/${NAS_HOST}/${ISCSI_PORT}" 2>/dev/null; then
+                    log "NAS iSCSI port ${ISCSI_PORT} is unreachable. NAS is down -- skipping recovery."
+                    exit 0
+                  fi
+
+                  if ! timeout 5 bash -c "echo > /dev/tcp/${NAS_HOST}/${NFS_PORT}" 2>/dev/null; then
+                    log "NAS NFS port ${NFS_PORT} is unreachable. NAS partially down -- skipping recovery."
+                    exit 0
+                  fi
+
+                  log "NAS is reachable on both iSCSI and NFS ports."
+
+                  # ── Phase 2: Find iSCSI-backed PVs ──
+                  log "Finding iSCSI-backed PersistentVolumes..."
+
+                  ISCSI_PVS=$(kubectl get pv -o json | jq -r '
+                    .items[] |
+                    select(.spec.storageClassName == "freenas-iscsi-csi" or .spec.storageClassName == "freenas-iscsi-ssd-csi") |
+                    select(.status.phase == "Bound") |
+                    .metadata.name + "|" + .spec.claimRef.namespace + "|" + .spec.claimRef.name
+                  ' | sort -u)
+
+                  if [ -z "$ISCSI_PVS" ]; then
+                    log "No bound iSCSI PVs found. Nothing to check."
+                    exit 0
+                  fi
+
+                  PV_COUNT=$(echo "$ISCSI_PVS" | wc -l | tr -d ' ')
+                  log "Found ${PV_COUNT} bound iSCSI PV(s)."
+
+                  # ── Phase 3: Test each mount for read-only ──
+                  DELETED=0
+                  DEFERRED=""
+
+                  while IFS='|' read -r PV_NAME PVC_NS PVC_NAME; do
+                    [ -z "$PV_NAME" ] && continue
+
+                    # Find running pods using this PVC
+                    PODS=$(kubectl get pods -n "$PVC_NS" -o json | jq -r --arg pvc "$PVC_NAME" '
+                      .items[] |
+                      select(.status.phase == "Running") |
+                      select(.spec.volumes[]? | select(.persistentVolumeClaim.claimName == $pvc)) |
+                      .metadata.name
+                    ')
+
+                    for POD in $PODS; do
+                      [ -z "$POD" ] && continue
+
+                      # Find mount path: resolve PVC → volume name → mountPath across all containers
+                      MOUNT_PATH=$(kubectl get pod -n "$PVC_NS" "$POD" -o json | jq -r --arg pvc "$PVC_NAME" '
+                        .spec as $spec |
+                        ($spec.volumes[] | select(.persistentVolumeClaim.claimName == $pvc) | .name) as $volName |
+                        [$spec.containers[].volumeMounts[]? | select(.name == $volName) | .mountPath] |
+                        first // empty
+                      ')
+
+                      if [ -z "$MOUNT_PATH" ]; then
+                        log "WARN: Could not determine mount path for PVC ${PVC_NS}/${PVC_NAME} in pod ${POD}."
+                        continue
+                      fi
+
+                      # Write-test the mount
+                      TEST_RESULT=$(kubectl exec -n "$PVC_NS" "$POD" -- \
+                        sh -c "touch '${MOUNT_PATH}/.nas-recovery-probe' 2>&1 && rm -f '${MOUNT_PATH}/.nas-recovery-probe' 2>&1" 2>&1) || true
+
+                      if echo "$TEST_RESULT" | grep -qi "read.only file.system\|EROFS"; then
+                        log "DETECTED: Pod ${PVC_NS}/${POD} has read-only volume at ${MOUNT_PATH} (PVC: ${PVC_NAME})."
+
+                        if [ "$DELETED" -ge "$MAX_DELETIONS" ]; then
+                          log "WARN: Hit max deletions limit (${MAX_DELETIONS}). Deferring ${PVC_NS}/${POD} to next run."
+                          DEFERRED="${DEFERRED} ${PVC_NS}/${POD}"
+                          continue
+                        fi
+
+                        if [ "$DRY_RUN" = "true" ]; then
+                          log "DRY-RUN: Would delete pod ${PVC_NS}/${POD}."
+                        else
+                          log "ACTION: Deleting pod ${PVC_NS}/${POD} to trigger volume reattach..."
+                          kubectl delete pod -n "$PVC_NS" "$POD" --grace-period=30
+                          DELETED=$((DELETED + 1))
+                          log "ACTION: Pod ${PVC_NS}/${POD} deleted. (${DELETED}/${MAX_DELETIONS})"
+                          sleep 5
+                        fi
+                      else
+                        log "OK: Pod ${PVC_NS}/${POD} volume at ${MOUNT_PATH} is writable."
+                      fi
+                    done
+                  done <<< "$ISCSI_PVS"
+
+                  # ── Summary ──
+                  if [ "$DELETED" -gt 0 ]; then
+                    log "SUMMARY: Recovered ${DELETED} pod(s) with read-only iSCSI volumes."
+                  elif [ -n "$DEFERRED" ]; then
+                    log "SUMMARY: Pods deferred to next run:${DEFERRED}"
+                  else
+                    log "SUMMARY: All iSCSI-backed pods are healthy. No action needed."
+                  fi
+              env:
+                - name: NAS_HOST
+                  value: "10.0.60.24"
+                - name: ISCSI_PORT
+                  value: "3260"
+                - name: NFS_PORT
+                  value: "2049"
+                - name: DRY_RUN
+                  value: "false"
+                - name: MAX_DELETIONS_PER_RUN
+                  value: "3"
+              resources:
+                requests:
+                  cpu: 50m
+                  memory: 64Mi
+                limits:
+                  memory: 128Mi
