@@ -13,4 +13,4 @@ helmCharts:
     version: v2.2.0
     releaseName: external-secrets
     valuesFile: values.yaml
-    namespace: external-secrets
+    namespace: platform
