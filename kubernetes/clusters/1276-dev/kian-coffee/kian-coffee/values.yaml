@@ -7,13 +7,9 @@ ports:
     containerPort: 80
 
 service:
-  type: LoadBalancer
+  type: ClusterIP
 
-ingress:
-  annotations:
-    cert-manager.io/issuer-group: certmanager.step.sm
-    cert-manager.io/issuer-kind: StepClusterIssuer
-    cert-manager.io/issuer: step-issuer
-  host: coffee.dev.techgarden.gg
-  tls:
-    secretName: coffee.dev.techgarden.gg
+# Exposure: Tier 1 (Internal only)
+httpRoute:
+  enabled: true
+  hostname: dev.kian.coffee

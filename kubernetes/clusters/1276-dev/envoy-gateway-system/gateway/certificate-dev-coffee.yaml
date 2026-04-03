@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: eg-tls-dev-coffee
+  namespace: envoy-gateway-system
+spec:
+  secretName: eg-tls-dev-coffee
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+  dnsNames:
+    - "dev.kian.coffee"

@@ -7,14 +7,15 @@ ports:
     containerPort: 80
 
 service:
-  type: LoadBalancer
+  type: ClusterIP
 
-ingress:
-  public: true
-  annotations:
-    cert-manager.io/issuer-group: certmanager.step.sm
-    cert-manager.io/issuer-kind: StepClusterIssuer
-    cert-manager.io/issuer: step-issuer
-  host: coffee.1276.internal.kian.sh
-  tls:
-    secretName: coffee.1276.internal.kian.sh
+# Exposure: Tier 3 (Cloudflare Tunnel) + Internal
+httpRoute:
+  enabled: true
+  hostname: kian.coffee
+
+gateway:
+  internal:
+    enabled: true
+  public:
+    enabled: true

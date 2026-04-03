@@ -31,6 +31,8 @@ spec:
           - kind: Secret
             name: eg-tls-dev-kian
           - kind: Secret
+            name: eg-tls-dev-coffee
+          - kind: Secret
             name: eg-tls-dev-techgarden
     - name: https-s2s
       protocol: HTTPS

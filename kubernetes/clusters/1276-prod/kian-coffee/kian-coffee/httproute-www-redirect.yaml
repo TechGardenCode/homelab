@@ -1,0 +1,19 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: kian-coffee-www-redirect
+  namespace: kian-coffee
+spec:
+  parentRefs:
+    - name: eg-public
+      namespace: envoy-gateway-system
+    - name: eg-internal
+      namespace: envoy-gateway-system
+  hostnames:
+    - www.kian.coffee
+  rules:
+    - filters:
+        - type: RequestRedirect
+          requestRedirect:
+            hostname: kian.coffee
+            statusCode: 301

@@ -13,6 +13,7 @@ spec:
       - "https://*.kian.sh"
       - "https://*.dev.kian.sh"
       - "https://*.techgarden.gg"
+      - "https://*.kian.coffee"
     allowMethods:
       - GET
       - POST

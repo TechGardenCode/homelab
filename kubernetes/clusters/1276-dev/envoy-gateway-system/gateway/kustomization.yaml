@@ -5,6 +5,7 @@ resources:
   - gateway-internal.yaml
   - gateway-public.yaml
   - certificate.yaml
+  - certificate-dev-coffee.yaml
   - certificate-dev-kian.yaml
   - certificate-dev-techgarden.yaml
   - clienttrafficpolicy-public.yaml
