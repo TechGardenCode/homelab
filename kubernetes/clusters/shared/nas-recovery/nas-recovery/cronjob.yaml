@@ -21,11 +21,13 @@ spec:
           serviceAccountName: nas-recovery
           containers:
             - name: nas-recovery
-              image: bitnami/kubectl:1.32.3
-              command: ["/bin/bash", "-c"]
+              image: alpine:3.21
+              command: ["/bin/sh", "-c"]
               args:
                 - |
-                  set -euo pipefail
+                  set -eu
+
+                  apk add --no-cache -q kubectl jq > /dev/null 2>&1
 
                   log() { echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] $*"; }
 
@@ -38,12 +40,12 @@ spec:
                   # ── Phase 1: Check NAS availability ──
                   log "Checking NAS availability at ${NAS_HOST}..."
 
-                  if ! timeout 5 bash -c "echo > /dev/tcp/${NAS_HOST}/${ISCSI_PORT}" 2>/dev/null; then
+                  if ! nc -z -w5 "${NAS_HOST}" "${ISCSI_PORT}" 2>/dev/null; then
                     log "NAS iSCSI port ${ISCSI_PORT} is unreachable. NAS is down -- skipping recovery."
                     exit 0
                   fi
 
-                  if ! timeout 5 bash -c "echo > /dev/tcp/${NAS_HOST}/${NFS_PORT}" 2>/dev/null; then
+                  if ! nc -z -w5 "${NAS_HOST}" "${NFS_PORT}" 2>/dev/null; then
                     log "NAS NFS port ${NFS_PORT} is unreachable. NAS partially down -- skipping recovery."
                     exit 0
                   fi
