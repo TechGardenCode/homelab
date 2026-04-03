@@ -1,0 +1,9 @@
+tunnel: 9a3deae9-8e4e-4017-93c1-474c61e52f19
+credentials-file: /etc/cloudflared/credentials.json
+no-autoupdate: true
+ingress:
+  - hostname: "*.dev.techgarden.gg"
+    service: https://envoy-envoy-gateway-system-eg-public.envoy-gateway-system.svc.cluster.local:443
+    originRequest:
+      noTLSVerify: true
+  - service: http_status:404
