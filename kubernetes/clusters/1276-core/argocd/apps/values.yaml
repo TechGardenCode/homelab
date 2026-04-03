@@ -158,7 +158,7 @@ applicationsets:
             - path: "kubernetes/clusters/1276-core/argocd/*"
             - path: "kubernetes/clusters/1276-core/metallb-system/*"
             - path: "kubernetes/clusters/1276-core/envoy-gateway-system/*"
-            - path: "kubernetes/clusters/1276-core/democratic-csi/*"
+            - path: "kubernetes/clusters/1276-core/storage/*"
             - path: "kubernetes/clusters/1276-core/pki/*"
             - path: "kubernetes/clusters/1276-core/cluster-ops/*"
     template:

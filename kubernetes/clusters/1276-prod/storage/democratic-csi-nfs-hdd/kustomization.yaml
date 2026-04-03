@@ -9,6 +9,6 @@ helmCharts:
     name: democratic-csi
     version: 0.15.1
     includeCRDs: true
-    releaseName: democratic-csi-iscsi
+    releaseName: democratic-csi-nfs
     valuesFile: values.yaml
-    namespace: democratic-csi
+    namespace: storage

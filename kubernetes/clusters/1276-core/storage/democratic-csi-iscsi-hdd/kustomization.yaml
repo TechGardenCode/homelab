@@ -3,12 +3,13 @@ kind: Kustomization
 
 resources:
   - base/externalsecret.yaml
+  - base/test-iscsi.yaml
 
 helmCharts:
   - repo: https://democratic-csi.github.io/charts/
     name: democratic-csi
     version: 0.15.1
     includeCRDs: true
-    releaseName: democratic-csi-nfs-ssd
+    releaseName: democratic-csi-iscsi
     valuesFile: values.yaml
-    namespace: democratic-csi
+    namespace: storage
