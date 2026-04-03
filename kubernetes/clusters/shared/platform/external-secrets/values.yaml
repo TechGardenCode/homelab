@@ -3,6 +3,6 @@ deploymentAnnotations:
 
 bitwarden-sdk-server:
   enabled: true
-  namespaceOverride: external-secrets
+  namespaceOverride: platform
   deploymentAnnotations:
     secret.reloader.stakater.com/reload: "bitwarden-tls-certs"
