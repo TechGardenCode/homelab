@@ -8,18 +8,10 @@ data:
     credentials-file: /etc/cloudflared/credentials.json
     no-autoupdate: true
     ingress:
+      # Core-local services only — prod apps moved to 1276-prod tunnel
       - hostname: argocd-webhook.kian.sh
         path: /api/webhook
         service: https://argocd-server.argocd.svc.cluster.local:443
-        originRequest:
-          noTLSVerify: false
-          caPool: /etc/cloudflared/ca/ca.crt
-      - hostname: www.techgarden.gg
-        service: http://10.0.62.3:80
-      - hostname: blog.techgarden.gg
-        service: http://10.0.62.3:80
-      - hostname: sso.techgarden.gg
-        service: https://10.0.62.3:443
         originRequest:
           noTLSVerify: false
           caPool: /etc/cloudflared/ca/ca.crt

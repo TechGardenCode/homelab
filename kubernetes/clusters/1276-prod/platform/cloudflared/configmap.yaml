@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cloudflared-config
+data:
+  config.yaml: |
+    tunnel: 9221faf4-41f8-4aa6-9cbc-1b757c2a2c07
+    credentials-file: /etc/cloudflared/credentials.json
+    no-autoupdate: true
+    ingress:
+      # Tier 3: techgarden.gg apps via eg-public (cluster-internal)
+      - hostname: www.techgarden.gg
+        service: http://envoy-envoy-gateway-system-eg-public.envoy-gateway-system.svc.cluster.local:80
+      - hostname: blog.techgarden.gg
+        service: http://envoy-envoy-gateway-system-eg-public.envoy-gateway-system.svc.cluster.local:80
+      - hostname: lizard.techgarden.gg
+        service: http://envoy-envoy-gateway-system-eg-public.envoy-gateway-system.svc.cluster.local:80
+      - hostname: sso.techgarden.gg
+        service: https://envoy-envoy-gateway-system-eg-public.envoy-gateway-system.svc.cluster.local:443
+        originRequest:
+          noTLSVerify: false
+          caPool: /etc/cloudflared/ca/ca.crt
+      - service: http_status:404

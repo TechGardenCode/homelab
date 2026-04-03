@@ -43,6 +43,10 @@ health:
   type: HTTP
   path: /
 
+# Exposure tiers:
+#   Tier 1 (Internal):  gatewayRef.name: eg-internal (default)
+#   Tier 2 (Public):    gatewayRef.name: eg-public (Cloudflare IPs only)
+#   Tier 3 (Tunnel):    Tier 2 + entry in cluster's cloudflared configmap
 httpRoute:
   enabled: false
   hostname: ""

@@ -6,6 +6,7 @@ ports:
     containerPort: 80
 service:
   type: ClusterIP
+# Exposure: Tier 3 (Cloudflare Tunnel)
 httpRoute:
   enabled: true
   hostname: lizard.techgarden.gg
