@@ -30,13 +30,13 @@ spec:
               echo "[$(date)] Provisioning techgarden-db users..."
 
               psql -h "$HOST" -U postgres -d techgarden <<EOSQL
-              -- Create users idempotently (PostgreSQL 17+)
-              CREATE USER IF NOT EXISTS blog_flyway;
-              CREATE USER IF NOT EXISTS blog_write;
-              CREATE USER IF NOT EXISTS blog_read;
-              CREATE USER IF NOT EXISTS profile_flyway;
-              CREATE USER IF NOT EXISTS profile_write;
-              CREATE USER IF NOT EXISTS profile_read;
+              -- Create login users idempotently
+              CREATE ROLE IF NOT EXISTS blog_flyway LOGIN;
+              CREATE ROLE IF NOT EXISTS blog_write LOGIN;
+              CREATE ROLE IF NOT EXISTS blog_read LOGIN;
+              CREATE ROLE IF NOT EXISTS profile_flyway LOGIN;
+              CREATE ROLE IF NOT EXISTS profile_write LOGIN;
+              CREATE ROLE IF NOT EXISTS profile_read LOGIN;
 
               -- Set passwords
               ALTER USER blog_flyway WITH PASSWORD '$(esc "$BLOG_FLYWAY_PASSWORD")';
