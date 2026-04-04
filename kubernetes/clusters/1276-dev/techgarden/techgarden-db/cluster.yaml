@@ -1,0 +1,45 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: techgarden-db
+  namespace: techgarden
+spec:
+  instances: 1
+
+  enableSuperuserAccess: true
+  superuserSecret:
+    name: techgarden-db-superuser
+
+  postgresql:
+    pg_hba:
+      - host all postgres all scram-sha-256
+      - host all all all scram-sha-256
+
+  storage:
+    size: 5Gi
+    storageClass: freenas-iscsi-ssd-csi
+
+  bootstrap:
+    initdb:
+      database: techgarden
+      owner: techgardencode
+      secret:
+        name: techgarden-db-app-credentials
+      postInitSQLRefs:
+        configMapRefs:
+          - name: techgarden-db-init-sql
+            key: 01-create-schemas.sql
+          - name: techgarden-db-init-sql
+            key: 02-create-roles.sql
+
+  monitoring:
+    enablePodMonitor: true
+    disableDefaultQueries: false
+
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      memory: 512Mi

@@ -11,4 +11,7 @@ data:
     GRANT CONNECT ON DATABASE techgarden TO readonly_role;
     ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO readonly_role;
   02-create-databases.sql: |
-    CREATE DATABASE keycloak OWNER techgardencode;
+    -- keycloak has its own dedicated CNPG cluster in the keycloak namespace
+    -- techgarden has its own dedicated CNPG cluster in the techgarden namespace
+    -- this shared cluster is available for future non-app-specific databases
+    SELECT 1;

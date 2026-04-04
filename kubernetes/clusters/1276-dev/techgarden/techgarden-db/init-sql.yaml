@@ -1,0 +1,46 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: techgarden-db-init-sql
+  namespace: techgarden
+data:
+  01-create-schemas.sql: |
+    CREATE SCHEMA IF NOT EXISTS blog;
+    CREATE SCHEMA IF NOT EXISTS profile;
+  02-create-roles.sql: |
+    -- Abstract roles (no LOGIN) — permission sets
+    CREATE ROLE blog_read_role;
+    CREATE ROLE blog_write_role;
+    CREATE ROLE blog_flyway_role;
+    CREATE ROLE profile_read_role;
+    CREATE ROLE profile_write_role;
+    CREATE ROLE profile_flyway_role;
+
+    -- Schema access
+    GRANT USAGE ON SCHEMA blog TO blog_read_role, blog_write_role, blog_flyway_role;
+    GRANT USAGE ON SCHEMA profile TO profile_read_role, profile_write_role, profile_flyway_role;
+
+    -- Read roles: SELECT on all current and future tables
+    GRANT SELECT ON ALL TABLES IN SCHEMA blog TO blog_read_role;
+    ALTER DEFAULT PRIVILEGES IN SCHEMA blog GRANT SELECT ON TABLES TO blog_read_role;
+    GRANT SELECT ON ALL TABLES IN SCHEMA profile TO profile_read_role;
+    ALTER DEFAULT PRIVILEGES IN SCHEMA profile GRANT SELECT ON TABLES TO profile_read_role;
+
+    -- Write roles: inherit read + INSERT, UPDATE, DELETE + sequences
+    GRANT blog_read_role TO blog_write_role;
+    GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA blog TO blog_write_role;
+    ALTER DEFAULT PRIVILEGES IN SCHEMA blog GRANT INSERT, UPDATE, DELETE ON TABLES TO blog_write_role;
+    ALTER DEFAULT PRIVILEGES IN SCHEMA blog GRANT USAGE ON SEQUENCES TO blog_write_role;
+
+    GRANT profile_read_role TO profile_write_role;
+    GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA profile TO profile_write_role;
+    ALTER DEFAULT PRIVILEGES IN SCHEMA profile GRANT INSERT, UPDATE, DELETE ON TABLES TO profile_write_role;
+    ALTER DEFAULT PRIVILEGES IN SCHEMA profile GRANT USAGE ON SEQUENCES TO profile_write_role;
+
+    -- Flyway roles: inherit write + DDL (CREATE on schema)
+    GRANT blog_write_role TO blog_flyway_role;
+    GRANT CREATE ON SCHEMA blog TO blog_flyway_role;
+
+    GRANT profile_write_role TO profile_flyway_role;
+    GRANT CREATE ON SCHEMA profile TO profile_flyway_role;

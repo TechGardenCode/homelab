@@ -41,8 +41,6 @@ applicationsets:
           directories:
             - path: "kubernetes/clusters/shared/**/*"
             - path: "kubernetes/clusters/1276-dev/**/*"
-            - path: "kubernetes/clusters/1276-dev/techgarden/*"
-              exclude: true
     template:
       metadata:
         name: "1276-dev.{{path[3]}}.{{path.basenameNormalized}}"

@@ -4,23 +4,15 @@ image:
 ports:
   - name: main
     containerPort: 8080
-service:
-  type: LoadBalancer
-ingress:
-  annotations:
-    cert-manager.io/issuer-group: certmanager.step.sm
-    cert-manager.io/issuer-kind: StepClusterIssuer
-    cert-manager.io/issuer: step-issuer
-  host: bff.1276.internal.dev.techgarden.gg
-  tls:
-    secretName: bff.1276.internal.dev.techgarden.gg
 envs:
   - LOGGING_LEVEL_ROOT: debug
   - SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_KEYCLOAK_ISSUER_URI: https://sso.dev.techgarden.gg/realms/techgarden
   - REDIS_HOST: redis.techgarden.svc.cluster.local
   - BFF_SERVICES_PROFILE: http://techgarden-profile:8080
+  - KEYCLOAK_TOKEN_ENDPOINT: https://sso.dev.techgarden.gg/realms/techgarden/protocol/openid-connect/token
 secretEnvs:
   bff:
     CLIENT_SECRET: CLIENT_SECRET
+    REDIS_PASSWORD: REDIS_PASSWORD
 health:
   path: /actuator/health
