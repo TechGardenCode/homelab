@@ -9,4 +9,5 @@ spec:
     name: letsencrypt-production
     kind: ClusterIssuer
   dnsNames:
+    - "dev.techgarden.gg"
     - "*.dev.techgarden.gg"

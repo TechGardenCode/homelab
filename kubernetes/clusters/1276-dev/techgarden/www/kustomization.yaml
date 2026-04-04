@@ -3,6 +3,7 @@ kind: Kustomization
 
 resources:
   - base/bff-httproute.yaml
+  - base/www-redirect.yaml
 
 helmGlobals:
   chartHome: ../../../../../helm-charts

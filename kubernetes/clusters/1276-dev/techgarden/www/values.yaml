@@ -6,4 +6,4 @@ ports:
     containerPort: 80
 httpRoute:
   enabled: true
-  hostname: www.dev.techgarden.gg
+  hostname: dev.techgarden.gg
