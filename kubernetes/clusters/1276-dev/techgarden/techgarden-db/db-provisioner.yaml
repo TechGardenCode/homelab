@@ -24,40 +24,44 @@ spec:
               set -euo pipefail
               HOST="techgarden-db-rw.techgarden.svc"
 
+              # Escape single quotes in passwords for safe SQL embedding
+              esc() { printf '%s' "$1" | sed "s/'/''/g"; }
+
               echo "[$(date)] Provisioning techgarden-db users..."
 
-              # Create users idempotently (PostgreSQL 17+ supports IF NOT EXISTS)
-              psql -h "$HOST" -U postgres -d techgarden \
-                -v blog_flyway_pw="$BLOG_FLYWAY_PASSWORD" \
-                -v blog_write_pw="$BLOG_WRITE_PASSWORD" \
-                -v blog_read_pw="$BLOG_READ_PASSWORD" \
-                -v profile_flyway_pw="$PROFILE_FLYWAY_PASSWORD" \
-                -v profile_write_pw="$PROFILE_WRITE_PASSWORD" \
-                -v profile_read_pw="$PROFILE_READ_PASSWORD" \
-                -c "CREATE USER IF NOT EXISTS blog_flyway;" \
-                -c "CREATE USER IF NOT EXISTS blog_write;" \
-                -c "CREATE USER IF NOT EXISTS blog_read;" \
-                -c "CREATE USER IF NOT EXISTS profile_flyway;" \
-                -c "CREATE USER IF NOT EXISTS profile_write;" \
-                -c "CREATE USER IF NOT EXISTS profile_read;" \
-                -c "ALTER USER blog_flyway WITH PASSWORD :'blog_flyway_pw';" \
-                -c "ALTER USER blog_write WITH PASSWORD :'blog_write_pw';" \
-                -c "ALTER USER blog_read WITH PASSWORD :'blog_read_pw';" \
-                -c "ALTER USER profile_flyway WITH PASSWORD :'profile_flyway_pw';" \
-                -c "ALTER USER profile_write WITH PASSWORD :'profile_write_pw';" \
-                -c "ALTER USER profile_read WITH PASSWORD :'profile_read_pw';" \
-                -c "GRANT blog_flyway_role TO blog_flyway;" \
-                -c "GRANT blog_write_role TO blog_write;" \
-                -c "GRANT blog_read_role TO blog_read;" \
-                -c "GRANT profile_flyway_role TO profile_flyway;" \
-                -c "GRANT profile_write_role TO profile_write;" \
-                -c "GRANT profile_read_role TO profile_read;" \
-                -c "ALTER USER blog_flyway SET search_path TO blog,public;" \
-                -c "ALTER USER blog_write SET search_path TO blog,public;" \
-                -c "ALTER USER blog_read SET search_path TO blog,public;" \
-                -c "ALTER USER profile_flyway SET search_path TO profile,public;" \
-                -c "ALTER USER profile_write SET search_path TO profile,public;" \
-                -c "ALTER USER profile_read SET search_path TO profile,public;"
+              psql -h "$HOST" -U postgres -d techgarden <<EOSQL
+              -- Create users idempotently (PostgreSQL 17+)
+              CREATE USER IF NOT EXISTS blog_flyway;
+              CREATE USER IF NOT EXISTS blog_write;
+              CREATE USER IF NOT EXISTS blog_read;
+              CREATE USER IF NOT EXISTS profile_flyway;
+              CREATE USER IF NOT EXISTS profile_write;
+              CREATE USER IF NOT EXISTS profile_read;
+
+              -- Set passwords
+              ALTER USER blog_flyway WITH PASSWORD '$(esc "$BLOG_FLYWAY_PASSWORD")';
+              ALTER USER blog_write WITH PASSWORD '$(esc "$BLOG_WRITE_PASSWORD")';
+              ALTER USER blog_read WITH PASSWORD '$(esc "$BLOG_READ_PASSWORD")';
+              ALTER USER profile_flyway WITH PASSWORD '$(esc "$PROFILE_FLYWAY_PASSWORD")';
+              ALTER USER profile_write WITH PASSWORD '$(esc "$PROFILE_WRITE_PASSWORD")';
+              ALTER USER profile_read WITH PASSWORD '$(esc "$PROFILE_READ_PASSWORD")';
+
+              -- Assign roles
+              GRANT blog_flyway_role TO blog_flyway;
+              GRANT blog_write_role TO blog_write;
+              GRANT blog_read_role TO blog_read;
+              GRANT profile_flyway_role TO profile_flyway;
+              GRANT profile_write_role TO profile_write;
+              GRANT profile_read_role TO profile_read;
+
+              -- Set default search paths
+              ALTER USER blog_flyway SET search_path TO blog,public;
+              ALTER USER blog_write SET search_path TO blog,public;
+              ALTER USER blog_read SET search_path TO blog,public;
+              ALTER USER profile_flyway SET search_path TO profile,public;
+              ALTER USER profile_write SET search_path TO profile,public;
+              ALTER USER profile_read SET search_path TO profile,public;
+              EOSQL
 
               echo "[$(date)] User provisioning complete."
           env:
