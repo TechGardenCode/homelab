@@ -5,6 +5,8 @@ registry: noop
 extraArgs:
   - "--annotation-filter=dns.kian.sh/provider=cloudflare"
   - "--cloudflare-proxied"
+  - "--default-targets=9a3deae9-8e4e-4017-93c1-474c61e52f19.cfargotunnel.com"
+  - "--force-default-targets"
 
 sources:
   - gateway-httproute
