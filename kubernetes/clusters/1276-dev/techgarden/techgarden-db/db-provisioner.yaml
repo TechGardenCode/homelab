@@ -59,6 +59,10 @@ spec:
               ALTER ROLE profile_flyway SET search_path TO profile,public;
               ALTER ROLE profile_write SET search_path TO profile,public;
               ALTER ROLE profile_read SET search_path TO profile,public;
+              -- Grant DML on existing tables (DEFAULT PRIVILEGES only covers future tables)
+              GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO blog_write_role, profile_write_role;
+              GRANT SELECT ON ALL TABLES IN SCHEMA public TO blog_read_role, profile_read_role;
+              GRANT USAGE ON ALL SEQUENCES IN SCHEMA public TO blog_write_role, profile_write_role;
               EOSQL
 
               echo "[$(date)] User provisioning complete."
