@@ -11,4 +11,6 @@ helmCharts:
 
 resources:
   - base/externalsecret.yaml
+  - base/externalsecret-realm.yaml
+  - base/realm-configmap.yaml
   - base/httproute.yaml
