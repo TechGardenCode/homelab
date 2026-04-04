@@ -29,38 +29,36 @@ spec:
 
               echo "[$(date)] Provisioning techgarden-db users..."
 
-              psql -h "$HOST" -U postgres -d techgarden <<EOSQL
-              -- Create login users idempotently
-              CREATE ROLE IF NOT EXISTS blog_flyway LOGIN;
-              CREATE ROLE IF NOT EXISTS blog_write LOGIN;
-              CREATE ROLE IF NOT EXISTS blog_read LOGIN;
-              CREATE ROLE IF NOT EXISTS profile_flyway LOGIN;
-              CREATE ROLE IF NOT EXISTS profile_write LOGIN;
-              CREATE ROLE IF NOT EXISTS profile_read LOGIN;
+              # Phase 1: Create roles (ignore 'already exists' errors)
+              psql -h "$HOST" -U postgres -d techgarden --set ON_ERROR_STOP=off <<EOSQL
+              CREATE ROLE blog_flyway LOGIN;
+              CREATE ROLE blog_write LOGIN;
+              CREATE ROLE blog_read LOGIN;
+              CREATE ROLE profile_flyway LOGIN;
+              CREATE ROLE profile_write LOGIN;
+              CREATE ROLE profile_read LOGIN;
+              EOSQL
 
-              -- Set passwords
-              ALTER USER blog_flyway WITH PASSWORD '$(esc "$BLOG_FLYWAY_PASSWORD")';
-              ALTER USER blog_write WITH PASSWORD '$(esc "$BLOG_WRITE_PASSWORD")';
-              ALTER USER blog_read WITH PASSWORD '$(esc "$BLOG_READ_PASSWORD")';
-              ALTER USER profile_flyway WITH PASSWORD '$(esc "$PROFILE_FLYWAY_PASSWORD")';
-              ALTER USER profile_write WITH PASSWORD '$(esc "$PROFILE_WRITE_PASSWORD")';
-              ALTER USER profile_read WITH PASSWORD '$(esc "$PROFILE_READ_PASSWORD")';
-
-              -- Assign roles
+              # Phase 2: Set passwords, grants, search paths (must succeed)
+              psql -h "$HOST" -U postgres -d techgarden --set ON_ERROR_STOP=on <<EOSQL
+              ALTER ROLE blog_flyway WITH PASSWORD '$(esc "$BLOG_FLYWAY_PASSWORD")';
+              ALTER ROLE blog_write WITH PASSWORD '$(esc "$BLOG_WRITE_PASSWORD")';
+              ALTER ROLE blog_read WITH PASSWORD '$(esc "$BLOG_READ_PASSWORD")';
+              ALTER ROLE profile_flyway WITH PASSWORD '$(esc "$PROFILE_FLYWAY_PASSWORD")';
+              ALTER ROLE profile_write WITH PASSWORD '$(esc "$PROFILE_WRITE_PASSWORD")';
+              ALTER ROLE profile_read WITH PASSWORD '$(esc "$PROFILE_READ_PASSWORD")';
               GRANT blog_flyway_role TO blog_flyway;
               GRANT blog_write_role TO blog_write;
               GRANT blog_read_role TO blog_read;
               GRANT profile_flyway_role TO profile_flyway;
               GRANT profile_write_role TO profile_write;
               GRANT profile_read_role TO profile_read;
-
-              -- Set default search paths
-              ALTER USER blog_flyway SET search_path TO blog,public;
-              ALTER USER blog_write SET search_path TO blog,public;
-              ALTER USER blog_read SET search_path TO blog,public;
-              ALTER USER profile_flyway SET search_path TO profile,public;
-              ALTER USER profile_write SET search_path TO profile,public;
-              ALTER USER profile_read SET search_path TO profile,public;
+              ALTER ROLE blog_flyway SET search_path TO blog,public;
+              ALTER ROLE blog_write SET search_path TO blog,public;
+              ALTER ROLE blog_read SET search_path TO blog,public;
+              ALTER ROLE profile_flyway SET search_path TO profile,public;
+              ALTER ROLE profile_write SET search_path TO profile,public;
+              ALTER ROLE profile_read SET search_path TO profile,public;
               EOSQL
 
               echo "[$(date)] User provisioning complete."
