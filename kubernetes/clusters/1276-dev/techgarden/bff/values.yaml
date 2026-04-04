@@ -7,12 +7,12 @@ ports:
 envs:
   - LOGGING_LEVEL_ROOT: debug
   - SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_KEYCLOAK_ISSUER_URI: https://sso.dev.techgarden.gg/realms/techgarden
-  - REDIS_HOST: redis.techgarden.svc.cluster.local
+  - SPRING_DATA_REDIS_HOST: redis.techgarden.svc.cluster.local
   - BFF_SERVICES_PROFILE: http://techgarden-profile:8080
   - KEYCLOAK_TOKEN_ENDPOINT: https://sso.dev.techgarden.gg/realms/techgarden/protocol/openid-connect/token
 secretEnvs:
   bff:
     CLIENT_SECRET: CLIENT_SECRET
-    REDIS_PASSWORD: REDIS_PASSWORD
+    SPRING_DATA_REDIS_PASSWORD: REDIS_PASSWORD
 health:
   path: /actuator/health
