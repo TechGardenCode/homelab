@@ -38,9 +38,17 @@ data:
     ALTER DEFAULT PRIVILEGES IN SCHEMA profile GRANT INSERT, UPDATE, DELETE ON TABLES TO profile_write_role;
     ALTER DEFAULT PRIVILEGES IN SCHEMA profile GRANT USAGE ON SEQUENCES TO profile_write_role;
 
-    -- Flyway roles: inherit write + DDL (CREATE on schema)
+    -- Public schema access (Hibernate creates tables in public by default)
+    GRANT USAGE, CREATE ON SCHEMA public TO blog_write_role, profile_write_role;
+    ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO blog_read_role, profile_read_role;
+    ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT INSERT, UPDATE, DELETE ON TABLES TO blog_write_role, profile_write_role;
+    ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT USAGE ON SEQUENCES TO blog_write_role, profile_write_role;
+
+    -- Flyway roles: inherit write + DDL (CREATE on all schemas)
     GRANT blog_write_role TO blog_flyway_role;
     GRANT CREATE ON SCHEMA blog TO blog_flyway_role;
+    GRANT CREATE ON SCHEMA public TO blog_flyway_role;
 
     GRANT profile_write_role TO profile_flyway_role;
     GRANT CREATE ON SCHEMA profile TO profile_flyway_role;
+    GRANT CREATE ON SCHEMA public TO profile_flyway_role;
