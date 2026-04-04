@@ -1,0 +1,40 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: keycloak-realm-config
+  namespace: keycloak
+data:
+  techgarden-realm.json: |
+    {
+      "realm": "techgarden",
+      "enabled": true,
+      "registrationAllowed": false,
+      "clients": [
+        {
+          "clientId": "bff",
+          "enabled": true,
+          "clientAuthenticatorType": "client-secret",
+          "secret": "${KC_CLIENT_BFF_SECRET}",
+          "protocol": "openid-connect",
+          "publicClient": false,
+          "standardFlowEnabled": true,
+          "directAccessGrantsEnabled": false,
+          "serviceAccountsEnabled": false,
+          "redirectUris": ["*"],
+          "webOrigins": ["*"],
+          "defaultClientScopes": ["openid", "profile", "email", "offline_access"]
+        },
+        {
+          "clientId": "svc.profile",
+          "enabled": true,
+          "clientAuthenticatorType": "client-secret",
+          "secret": "${KC_CLIENT_PROFILE_SECRET}",
+          "protocol": "openid-connect",
+          "publicClient": false,
+          "standardFlowEnabled": false,
+          "directAccessGrantsEnabled": false,
+          "serviceAccountsEnabled": true
+        }
+      ]
+    }
