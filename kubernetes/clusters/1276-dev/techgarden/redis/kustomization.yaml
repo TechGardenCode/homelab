@@ -9,5 +9,5 @@ helmCharts:
     version: 0.26.8
     releaseName: redis
     repo: oci://registry-1.docker.io/cloudpirates
-    namespace: redis
+    namespace: techgarden
     valuesFile: values.yaml
