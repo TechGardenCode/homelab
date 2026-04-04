@@ -44,9 +44,9 @@ health:
   path: /
 
 # Exposure tiers:
-#   Tier 1 (Internal):  gateway.internal.enabled: true (default)
-#   Tier 2 (Public):    gateway.public.enabled: true (Cloudflare IPs only)
-#   Tier 3 (Tunnel):    Tier 2 + entry in cluster's cloudflared configmap
+#   Tier 1 (Internal):  gateway.internal.enabled: true (default) → A record in Technitium
+#   Tier 2 (Public):    gateway.public.enabled: true → CNAME in Cloudflare (proxied)
+#   Tier 3 (Tunnel):    Tier 2 + wildcard cloudflared route (automatic for *.techgarden.gg etc)
 httpRoute:
   enabled: false
   hostname: ""
@@ -62,6 +62,7 @@ gateway:
   public:
     enabled: false
     name: eg-public
+    tunnelTarget: ""
 
 backendTrafficPolicy:
   enabled: false

@@ -5,10 +5,15 @@ metadata:
   name: {{ include "generic-service.name" . }}-public
   labels:
     {{- include "generic-service.labels" . | nindent 4 }}
-  {{- with .Values.httpRoute.annotations }}
   annotations:
+    external-dns.alpha.kubernetes.io/controller: cloudflare
+    external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
+    {{- with .Values.gateway.public.tunnelTarget }}
+    external-dns.alpha.kubernetes.io/target: {{ . }}
+    {{- end }}
+    {{- with .Values.httpRoute.annotations }}
     {{- toYaml . | nindent 4 }}
-  {{- end }}
+    {{- end }}
 spec:
   parentRefs:
     - name: {{ .Values.gateway.public.name }}

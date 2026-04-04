@@ -1,0 +1,19 @@
+policy: upsert-only
+
+extraArgs:
+  - "--annotation-filter=external-dns.alpha.kubernetes.io/controller=cloudflare"
+  - "--txt-owner-id=homelab-cloudflare"
+  - "--cloudflare-proxied"
+
+sources:
+  - gateway-httproute
+
+provider:
+  name: cloudflare
+
+env:
+  - name: CF_API_TOKEN
+    valueFrom:
+      secretKeyRef:
+        name: cloudflare-external-dns
+        key: CF_API_TOKEN

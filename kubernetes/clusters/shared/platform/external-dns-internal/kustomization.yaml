@@ -8,7 +8,7 @@ helmCharts:
   - repo: https://kubernetes-sigs.github.io/external-dns
     name: external-dns
     version: 1.20.0
-    releaseName: external-dns-pihole-n1
+    releaseName: external-dns-internal
     namespace: platform
     includeCRDs: true
     valuesFile: values.yaml

@@ -5,10 +5,11 @@ metadata:
   name: {{ include "generic-service.name" . }}
   labels:
     {{- include "generic-service.labels" . | nindent 4 }}
-  {{- with .Values.httpRoute.annotations }}
   annotations:
+    external-dns.alpha.kubernetes.io/controller: internal
+    {{- with .Values.httpRoute.annotations }}
     {{- toYaml . | nindent 4 }}
-  {{- end }}
+    {{- end }}
 spec:
   parentRefs:
     - name: {{ .Values.gateway.internal.name }}

@@ -2,6 +2,8 @@ policy: upsert-only
 
 extraArgs:
   - "--pihole-api-version=6"
+  - "--annotation-filter=external-dns.alpha.kubernetes.io/controller=internal"
+  - "--txt-owner-id=homelab-internal"
 
 sources:
   - service
@@ -15,10 +17,10 @@ env:
   - name: EXTERNAL_DNS_PIHOLE_PASSWORD
     valueFrom:
       secretKeyRef:
-        name: pihole-n1
+        name: technitium-dns
         key: EXTERNAL_DNS_PIHOLE_PASSWORD
   - name: EXTERNAL_DNS_PIHOLE_SERVER
     valueFrom:
       secretKeyRef:
-        name: pihole-n1
+        name: technitium-dns
         key: EXTERNAL_DNS_PIHOLE_SERVER

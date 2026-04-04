@@ -19,3 +19,4 @@ gateway:
     enabled: true
   public:
     enabled: true
+    tunnelTarget: 9221faf4-41f8-4aa6-9cbc-1b757c2a2c07.cfargotunnel.com
