@@ -57,7 +57,7 @@ data:
           "serviceAccountsEnabled": false,
           "redirectUris": ["*"],
           "webOrigins": ["*"],
-          "defaultClientScopes": ["openid", "profile", "email", "offline_access", "api.blog", "api.profile"]
+          "defaultClientScopes": ["openid", "basic", "profile", "email", "offline_access", "api.blog", "api.profile"]
         },
         {
           "clientId": "svc.profile",
@@ -69,7 +69,7 @@ data:
           "standardFlowEnabled": false,
           "directAccessGrantsEnabled": false,
           "serviceAccountsEnabled": true,
-          "defaultClientScopes": ["openid", "api.blog", "api.profile"]
+          "defaultClientScopes": ["openid", "basic", "api.blog", "api.profile"]
         }
       ]
     }
