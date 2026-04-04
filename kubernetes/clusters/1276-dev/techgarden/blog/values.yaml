@@ -17,6 +17,7 @@ envs:
     FLYWAY_SCHEMAS: blog
     APP_PROFILE_URL: http://techgarden-profile:8080
     KEYCLOAK_ISSUER_URI: https://sso.dev.techgarden.gg/realms/techgarden
+    SPRING_JPA_HIBERNATE_DDL_AUTO: update
 secretEnvs:
   blog:
     PG_PASSWORD: write-password
