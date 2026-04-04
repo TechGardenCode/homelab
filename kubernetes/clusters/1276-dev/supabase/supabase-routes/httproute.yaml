@@ -5,7 +5,7 @@ metadata:
   name: supabase
   namespace: supabase
   annotations:
-    external-dns.alpha.kubernetes.io/controller: internal
+    dns.kian.sh/provider: internal
     external-dns.alpha.kubernetes.io/hostname: supabase.dev.kian.sh
     external-dns.alpha.kubernetes.io/ingress-hostname-source: annotation-only
 spec:

@@ -1,9 +1,10 @@
 policy: upsert-only
 
+registry: noop
+
 extraArgs:
   - "--pihole-api-version=6"
-  - "--annotation-filter=external-dns.alpha.kubernetes.io/controller=internal"
-  - "--txt-owner-id=homelab-internal"
+  - "--annotation-filter=dns.kian.sh/provider=internal"
 
 sources:
   - service

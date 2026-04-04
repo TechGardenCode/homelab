@@ -1,8 +1,9 @@
 policy: upsert-only
 
+registry: noop
+
 extraArgs:
-  - "--annotation-filter=external-dns.alpha.kubernetes.io/controller=cloudflare"
-  - "--txt-owner-id=homelab-cloudflare"
+  - "--annotation-filter=dns.kian.sh/provider=cloudflare"
   - "--cloudflare-proxied"
 
 sources:
