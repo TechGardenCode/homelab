@@ -1,0 +1,39 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: keycloak-db
+  namespace: keycloak
+spec:
+  instances: 2
+
+  enableSuperuserAccess: true
+  superuserSecret:
+    name: keycloak-db-superuser
+
+  postgresql:
+    pg_hba:
+      - host all postgres all scram-sha-256
+      - host all all all scram-sha-256
+
+  storage:
+    size: 10Gi
+    storageClass: freenas-iscsi-ssd-csi
+
+  bootstrap:
+    initdb:
+      database: keycloak
+      owner: keycloak
+      secret:
+        name: keycloak-db-app-credentials
+
+  monitoring:
+    enablePodMonitor: true
+    disableDefaultQueries: false
+
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      memory: 1Gi

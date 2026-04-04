@@ -1,0 +1,53 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: keycloak-db-backup
+  namespace: keycloak
+  labels:
+    app.kubernetes.io/name: keycloak-db-backup
+spec:
+  schedule: "0 3 * * *"
+  timeZone: Europe/Berlin
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 2
+  jobTemplate:
+    spec:
+      completions: 1
+      parallelism: 1
+      template:
+        spec:
+          restartPolicy: OnFailure
+          terminationGracePeriodSeconds: 30
+          containers:
+            - name: pg-backup
+              image: postgres:17
+              command:
+                - /bin/bash
+                - -c
+                - |
+                  set -euo pipefail
+                  TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+                  HOST="keycloak-db-rw.keycloak.svc"
+                  mkdir -p /backups/keycloak-db
+                  echo "[$(date)] Starting Keycloak database backup..."
+                  pg_dump -h "$HOST" -U postgres -Fc keycloak \
+                    > /backups/keycloak-db/keycloak-${TIMESTAMP}.dump
+                  echo "[$(date)] Done: keycloak-${TIMESTAMP}.dump"
+                  echo "[$(date)] Cleaning up backups older than 7 days..."
+                  find /backups/keycloak-db -name "*.dump" -mtime +7 -delete
+                  echo "[$(date)] Done."
+              env:
+                - name: PGPASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: keycloak-db-superuser
+                      key: password
+              volumeMounts:
+                - name: backups
+                  mountPath: /backups
+          volumes:
+            - name: backups
+              persistentVolumeClaim:
+                claimName: keycloak-backups

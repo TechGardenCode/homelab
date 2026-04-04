@@ -1,0 +1,62 @@
+fullnameOverride: keycloak
+
+image:
+  repository: quay.io/keycloak/keycloak
+  tag: "26.2"
+
+command:
+  - "/opt/keycloak/bin/kc.sh"
+args:
+  - "start"
+
+replicas: 2
+
+database:
+  vendor: postgres
+  hostname: keycloak-db-rw.keycloak.svc
+  port: 5432
+  database: keycloak
+  username: keycloak
+  existingSecret: keycloak-db-app-credentials
+  existingSecretKey: password
+
+proxy:
+  enabled: true
+  mode: xforwarded
+
+http:
+  relativePath: "/"
+
+extraEnv: |
+  - name: KC_HOSTNAME
+    value: sso.techgarden.gg
+  - name: KC_BOOTSTRAP_ADMIN_USERNAME
+    valueFrom:
+      secretKeyRef:
+        name: keycloak-admin
+        key: username
+  - name: KC_BOOTSTRAP_ADMIN_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: keycloak-admin
+        key: password
+
+resources:
+  requests:
+    cpu: 500m
+    memory: 1Gi
+  limits:
+    memory: 2Gi
+
+ingress:
+  enabled: false
+
+dbchecker:
+  enabled: true
+
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+
+podSecurityContext:
+  fsGroup: 1000
