@@ -10,6 +10,40 @@ data:
       "realm": "techgarden",
       "enabled": true,
       "registrationAllowed": false,
+      "clientScopes": [
+        {
+          "name": "api.blog",
+          "protocol": "openid-connect",
+          "protocolMappers": [
+            {
+              "name": "api.blog-audience",
+              "protocol": "openid-connect",
+              "protocolMapper": "oidc-audience-mapper",
+              "config": {
+                "included.custom.audience": "api.blog",
+                "access.token.claim": "true",
+                "id.token.claim": "false"
+              }
+            }
+          ]
+        },
+        {
+          "name": "api.profile",
+          "protocol": "openid-connect",
+          "protocolMappers": [
+            {
+              "name": "api.profile-audience",
+              "protocol": "openid-connect",
+              "protocolMapper": "oidc-audience-mapper",
+              "config": {
+                "included.custom.audience": "api.profile",
+                "access.token.claim": "true",
+                "id.token.claim": "false"
+              }
+            }
+          ]
+        }
+      ],
       "clients": [
         {
           "clientId": "bff",
@@ -23,7 +57,7 @@ data:
           "serviceAccountsEnabled": false,
           "redirectUris": ["*"],
           "webOrigins": ["*"],
-          "defaultClientScopes": ["openid", "profile", "email", "offline_access"]
+          "defaultClientScopes": ["openid", "profile", "email", "offline_access", "api.blog", "api.profile"]
         },
         {
           "clientId": "svc.profile",
@@ -34,7 +68,8 @@ data:
           "publicClient": false,
           "standardFlowEnabled": false,
           "directAccessGrantsEnabled": false,
-          "serviceAccountsEnabled": true
+          "serviceAccountsEnabled": true,
+          "defaultClientScopes": ["openid", "api.blog", "api.profile"]
         }
       ]
     }
