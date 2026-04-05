@@ -12,22 +12,6 @@ data:
       "registrationAllowed": false,
       "clientScopes": [
         {
-          "name": "api.hausparty",
-          "protocol": "openid-connect",
-          "protocolMappers": [
-            {
-              "name": "api.hausparty-audience",
-              "protocol": "openid-connect",
-              "protocolMapper": "oidc-audience-mapper",
-              "config": {
-                "included.custom.audience": "api.hausparty",
-                "access.token.claim": "true",
-                "id.token.claim": "false"
-              }
-            }
-          ]
-        },
-        {
           "name": "api.blog",
           "protocol": "openid-connect",
           "protocolMappers": [
@@ -62,20 +46,6 @@ data:
       ],
       "clients": [
         {
-          "clientId": "hausparty",
-          "enabled": true,
-          "clientAuthenticatorType": "client-secret",
-          "secret": "${KC_CLIENT_HAUSPARTY_SECRET}",
-          "protocol": "openid-connect",
-          "publicClient": false,
-          "standardFlowEnabled": true,
-          "directAccessGrantsEnabled": false,
-          "serviceAccountsEnabled": false,
-          "redirectUris": ["https://hausparty.dev.techgarden.gg/*"],
-          "webOrigins": ["https://hausparty.dev.techgarden.gg"],
-          "defaultClientScopes": ["openid", "basic", "profile", "email", "api.hausparty"]
-        },
-        {
           "clientId": "bff",
           "enabled": true,
           "clientAuthenticatorType": "client-secret",
@@ -100,6 +70,48 @@ data:
           "directAccessGrantsEnabled": false,
           "serviceAccountsEnabled": true,
           "defaultClientScopes": ["openid", "basic", "api.blog", "api.profile"]
+        }
+      ]
+    }
+  hausparty-realm.json: |
+    {
+      "realm": "hausparty",
+      "enabled": true,
+      "registrationAllowed": false,
+      "roles": {
+        "realm": [
+          { "name": "site_admin", "description": "Hausparty site administrator" }
+        ]
+      },
+      "clients": [
+        {
+          "clientId": "hausparty",
+          "enabled": true,
+          "clientAuthenticatorType": "client-secret",
+          "secret": "${KC_CLIENT_HAUSPARTY_SECRET}",
+          "protocol": "openid-connect",
+          "publicClient": false,
+          "standardFlowEnabled": true,
+          "directAccessGrantsEnabled": false,
+          "serviceAccountsEnabled": false,
+          "redirectUris": ["https://hausparty.dev.techgarden.gg/*"],
+          "webOrigins": ["https://hausparty.dev.techgarden.gg"],
+          "defaultClientScopes": ["openid", "basic", "profile", "email"]
+        }
+      ],
+      "users": [
+        {
+          "username": "admin",
+          "email": "admin@hausparty.dev",
+          "enabled": true,
+          "credentials": [{ "type": "password", "value": "admin", "temporary": true }],
+          "realmRoles": ["site_admin"]
+        },
+        {
+          "username": "testuser",
+          "email": "testuser@hausparty.dev",
+          "enabled": true,
+          "credentials": [{ "type": "password", "value": "testuser", "temporary": true }]
         }
       ]
     }

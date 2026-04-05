@@ -22,7 +22,7 @@ resources:
     memory: 256Mi
 envs:
   - AUTH_KEYCLOAK_ID: "hausparty"
-  - AUTH_KEYCLOAK_ISSUER: "https://sso.dev.techgarden.gg/realms/techgarden"
+  - AUTH_KEYCLOAK_ISSUER: "https://sso.dev.techgarden.gg/realms/hausparty"
   - AUTH_URL: "https://hausparty.dev.techgarden.gg"
   - AUTH_TRUST_HOST: "true"
   - PG_HOSTNAME: "hausparty-db-rw.hausparty.svc.cluster.local"
