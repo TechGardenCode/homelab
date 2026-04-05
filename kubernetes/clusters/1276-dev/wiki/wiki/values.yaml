@@ -1,5 +1,5 @@
 image:
-  repository: "ghcr.io/techgardencode/kian-sh-docs"
+  repository: "ghcr.io/techgardencode/wiki"
   tag: "e26891f1e207b53e8b0446568e2ab64b38d888d2"
 imagePullSecrets:
   - name: ghcr-credentials
