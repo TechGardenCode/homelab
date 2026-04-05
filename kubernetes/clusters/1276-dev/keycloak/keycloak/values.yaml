@@ -66,6 +66,21 @@ extraEnv: |
       secretKeyRef:
         name: keycloak-realm-secrets
         key: hausparty-client-secret
+  - name: KC_USER_TECHGARDENCODE_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: keycloak-realm-secrets
+        key: user-techgardencode-password
+  - name: KC_USER_TECHGARDENADMIN_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: keycloak-realm-secrets
+        key: user-techgardenadmin-password
+  - name: KC_USER_TECHGARDENTEST_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: keycloak-realm-secrets
+        key: user-techgardentest-password
 
 resources:
   requests:

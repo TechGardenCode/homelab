@@ -44,6 +44,11 @@ data:
           ]
         }
       ],
+      "roles": {
+        "realm": [
+          { "name": "app_admin", "description": "Application administrator" }
+        ]
+      },
       "clients": [
         {
           "clientId": "bff",
@@ -70,6 +75,36 @@ data:
           "directAccessGrantsEnabled": false,
           "serviceAccountsEnabled": true,
           "defaultClientScopes": ["openid", "basic", "api.blog", "api.profile"]
+        }
+      ],
+      "users": [
+        {
+          "username": "techgardencode",
+          "email": "techgardencode+dev@techgarden.gg",
+          "firstName": "TechGarden",
+          "lastName": "Code",
+          "enabled": true,
+          "credentials": [{ "type": "password", "value": "${KC_USER_TECHGARDENCODE_PASSWORD}", "temporary": false }],
+          "clientRoles": {
+            "realm-management": ["realm-admin"]
+          }
+        },
+        {
+          "username": "techgardenadmin",
+          "email": "techgardenadmin+dev@techgarden.gg",
+          "firstName": "TechGarden",
+          "lastName": "Admin",
+          "enabled": true,
+          "credentials": [{ "type": "password", "value": "${KC_USER_TECHGARDENADMIN_PASSWORD}", "temporary": false }],
+          "realmRoles": ["app_admin"]
+        },
+        {
+          "username": "techgardentest",
+          "email": "techgardentest+dev@techgarden.gg",
+          "firstName": "TechGarden",
+          "lastName": "Test",
+          "enabled": true,
+          "credentials": [{ "type": "password", "value": "${KC_USER_TECHGARDENTEST_PASSWORD}", "temporary": false }]
         }
       ]
     }
@@ -101,17 +136,33 @@ data:
       ],
       "users": [
         {
-          "username": "admin",
-          "email": "admin@hausparty.dev",
+          "username": "techgardencode",
+          "email": "techgardencode+dev@techgarden.gg",
+          "firstName": "TechGarden",
+          "lastName": "Code",
           "enabled": true,
-          "credentials": [{ "type": "password", "value": "admin", "temporary": true }],
+          "credentials": [{ "type": "password", "value": "${KC_USER_TECHGARDENCODE_PASSWORD}", "temporary": false }],
+          "realmRoles": ["site_admin"],
+          "clientRoles": {
+            "realm-management": ["realm-admin"]
+          }
+        },
+        {
+          "username": "techgardenadmin",
+          "email": "techgardenadmin+dev@techgarden.gg",
+          "firstName": "TechGarden",
+          "lastName": "Admin",
+          "enabled": true,
+          "credentials": [{ "type": "password", "value": "${KC_USER_TECHGARDENADMIN_PASSWORD}", "temporary": false }],
           "realmRoles": ["site_admin"]
         },
         {
-          "username": "testuser",
-          "email": "testuser@hausparty.dev",
+          "username": "techgardentest",
+          "email": "techgardentest+dev@techgarden.gg",
+          "firstName": "TechGarden",
+          "lastName": "Test",
           "enabled": true,
-          "credentials": [{ "type": "password", "value": "testuser", "temporary": true }]
+          "credentials": [{ "type": "password", "value": "${KC_USER_TECHGARDENTEST_PASSWORD}", "temporary": false }]
         }
       ]
     }
