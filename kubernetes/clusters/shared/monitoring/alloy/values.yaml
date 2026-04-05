@@ -53,7 +53,7 @@ alloy:
       }
 
       // Add cluster label to kube-state-metrics
-      // Most KSM metrics lack a "node" label, so fall back to the Alloy
+      // KSM pod metrics lack a "node" label, so fall back to the Alloy
       // pod's own node name (K8S_NODE_NAME) to derive the cluster.
       prometheus.relabel "add_cluster" {
         forward_to = [prometheus.remote_write.lgtm.receiver]
@@ -70,6 +70,10 @@ alloy:
           source_labels = ["__tmp_node"]
           regex         = "(.+)-s\\d+"
           target_label  = "cluster"
+        }
+        rule {
+          action       = "labeldrop"
+          regex        = "__tmp_node"
         }
       }
 
