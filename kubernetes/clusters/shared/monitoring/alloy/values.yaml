@@ -27,6 +27,9 @@ alloy:
         }]
         forward_to = [prometheus.relabel.add_cluster.receiver]
         scrape_interval = "30s"
+        clustering {
+          enabled = true
+        }
       }
 
       prometheus.scrape "kubelet" {
@@ -119,6 +122,9 @@ alloy:
         }
         external_labels = {}
       }
+
+  clustering:
+    enabled: true
 
   resources:
     requests:
