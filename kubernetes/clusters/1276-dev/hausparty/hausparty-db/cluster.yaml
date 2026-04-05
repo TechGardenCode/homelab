@@ -26,10 +26,9 @@ spec:
       owner: hausparty_app
       secret:
         name: hausparty-db-app-credentials
-      postInitSQLRefs:
-        configMapRefs:
-          - name: hausparty-db-init-sql
-            key: 01-extensions.sql
+      postInitSQL:
+        - CREATE EXTENSION IF NOT EXISTS pg_trgm
+        - CREATE EXTENSION IF NOT EXISTS unaccent
 
   monitoring:
     enablePodMonitor: false
