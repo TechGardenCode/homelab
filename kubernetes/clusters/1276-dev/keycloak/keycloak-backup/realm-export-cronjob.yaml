@@ -22,12 +22,14 @@ spec:
           terminationGracePeriodSeconds: 30
           containers:
             - name: realm-export
-              image: curlimages/curl:8.12.1
+              image: alpine:3.21
               command:
                 - /bin/sh
                 - -c
                 - |
                   set -eu
+                  apk add --no-cache -q curl jq > /dev/null 2>&1
+
                   TIMESTAMP=$(date +%Y%m%d-%H%M%S)
                   KC_URL="http://keycloak-http.keycloak.svc:80"
                   mkdir -p /backups/realm-exports
@@ -38,18 +40,20 @@ spec:
                     -d "client_id=admin-cli" \
                     -d "username=${KC_ADMIN_USERNAME}" \
                     -d "password=${KC_ADMIN_PASSWORD}" \
-                    -d "grant_type=password" | sed -n 's/.*"access_token":"\([^"]*\)".*/\1/p')
+                    -d "grant_type=password" | jq -r '.access_token')
 
-                  if [ -z "$TOKEN" ]; then
+                  if [ -z "$TOKEN" ] || [ "$TOKEN" = "null" ]; then
                     echo "[$(date)] ERROR: Failed to authenticate"
                     exit 1
                   fi
 
                   echo "[$(date)] Exporting realms..."
-                  for REALM in $(curl -sf -H "Authorization: Bearer ${TOKEN}" \
-                    "${KC_URL}/admin/realms" | sed 's/.*"realm":"\([^"]*\)".*/\1/g' | tr ',' '\n'); do
+                  REALMS=$(curl -sf -H "Authorization: Bearer ${TOKEN}" \
+                    "${KC_URL}/admin/realms" | jq -r '.[].realm')
+
+                  for REALM in $REALMS; do
                     echo "[$(date)] Exporting realm: ${REALM}"
-                    curl -sf -H "Authorization: Bearer ${TOKEN}" \
+                    curl -sf -X POST -H "Authorization: Bearer ${TOKEN}" \
                       "${KC_URL}/admin/realms/${REALM}/partial-export?exportClients=true&exportGroupsAndRoles=true" \
                       -o "/backups/realm-exports/${REALM}-${TIMESTAMP}.json"
                   done

@@ -22,7 +22,7 @@ spec:
           terminationGracePeriodSeconds: 30
           containers:
             - name: pg-backup
-              image: postgres:17
+              image: postgres:18
               command:
                 - /bin/bash
                 - -c
