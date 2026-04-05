@@ -76,11 +76,11 @@ extraEnv: |
       secretKeyRef:
         name: keycloak-realm-secrets
         key: user-techgardenadmin-password
-  - name: KC_USER_TECHGARDENTEST_PASSWORD
+  - name: KC_USER_TECHGARDENUSER_PASSWORD
     valueFrom:
       secretKeyRef:
         name: keycloak-realm-secrets
-        key: user-techgardentest-password
+        key: user-techgardenuser-password
 
 resources:
   requests:

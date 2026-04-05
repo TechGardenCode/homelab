@@ -85,6 +85,7 @@ data:
           "lastName": "Code",
           "enabled": true,
           "credentials": [{ "type": "password", "value": "${KC_USER_TECHGARDENCODE_PASSWORD}", "temporary": false }],
+          "realmRoles": ["app_admin"],
           "clientRoles": {
             "realm-management": ["realm-admin"]
           }
@@ -99,12 +100,12 @@ data:
           "realmRoles": ["app_admin"]
         },
         {
-          "username": "techgardentest",
-          "email": "techgardentest+dev@techgarden.gg",
+          "username": "techgardenuser",
+          "email": "techgardenuser+dev@techgarden.gg",
           "firstName": "TechGarden",
-          "lastName": "Test",
+          "lastName": "User",
           "enabled": true,
-          "credentials": [{ "type": "password", "value": "${KC_USER_TECHGARDENTEST_PASSWORD}", "temporary": false }]
+          "credentials": [{ "type": "password", "value": "${KC_USER_TECHGARDENUSER_PASSWORD}", "temporary": false }]
         }
       ]
     }
@@ -157,12 +158,12 @@ data:
           "realmRoles": ["site_admin"]
         },
         {
-          "username": "techgardentest",
-          "email": "techgardentest+dev@techgarden.gg",
+          "username": "techgardenuser",
+          "email": "techgardenuser+dev@techgarden.gg",
           "firstName": "TechGarden",
-          "lastName": "Test",
+          "lastName": "User",
           "enabled": true,
-          "credentials": [{ "type": "password", "value": "${KC_USER_TECHGARDENTEST_PASSWORD}", "temporary": false }]
+          "credentials": [{ "type": "password", "value": "${KC_USER_TECHGARDENUSER_PASSWORD}", "temporary": false }]
         }
       ]
     }
