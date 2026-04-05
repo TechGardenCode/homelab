@@ -7,7 +7,6 @@ ports:
 service:
   type: ClusterIP
 envs:
-  - LOGGING_LEVEL_ROOT: debug
   - SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_KEYCLOAK_ISSUER_URI: https://sso.techgarden.gg/realms/techgarden
   - REDIS_HOST: redis.techgarden.svc.cluster.local
   - BFF_SERVICES_PROFILE: http://techgarden-profile:8080
