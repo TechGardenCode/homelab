@@ -45,12 +45,3 @@ spec:
         certificateRefs:
           - kind: Secret
             name: eg-tls-cert
-    - name: postgres
-      protocol: TCP
-      port: 5432
-      allowedRoutes:
-        namespaces:
-          from: Selector
-          selector:
-            matchLabels:
-              gateway.kian.sh/tcp-access: "true"

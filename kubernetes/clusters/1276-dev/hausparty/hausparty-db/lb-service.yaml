@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: hausparty-db-lb
+  annotations:
+    metallb.io/loadBalancerIPs: "10.0.61.142"
+    dns.kian.sh/provider: internal
+    external-dns.alpha.kubernetes.io/hostname: db.hausparty.dev.techgarden.gg
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 5432
+      targetPort: 5432
+      protocol: TCP
+  selector:
+    cnpg.io/cluster: hausparty-db
+    role: primary

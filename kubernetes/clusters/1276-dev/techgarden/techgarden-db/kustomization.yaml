@@ -6,3 +6,4 @@ resources:
   - externalsecret.yaml
   - init-sql.yaml
   - db-provisioner.yaml
+  - lb-service.yaml
