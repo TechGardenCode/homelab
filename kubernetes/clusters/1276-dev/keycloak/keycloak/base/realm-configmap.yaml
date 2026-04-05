@@ -12,6 +12,22 @@ data:
       "registrationAllowed": false,
       "clientScopes": [
         {
+          "name": "api.hausparty",
+          "protocol": "openid-connect",
+          "protocolMappers": [
+            {
+              "name": "api.hausparty-audience",
+              "protocol": "openid-connect",
+              "protocolMapper": "oidc-audience-mapper",
+              "config": {
+                "included.custom.audience": "api.hausparty",
+                "access.token.claim": "true",
+                "id.token.claim": "false"
+              }
+            }
+          ]
+        },
+        {
           "name": "api.blog",
           "protocol": "openid-connect",
           "protocolMappers": [
@@ -45,6 +61,20 @@ data:
         }
       ],
       "clients": [
+        {
+          "clientId": "hausparty",
+          "enabled": true,
+          "clientAuthenticatorType": "client-secret",
+          "secret": "${KC_CLIENT_HAUSPARTY_SECRET}",
+          "protocol": "openid-connect",
+          "publicClient": false,
+          "standardFlowEnabled": true,
+          "directAccessGrantsEnabled": false,
+          "serviceAccountsEnabled": false,
+          "redirectUris": ["https://hausparty.dev.techgarden.gg/*"],
+          "webOrigins": ["https://hausparty.dev.techgarden.gg"],
+          "defaultClientScopes": ["openid", "basic", "profile", "email", "api.hausparty"]
+        },
         {
           "clientId": "bff",
           "enabled": true,

@@ -61,6 +61,11 @@ extraEnv: |
       secretKeyRef:
         name: keycloak-realm-secrets
         key: profile-client-secret
+  - name: KC_CLIENT_HAUSPARTY_SECRET
+    valueFrom:
+      secretKeyRef:
+        name: keycloak-realm-secrets
+        key: hausparty-client-secret
 
 resources:
   requests:

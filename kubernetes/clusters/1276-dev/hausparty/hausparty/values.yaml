@@ -21,11 +21,18 @@ resources:
   limits:
     memory: 256Mi
 envs:
-  - NEXT_PUBLIC_SUPABASE_URL: "https://supabase.dev.kian.sh"
-  - NODE_TLS_REJECT_UNAUTHORIZED: "0"
+  - AUTH_KEYCLOAK_ID: "hausparty"
+  - AUTH_KEYCLOAK_ISSUER: "https://sso.dev.techgarden.gg/realms/techgarden"
+  - AUTH_URL: "https://hausparty.dev.techgarden.gg"
+  - AUTH_TRUST_HOST: "true"
+  - PG_HOSTNAME: "hausparty-db-rw.hausparty.svc"
+  - PG_PORT: "5432"
+  - PG_DB: "hausparty"
+  - PG_USER: "hausparty_app"
 secretEnvs:
-  - NEXT_PUBLIC_SUPABASE_ANON_KEY: "anon-key"
-  - SUPABASE_SERVICE_ROLE_KEY: "service-role-key"
+  - AUTH_KEYCLOAK_SECRET: "keycloak-client-secret"
+  - AUTH_SECRET: "auth-secret"
+  - PG_PASSWORD: "pg-password"
   - ADMIN_API_KEY: "admin-api-key"
   - EDMTRAIN_API_KEY: "edmtrain-api-key"
 httpRoute:
