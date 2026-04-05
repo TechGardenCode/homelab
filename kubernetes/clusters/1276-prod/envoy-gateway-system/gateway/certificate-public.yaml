@@ -10,3 +10,4 @@ spec:
     kind: ClusterIssuer
   dnsNames:
     - "*.techgarden.gg"
+    - "techgarden.gg"
