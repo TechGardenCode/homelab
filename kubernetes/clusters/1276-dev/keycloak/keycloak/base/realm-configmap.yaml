@@ -94,8 +94,8 @@ data:
           "standardFlowEnabled": true,
           "directAccessGrantsEnabled": false,
           "serviceAccountsEnabled": false,
-          "redirectUris": ["https://hausparty.dev.techgarden.gg/*"],
-          "webOrigins": ["https://hausparty.dev.techgarden.gg"],
+          "redirectUris": ["https://hausparty.dev.techgarden.gg/*", "http://localhost:3000/*"],
+          "webOrigins": ["https://hausparty.dev.techgarden.gg", "http://localhost:3000"],
           "defaultClientScopes": ["openid", "basic", "profile", "email"]
         }
       ],
