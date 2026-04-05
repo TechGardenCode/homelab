@@ -1,6 +1,6 @@
 image:
   repository: "ghcr.io/techgardencode/hausparty"
-  tag: "b34c0773c90ad766f3eb4ab2261eba0011c2a014"
+  tag: "c2be457dc0650c2c09a06c079b73250101664218"
 imagePullSecrets:
   - name: ghcr-credentials
 ports:
