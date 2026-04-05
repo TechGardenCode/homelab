@@ -29,12 +29,10 @@ spec:
       postInitSQLRefs:
         configMapRefs:
           - name: hausparty-db-init-sql
-            key: 01-schema.sql
-          - name: hausparty-db-init-sql
-            key: 02-seed.sql
+            key: 01-extensions.sql
 
   monitoring:
-    enablePodMonitor: true
+    enablePodMonitor: false
     disableDefaultQueries: false
 
   resources:
