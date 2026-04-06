@@ -170,7 +170,7 @@ jobs:
           git push -f origin "$BRANCH"
 
           # Close existing promote PRs for this app
-          EXISTING=$(gh pr list --head "promote/${APP_NAME}-" --json number --jq '.[].number' 2>/dev/null || true)
+          EXISTING=$(gh pr list --search "head:promote/${APP_NAME}-" --json number --jq '.[].number' 2>/dev/null || true)
           for PR_NUM in $EXISTING; do
             gh pr close "$PR_NUM" --delete-branch 2>/dev/null || true
           done
