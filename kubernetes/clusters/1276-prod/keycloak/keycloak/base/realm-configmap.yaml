@@ -38,3 +38,36 @@ data:
         }
       ]
     }
+  hausparty-realm.json: |
+    {
+      "realm": "hausparty",
+      "enabled": true,
+      "registrationAllowed": false,
+      "sslRequired": "all",
+      "bruteForceProtected": true,
+      "failureFactor": 5,
+      "waitIncrementSeconds": 60,
+      "maxFailureWaitSeconds": 900,
+      "maxDeltaTimeSeconds": 43200,
+      "roles": {
+        "realm": [
+          { "name": "site_admin", "description": "Hausparty site administrator" }
+        ]
+      },
+      "clients": [
+        {
+          "clientId": "hausparty",
+          "enabled": true,
+          "clientAuthenticatorType": "client-secret",
+          "secret": "${KC_CLIENT_HAUSPARTY_SECRET}",
+          "protocol": "openid-connect",
+          "publicClient": false,
+          "standardFlowEnabled": true,
+          "directAccessGrantsEnabled": false,
+          "serviceAccountsEnabled": false,
+          "redirectUris": ["https://hausparty.techgarden.gg/*"],
+          "webOrigins": ["https://hausparty.techgarden.gg"],
+          "defaultClientScopes": ["openid", "basic", "profile", "email"]
+        }
+      ]
+    }

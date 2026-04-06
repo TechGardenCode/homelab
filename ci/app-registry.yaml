@@ -50,7 +50,10 @@ apps:
   hausparty:
     type: values
     paths:
-      - kubernetes/clusters/1276-dev/hausparty/hausparty/values.yaml
+      - path: kubernetes/clusters/1276-dev/hausparty/hausparty/values.yaml
+        env: dev
+      - path: kubernetes/clusters/1276-prod/hausparty/hausparty/values.yaml
+        env: prod
 
   lizard-www:
     type: values

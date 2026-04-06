@@ -1,0 +1,43 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: hausparty-migrate
+  namespace: hausparty
+  annotations:
+    argocd.argoproj.io/hook: PreSync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+spec:
+  completions: 1
+  parallelism: 1
+  backoffLimit: 3
+  template:
+    spec:
+      restartPolicy: OnFailure
+      terminationGracePeriodSeconds: 30
+      imagePullSecrets:
+        - name: ghcr-credentials
+      containers:
+        - name: migrate
+          image: ghcr.io/techgardencode/hausparty:placeholder
+          command: ["node", "scripts/migrate.mjs"]
+          env:
+            - name: PG_HOSTNAME
+              value: "hausparty-db-rw.hausparty.svc.cluster.local"
+            - name: PG_PORT
+              value: "5432"
+            - name: PG_DB
+              value: "hausparty"
+            - name: PG_USER
+              value: "hausparty_app"
+            - name: PG_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: hausparty
+                  key: pg-password
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              memory: 128Mi

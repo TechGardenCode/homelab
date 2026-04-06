@@ -1,0 +1,42 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: hausparty-db
+  namespace: hausparty
+spec:
+  instances: 2
+
+  enableSuperuserAccess: true
+  superuserSecret:
+    name: hausparty-db-superuser
+
+  postgresql:
+    pg_hba:
+      - host all postgres all scram-sha-256
+      - host all all all scram-sha-256
+
+  storage:
+    size: 10Gi
+    storageClass: freenas-iscsi-ssd-csi
+
+  bootstrap:
+    initdb:
+      database: hausparty
+      owner: hausparty_app
+      secret:
+        name: hausparty-db-app-credentials
+      postInitSQL:
+        - CREATE EXTENSION IF NOT EXISTS pg_trgm
+        - CREATE EXTENSION IF NOT EXISTS unaccent
+
+  monitoring:
+    enablePodMonitor: true
+    disableDefaultQueries: false
+
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      memory: 1Gi
