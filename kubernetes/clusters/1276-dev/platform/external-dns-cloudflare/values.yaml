@@ -1,6 +1,8 @@
 policy: upsert-only
 
-registry: noop
+registry: txt
+txtPrefix: "edns-"
+txtOwnerId: "cloudflare"
 
 extraArgs:
   - "--annotation-filter=dns.kian.sh/provider=cloudflare"

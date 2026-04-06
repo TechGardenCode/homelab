@@ -1,10 +1,19 @@
 policy: upsert-only
 
-registry: noop
+registry: txt
+txtPrefix: "edns-"
+txtOwnerId: "internal"
 
 extraArgs:
-  - "--pihole-api-version=6"
   - "--annotation-filter=dns.kian.sh/provider=internal"
+  - "--rfc2136-host=10.0.60.16"
+  - "--rfc2136-port=53"
+  - "--rfc2136-zone=kian.sh"
+  - "--rfc2136-zone=techgarden.gg"
+  - "--rfc2136-zone=kian.coffee"
+  - "--rfc2136-tsig-keyname=external-dns"
+  - "--rfc2136-tsig-secret-alg=hmac-sha256"
+  - "--rfc2136-tsig-axfr"
 
 sources:
   - service
@@ -12,16 +21,11 @@ sources:
   - gateway-httproute
 
 provider:
-  name: pihole
+  name: rfc2136
 
 env:
-  - name: EXTERNAL_DNS_PIHOLE_PASSWORD
+  - name: EXTERNAL_DNS_RFC2136_TSIG_SECRET
     valueFrom:
       secretKeyRef:
         name: technitium-dns
-        key: EXTERNAL_DNS_PIHOLE_PASSWORD
-  - name: EXTERNAL_DNS_PIHOLE_SERVER
-    valueFrom:
-      secretKeyRef:
-        name: technitium-dns
-        key: EXTERNAL_DNS_PIHOLE_SERVER
+        key: TSIG_SECRET
