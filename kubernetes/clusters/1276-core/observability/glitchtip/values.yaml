@@ -2,7 +2,7 @@ fullnameOverride: glitchtip
 
 image:
   repository: glitchtip/glitchtip
-  tag: "v6.1.4"
+  tag: "6.1.4"
 
 # Global GlitchTip configuration
 glitchtip:
