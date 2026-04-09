@@ -1,0 +1,53 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: openpanel-db-backup
+  namespace: observability
+  labels:
+    app.kubernetes.io/name: openpanel-db-backup
+spec:
+  schedule: "15 3 * * *"
+  timeZone: Europe/Berlin
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 2
+  jobTemplate:
+    spec:
+      completions: 1
+      parallelism: 1
+      template:
+        spec:
+          restartPolicy: OnFailure
+          terminationGracePeriodSeconds: 30
+          containers:
+            - name: pg-backup
+              image: postgres:18
+              command:
+                - /bin/bash
+                - -c
+                - |
+                  set -euo pipefail
+                  TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+                  HOST="openpanel-db-rw.observability.svc"
+                  mkdir -p /backups/openpanel-db
+                  echo "[$(date)] Backing up openpanel database..."
+                  pg_dump -h "$HOST" -U postgres -Fc openpanel \
+                    > /backups/openpanel-db/openpanel-${TIMESTAMP}.dump
+                  echo "[$(date)] Done: openpanel-${TIMESTAMP}.dump"
+                  echo "[$(date)] Cleaning up backups older than 7 days..."
+                  find /backups/openpanel-db -name "*.dump" -mtime +7 -delete
+                  echo "[$(date)] Done."
+              env:
+                - name: PGPASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: openpanel-db-superuser
+                      key: password
+              volumeMounts:
+                - name: backups
+                  mountPath: /backups
+          volumes:
+            - name: backups
+              persistentVolumeClaim:
+                claimName: observability-db-backups

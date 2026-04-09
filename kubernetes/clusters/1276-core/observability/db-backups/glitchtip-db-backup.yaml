@@ -1,0 +1,53 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: glitchtip-db-backup
+  namespace: observability
+  labels:
+    app.kubernetes.io/name: glitchtip-db-backup
+spec:
+  schedule: "0 3 * * *"
+  timeZone: Europe/Berlin
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 2
+  jobTemplate:
+    spec:
+      completions: 1
+      parallelism: 1
+      template:
+        spec:
+          restartPolicy: OnFailure
+          terminationGracePeriodSeconds: 30
+          containers:
+            - name: pg-backup
+              image: postgres:18
+              command:
+                - /bin/bash
+                - -c
+                - |
+                  set -euo pipefail
+                  TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+                  HOST="glitchtip-db-rw.observability.svc"
+                  mkdir -p /backups/glitchtip-db
+                  echo "[$(date)] Backing up glitchtip database..."
+                  pg_dump -h "$HOST" -U postgres -Fc glitchtip \
+                    > /backups/glitchtip-db/glitchtip-${TIMESTAMP}.dump
+                  echo "[$(date)] Done: glitchtip-${TIMESTAMP}.dump"
+                  echo "[$(date)] Cleaning up backups older than 7 days..."
+                  find /backups/glitchtip-db -name "*.dump" -mtime +7 -delete
+                  echo "[$(date)] Done."
+              env:
+                - name: PGPASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: glitchtip-db-superuser
+                      key: password
+              volumeMounts:
+                - name: backups
+                  mountPath: /backups
+          volumes:
+            - name: backups
+              persistentVolumeClaim:
+                claimName: observability-db-backups

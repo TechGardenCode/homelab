@@ -1,0 +1,39 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: openpanel-db
+  namespace: observability
+spec:
+  instances: 1
+
+  enableSuperuserAccess: true
+  superuserSecret:
+    name: openpanel-db-superuser
+
+  postgresql:
+    pg_hba:
+      - host all postgres all scram-sha-256
+      - host all all all scram-sha-256
+
+  storage:
+    size: 10Gi
+    storageClass: freenas-iscsi-ssd-csi
+
+  bootstrap:
+    initdb:
+      database: openpanel
+      owner: openpanel
+      secret:
+        name: openpanel-db-app-credentials
+
+  monitoring:
+    enablePodMonitor: true
+    disableDefaultQueries: false
+
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      memory: 512Mi
