@@ -15,6 +15,19 @@ spec:
     pg_hba:
       - host all postgres all scram-sha-256
       - host all all all scram-sha-256
+    # Explicit tuning — don't rely on CNPG/postgres defaults.
+    # max_connections sizing: app(POOL_MAX=2 × replicas=1) + pooler(default_pool_size=5 × 1)
+    #                         + migrate(1) + CNPG operator(~5) + superuser(3) = ~16. 50 → ~3x headroom.
+    # Memory: shared_buffers is 25% of container memory limit per pg best practice.
+    #         effective_cache_size is ~75% (we have 512Mi limit in dev).
+    parameters:
+      max_connections: "50"
+      shared_buffers: "128MB"
+      effective_cache_size: "384MB"
+      work_mem: "4MB"
+      maintenance_work_mem: "64MB"
+      random_page_cost: "1.1" # SSD — lower than default 4.0
+      log_min_duration_statement: "500" # log queries slower than 500ms
 
   storage:
     size: 5Gi
@@ -31,7 +44,7 @@ spec:
         - CREATE EXTENSION IF NOT EXISTS unaccent
 
   monitoring:
-    enablePodMonitor: false
+    enablePodMonitor: true
     disableDefaultQueries: false
 
   resources:
