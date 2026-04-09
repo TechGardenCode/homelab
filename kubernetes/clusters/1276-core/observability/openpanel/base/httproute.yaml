@@ -1,8 +1,15 @@
 ---
 # openpanel.kian.sh
 #
-# Path-based split: /api/* → op-api (tracking ingest, dashboard API,
-# SDK endpoints), everything else → op-dashboard (web UI).
+# Path-based split:
+#   /api/*  → op-api (with /api prefix STRIPPED; op-api serves tRPC at
+#             /trpc/* and its healthcheck at /healthcheck, NOT /api/*)
+#   /*      → op-dashboard (web UI, served at root, no rewrite needed)
+#
+# The chart's default values assume an nginx ingress with
+# `rewrite-target: /`, which is why apiUrl is set to .../api and the
+# backend isn't mounted under /api. We replicate that rewrite here with
+# a Gateway API URLRewrite filter.
 #
 # external-dns-internal picks up the hostname via annotation and
 # publishes the A record to Technitium. TLS is terminated on
@@ -28,6 +35,12 @@ spec:
         - path:
             type: PathPrefix
             value: /api
+      filters:
+        - type: URLRewrite
+          urlRewrite:
+            path:
+              type: ReplacePrefixMatch
+              replacePrefixMatch: /
       backendRefs:
         - name: op-api
           port: 3000
