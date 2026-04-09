@@ -28,7 +28,9 @@ spec:
         name: glitchtip-db-app-credentials
 
   monitoring:
-    enablePodMonitor: true
+    # PodMonitor disabled: 1276-core has no Prometheus Operator CRDs.
+    # Alloy scrapes CNPG metrics natively via service discovery.
+    enablePodMonitor: false
     disableDefaultQueries: false
 
   resources:
