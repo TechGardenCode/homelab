@@ -12,3 +12,24 @@ helmCharts:
 resources:
   - base/externalsecret.yaml
   - base/httproute.yaml
+
+# Surgical patch: the chart ships the migrate Job with
+# `helm.sh/hook: post-install,pre-upgrade`. On FIRST install, `post-install`
+# maps to ArgoCD PostSync, which only runs after the Sync phase is Healthy
+# — but the web Deployment can never become Healthy without a database
+# schema, and the schema can only be created by the migrate Job. Deadlock.
+#
+# Rewriting the hook to `pre-install,pre-upgrade` makes ArgoCD always run
+# the Job in PreSync (both install AND upgrade), after the ExternalSecret
+# hook at wave -10, and before any Sync-phase workload pods. We leave
+# `hook-delete-policy: before-hook-creation,hook-succeeded` untouched so
+# the Job self-cleans between syncs and Kubernetes Job spec immutability
+# is handled for free.
+patches:
+  - target:
+      kind: Job
+      name: glitchtip-migrate
+    patch: |-
+      - op: replace
+        path: /metadata/annotations/helm.sh~1hook
+        value: pre-install,pre-upgrade
