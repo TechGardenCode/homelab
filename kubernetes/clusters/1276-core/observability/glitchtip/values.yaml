@@ -1,0 +1,77 @@
+fullnameOverride: glitchtip
+
+image:
+  repository: glitchtip/glitchtip
+  tag: "v6.1.4"
+
+# Global GlitchTip configuration
+glitchtip:
+  domain: glitchtip.kian.sh
+  # Single combined secret holds both SECRET_KEY and DATABASE_URL.
+  # See base/externalsecret.yaml.
+  existingSecret: glitchtip-app-secrets
+  existingSecretKey: SECRET_KEY
+  database:
+    existingSecret: glitchtip-app-secrets
+    existingSecretKey: DATABASE_URL
+
+# Disable bundled CNPG — we use our own dedicated glitchtip-db cluster
+postgresql:
+  enabled: false
+
+# Keep bundled Valkey enabled — it's a transient cache, no persistence needed
+valkey:
+  enabled: true
+  replicaCount: 1
+  dataStorage:
+    enabled: false
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
+
+# Web deployment (also runs embedded worker; see chart default `web.embedWorker: true`)
+web:
+  embedWorker: true
+  replicaCount: 2
+  resources:
+    requests:
+      cpu: 500m
+      memory: 512Mi
+    limits:
+      cpu: 1500m
+      memory: 1Gi
+  service:
+    type: ClusterIP
+    port: 80
+  ingress:
+    enabled: false
+
+# Dedicated worker disabled — embedWorker handles background tasks in web pods.
+worker:
+  enabled: false
+
+# Migration job runs on every helm upgrade to apply schema changes.
+migrationJob:
+  enabled: true
+
+# Prometheus ServiceMonitor disabled — core has no Prometheus Operator.
+# Alloy will scrape metrics directly once we wire it up.
+monitoring:
+  enabled: false
+
+# Minimal restricted-PSS-friendly contexts
+podSecurityContext:
+  fsGroup: 1000
+securityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+  seccompProfile:
+    type: RuntimeDefault

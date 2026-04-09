@@ -1,0 +1,21 @@
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: glitchtip
+  namespace: observability
+  annotations:
+    dns.kian.sh/provider: internal
+    external-dns.alpha.kubernetes.io/hostname: glitchtip.kian.sh
+    external-dns.alpha.kubernetes.io/ingress-hostname-source: annotation-only
+spec:
+  parentRefs:
+    - name: eg-internal
+      namespace: envoy-gateway-system
+      sectionName: https
+  hostnames:
+    - glitchtip.kian.sh
+  rules:
+    - backendRefs:
+        - name: glitchtip-web
+          port: 80
