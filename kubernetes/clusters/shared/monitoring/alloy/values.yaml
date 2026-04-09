@@ -55,6 +55,89 @@ alloy:
         scrape_interval = "30s"
       }
 
+      // ── CNPG (CloudNativePG) metrics ──
+      // Each CNPG Cluster pod exposes postgres_exporter metrics on :9187.
+      // Discover by label `cnpg.io/podRole=instance`.
+      discovery.relabel "cnpg_instances" {
+        targets = discovery.kubernetes.pods.targets
+        rule {
+          source_labels = ["__meta_kubernetes_pod_label_cnpg_io_podRole"]
+          regex         = "instance"
+          action        = "keep"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_pod_container_port_number"]
+          regex         = "9187"
+          action        = "keep"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_pod_node_name"]
+          regex         = "(.+)-s\\d+"
+          target_label  = "cluster"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_namespace"]
+          target_label  = "namespace"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_pod_name"]
+          target_label  = "pod"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_pod_label_cnpg_io_cluster"]
+          target_label  = "cnpg_cluster"
+        }
+      }
+
+      prometheus.scrape "cnpg" {
+        targets         = discovery.relabel.cnpg_instances.output
+        forward_to      = [prometheus.remote_write.lgtm.receiver]
+        scrape_interval = "30s"
+        scrape_timeout  = "10s"
+      }
+
+      // ── PgBouncer (CNPG Pooler) metrics ──
+      // Each Pooler pod runs the PgBouncer process plus a metrics exporter
+      // container that listens on :9127. Discover by label
+      // `cnpg.io/poolerName`.
+      discovery.relabel "pgbouncer_pods" {
+        targets = discovery.kubernetes.pods.targets
+        rule {
+          source_labels = ["__meta_kubernetes_pod_label_cnpg_io_poolerName"]
+          regex         = ".+"
+          action        = "keep"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_pod_container_port_number"]
+          regex         = "9127"
+          action        = "keep"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_pod_node_name"]
+          regex         = "(.+)-s\\d+"
+          target_label  = "cluster"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_namespace"]
+          target_label  = "namespace"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_pod_name"]
+          target_label  = "pod"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_pod_label_cnpg_io_poolerName"]
+          target_label  = "pooler"
+        }
+      }
+
+      prometheus.scrape "pgbouncer" {
+        targets         = discovery.relabel.pgbouncer_pods.output
+        forward_to      = [prometheus.remote_write.lgtm.receiver]
+        scrape_interval = "30s"
+        scrape_timeout  = "10s"
+      }
+
       // Add cluster label to kube-state-metrics
       // KSM pod metrics lack a "node" label, so fall back to the Alloy
       // pod's own node name (K8S_NODE_NAME) to derive the cluster.
