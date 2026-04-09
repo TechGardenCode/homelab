@@ -1,0 +1,50 @@
+---
+# PgBouncer Pooler for hausparty-db (dev).
+#
+# Sits between the app and the CNPG primary, multiplexing many logical app
+# connections through a small fixed pool of real backend connections. The
+# app connects via the pooler's auto-generated service
+# `hausparty-db-pooler-rw.hausparty.svc.cluster.local` instead of the
+# primary -rw service.
+#
+# Dev sizing: low concurrency, short-lived connections.
+#   max_client_conn (200) × instances (1) = 200 app-side logical slots
+#   default_pool_size (5) × instances (1) = 5 real backend connections
+#
+# Pool mode = transaction — max density, but REQUIRES prepare: false in
+# the app's postgres.js client (already set in hausparty's db client).
+apiVersion: postgresql.cnpg.io/v1
+kind: Pooler
+metadata:
+  name: hausparty-db-pooler
+  namespace: hausparty
+spec:
+  cluster:
+    name: hausparty-db
+  instances: 1
+  type: rw
+  pgbouncer:
+    poolMode: transaction
+    parameters:
+      max_client_conn: "200"
+      default_pool_size: "5"
+      min_pool_size: "1"
+      reserve_pool_size: "2"
+      reserve_pool_timeout: "5"
+      server_idle_timeout: "120"
+      server_lifetime: "3600"
+      query_wait_timeout: "120"
+      log_connections: "0"
+      log_disconnections: "0"
+  template:
+    spec:
+      containers:
+        - name: pgbouncer
+          resources:
+            requests:
+              cpu: 20m
+              memory: 32Mi
+            limits:
+              memory: 64Mi
+  monitoring:
+    enablePodMonitor: true
