@@ -6,7 +6,9 @@ image:
 
 # Global GlitchTip configuration
 glitchtip:
-  domain: glitchtip.kian.sh
+  # Must include scheme; GlitchTip's settings.py rejects a domain without
+  # http:// or https:// (ImproperlyConfigured).
+  domain: https://glitchtip.kian.sh
   # Single combined secret holds both SECRET_KEY and DATABASE_URL.
   # See base/externalsecret.yaml.
   existingSecret: glitchtip-app-secrets
