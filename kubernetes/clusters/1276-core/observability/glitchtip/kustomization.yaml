@@ -12,3 +12,27 @@ helmCharts:
 resources:
   - base/externalsecret.yaml
   - base/httproute.yaml
+
+# Strip the Helm pre-install hook from the migrate Job. ArgoCD otherwise
+# treats it as a PreSync hook and runs it before the ExternalSecret is
+# applied, which deadlocks (Job pod stuck in CreateContainerConfigError
+# because glitchtip-app-secrets doesn't exist yet). As a normal Sync-phase
+# resource with a positive sync-wave, it runs AFTER the ExternalSecret has
+# materialized its target Secret.
+patches:
+  - target:
+      kind: Job
+      name: glitchtip-migrate
+    patch: |-
+      - op: remove
+        path: /metadata/annotations/helm.sh~1hook
+      - op: remove
+        path: /metadata/annotations/helm.sh~1hook-weight
+      - op: remove
+        path: /metadata/annotations/helm.sh~1hook-delete-policy
+      - op: add
+        path: /metadata/annotations/argocd.argoproj.io~1sync-wave
+        value: "5"
+      - op: add
+        path: /metadata/annotations/argocd.argoproj.io~1sync-options
+        value: "Force=true,Replace=true"
