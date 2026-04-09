@@ -1,0 +1,103 @@
+# Disable bundled Postgres — we use the dedicated CNPG openpanel-db
+# cluster in this namespace (see ../openpanel-db/).
+postgresql:
+  enabled: false
+
+# Disable chart's nginx/Contour ingress — we ship our own HTTPRoute
+# on eg-internal at base/httproute.yaml.
+ingress:
+  enabled: false
+
+# App URLs. openpanel.kian.sh is served by an HTTPRoute with two
+# path-based rules: /api/* → op-api, fallthrough → op-dashboard.
+config:
+  apiUrl: "https://openpanel.kian.sh/api"
+  dashboardUrl: "https://openpanel.kian.sh"
+  nodeEnv: "production"
+  selfHosted: "true"
+  allowRegistration: "true"
+  allowInvitation: "true"
+
+# Placeholder — chart's Secret is deleted by a kustomize patch and
+# replaced by base/externalsecret.yaml → openpanel-secrets. Values
+# here never reach the cluster.
+secrets:
+  cookieSecret: "PLACEHOLDER_DELETED_BY_KUSTOMIZE_PATCH"
+
+# --- Pinned image tags ---
+# Chart defaults to `latest` for api/dashboard/worker. Pinning to a
+# known release so pod restarts always land on the same image. Update
+# by checking docker hub tags for lindesvard/openpanel-* and bumping
+# all three together.
+api:
+  image:
+    repository: lindesvard/openpanel-api
+    tag: "2.2.1"
+  replicas: 2
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      cpu: 2000m
+      memory: 2Gi
+
+dashboard:
+  image:
+    repository: lindesvard/openpanel-dashboard
+    tag: "2.2.1"
+  replicas: 1
+  resources:
+    requests:
+      cpu: 200m
+      memory: 512Mi
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+
+worker:
+  image:
+    repository: lindesvard/openpanel-worker
+    tag: "2.2.1"
+  replicas: 2
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1Gi
+    limits:
+      cpu: 2000m
+      memory: 2Gi
+
+# Bundled ClickHouse — keep enabled. Sized per the Phase 0 plan with
+# headroom for ~10x current traffic. 50Gi data PVC on the default
+# storage class (freenas-iscsi-ssd-csi will be picked up from core's
+# default SC).
+clickhouse:
+  enabled: true
+  persistence:
+    enabled: true
+    dataSize: 50Gi
+    logsSize: 5Gi
+    storageClass: "freenas-iscsi-ssd-csi"
+  resources:
+    requests:
+      cpu: 1500m
+      memory: 4Gi
+    limits:
+      cpu: 4000m
+      memory: 8Gi
+
+# Bundled Redis (used as cache + job queue).
+redis:
+  enabled: true
+  persistence:
+    enabled: true
+    size: 5Gi
+    storageClass: "freenas-iscsi-ssd-csi"
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi

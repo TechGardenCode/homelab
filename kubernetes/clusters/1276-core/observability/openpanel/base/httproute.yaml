@@ -1,0 +1,40 @@
+---
+# openpanel.kian.sh
+#
+# Path-based split: /api/* → op-api (tracking ingest, dashboard API,
+# SDK endpoints), everything else → op-dashboard (web UI).
+#
+# external-dns-internal picks up the hostname via annotation and
+# publishes the A record to Technitium. TLS is terminated on
+# eg-internal using the eg-tls-kian wildcard LE cert.
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: openpanel
+  namespace: observability
+  annotations:
+    dns.kian.sh/provider: internal
+    external-dns.alpha.kubernetes.io/hostname: openpanel.kian.sh
+    external-dns.alpha.kubernetes.io/ingress-hostname-source: annotation-only
+spec:
+  parentRefs:
+    - name: eg-internal
+      namespace: envoy-gateway-system
+      sectionName: https
+  hostnames:
+    - openpanel.kian.sh
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /api
+      backendRefs:
+        - name: op-api
+          port: 3000
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: op-dashboard
+          port: 3000
