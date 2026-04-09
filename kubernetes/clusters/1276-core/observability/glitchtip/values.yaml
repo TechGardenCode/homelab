@@ -4,6 +4,19 @@ image:
   repository: glitchtip/glitchtip
   tag: "6.1.4"
 
+# Applied to web, worker, and migration job. No SMTP is wired up on the
+# homelab yet, so transactional email is dumped to the pod log console.
+# Email verification is disabled so the first-user signup flow doesn't
+# require clicking a verification link out of kubectl logs. Revisit both
+# of these if/when a real SMTP relay is added.
+extraEnvVars:
+  - name: EMAIL_BACKEND
+    value: django.core.mail.backends.console.EmailBackend
+  - name: ACCOUNT_EMAIL_VERIFICATION
+    value: none
+  - name: DEFAULT_FROM_EMAIL
+    value: glitchtip@kian.sh
+
 # Global GlitchTip configuration
 glitchtip:
   # Must include scheme; GlitchTip's settings.py rejects a domain without
