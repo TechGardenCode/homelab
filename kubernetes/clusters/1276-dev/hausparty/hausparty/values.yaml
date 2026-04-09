@@ -25,7 +25,9 @@ envs:
   - AUTH_KEYCLOAK_ISSUER: "https://sso.dev.techgarden.gg/realms/hausparty"
   - AUTH_URL: "https://hausparty.dev.techgarden.gg"
   - AUTH_TRUST_HOST: "true"
-  - PG_HOSTNAME: "hausparty-db-rw.hausparty.svc.cluster.local"
+  # Route app traffic through the PgBouncer Pooler (transaction mode).
+  # Migrations still hit hausparty-db-rw directly — see migrate-job.yaml.
+  - PG_HOSTNAME: "hausparty-db-pooler.hausparty.svc.cluster.local"
   - PG_PORT: "5432"
   - PG_DB: "hausparty"
   - PG_USER: "hausparty_app"
