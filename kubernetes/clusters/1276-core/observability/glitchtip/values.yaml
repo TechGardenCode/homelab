@@ -15,13 +15,13 @@ extraEnvVars:
   - name: ACCOUNT_EMAIL_VERIFICATION
     value: none
   - name: DEFAULT_FROM_EMAIL
-    value: glitchtip@kian.sh
+    value: glitchtip@techgarden.gg
 
 # Global GlitchTip configuration
 glitchtip:
   # Must include scheme; GlitchTip's settings.py rejects a domain without
   # http:// or https:// (ImproperlyConfigured).
-  domain: https://glitchtip.kian.sh
+  domain: https://glitchtip.techgarden.gg
   # Single combined secret holds both SECRET_KEY and DATABASE_URL.
   # See base/externalsecret.yaml.
   existingSecret: glitchtip-app-secrets

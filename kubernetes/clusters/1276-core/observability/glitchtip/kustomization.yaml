@@ -12,6 +12,7 @@ helmCharts:
 resources:
   - base/externalsecret.yaml
   - base/httproute.yaml
+  - base/httproute-internal.yaml
 
 # Surgical patch: the chart ships the migrate Job with
 # `helm.sh/hook: post-install,pre-upgrade`. On FIRST install, `post-install`

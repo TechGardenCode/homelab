@@ -2,11 +2,20 @@ tunnel: cd7dfdc4-003d-4ab0-a879-02abdf43e94a
 credentials-file: /etc/cloudflared/credentials.json
 no-autoupdate: true
 ingress:
-  # Core-local services only — prod apps moved to 1276-prod tunnel
+  # ArgoCD webhook (core-local, step-ca verified)
   - hostname: argocd-webhook.kian.sh
     path: /api/webhook
     service: https://argocd-server.argocd.svc.cluster.local:443
     originRequest:
       noTLSVerify: false
       caPool: /etc/cloudflared/ca/ca.crt
+
+  # Core-hosted *.techgarden.gg services → eg-public gateway (LE cert verified)
+  # Covers glitchtip.techgarden.gg, openpanel.techgarden.gg, and future services.
+  # Same pattern as prod: connect to MetalLB IP, verify LE cert with originServerName.
+  - hostname: "*.techgarden.gg"
+    service: https://10.0.61.3:443
+    originRequest:
+      originServerName: techgarden.gg
+
   - service: http_status:404

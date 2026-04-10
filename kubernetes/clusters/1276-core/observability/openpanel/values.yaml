@@ -11,8 +11,8 @@ ingress:
 # App URLs. openpanel.kian.sh is served by an HTTPRoute with two
 # path-based rules: /api/* → op-api, fallthrough → op-dashboard.
 config:
-  apiUrl: "https://openpanel.kian.sh/api"
-  dashboardUrl: "https://openpanel.kian.sh"
+  apiUrl: "https://openpanel.techgarden.gg/api"
+  dashboardUrl: "https://openpanel.techgarden.gg"
   nodeEnv: "production"
   selfHosted: "true"
   allowRegistration: "true"

@@ -12,6 +12,7 @@ helmCharts:
 resources:
   - base/externalsecret.yaml
   - base/httproute.yaml
+  - base/httproute-internal.yaml
 
 # The openpanel chart does not support an existingSecret pattern — it
 # renders Secret/openpanel-secrets from plaintext values.yaml inputs.
