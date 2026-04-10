@@ -11,6 +11,11 @@ spec:
   authorization:
     defaultAction: Deny
     rules:
+      - name: allow-cloudflared-pods
+        action: Allow
+        principal:
+          clientCIDRs:
+            - "10.244.0.0/16"
       - name: allow-cloudflare-ipv4
         action: Allow
         principal:
