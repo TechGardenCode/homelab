@@ -16,6 +16,8 @@ extraEnvVars:
     value: none
   - name: DEFAULT_FROM_EMAIL
     value: glitchtip@techgarden.gg
+  - name: ENABLE_USER_REGISTRATION
+    value: "False"
 
 # Global GlitchTip configuration
 glitchtip:

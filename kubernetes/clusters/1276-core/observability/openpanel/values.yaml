@@ -15,8 +15,8 @@ config:
   dashboardUrl: "https://openpanel.techgarden.gg"
   nodeEnv: "production"
   selfHosted: "true"
-  allowRegistration: "true"
-  allowInvitation: "true"
+  allowRegistration: "false"
+  allowInvitation: "false"
 
 # Placeholder — chart's Secret is deleted by a kustomize patch and
 # replaced by base/externalsecret.yaml → openpanel-secrets. Values
