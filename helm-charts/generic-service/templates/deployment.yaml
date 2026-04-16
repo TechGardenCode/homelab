@@ -5,7 +5,9 @@ metadata:
   labels:
     {{- include "generic-service.labels" . | nindent 4 }}
 spec:
+  {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicas }}
+  {{- end }}
   revisionHistoryLimit: 2
   strategy:
     type: {{ .Values.strategyType }}

@@ -81,6 +81,16 @@ backendTrafficPolicy:
   stickyTTL: "3600s"
 
 replicas: 1
+# HPA: opt-in per-app via autoscaling.enabled. When enabled, the
+# Deployment omits spec.replicas entirely so HPA owns scaling (avoids
+# Helm-vs-HPA ping-pong). Requires resources.requests.cpu for CPU
+# target; same for memory if configured.
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 70
+  targetMemoryUtilizationPercentage: ~
 strategyType: RollingUpdate
 
 resources:
