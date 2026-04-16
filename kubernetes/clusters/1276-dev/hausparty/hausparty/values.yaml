@@ -13,7 +13,7 @@ health:
   startupProbeSeconds: 60
   port: main
   type: HTTP
-  path: /
+  path: /api/health
 resources:
   requests:
     cpu: 50m
