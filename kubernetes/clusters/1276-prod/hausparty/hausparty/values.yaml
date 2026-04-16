@@ -45,9 +45,10 @@ envs:
   # secretEnv emitted before this env by the generic-service chart, so
   # k8s env-var interpolation expands $(REDIS_PASSWORD) at pod start.
   - REDIS_URL: "redis://default:$(REDIS_PASSWORD)@hausparty-redis.hausparty.svc.cluster.local:6379"
-  # Client-side observability (core cluster shared infra)
-  - NEXT_PUBLIC_SENTRY_DSN: "https://8b390977f5124743b2fd3ce7708df89e@glitchtip.techgarden.gg/1"
-  - NEXT_PUBLIC_OPENPANEL_CLIENT_ID: "d7bda746-ab82-4c2a-8d50-efb9d32d0489"
+  # Client-side observability (core cluster shared infra). DSN + client
+  # ID are per-cluster — prod points at GlitchTip project 3 and the prod
+  # OpenPanel project, sourced from BWS via ExternalSecret. API URL is
+  # shared across clusters (same self-hosted OpenPanel host).
   - NEXT_PUBLIC_OPENPANEL_API_URL: "https://openpanel.techgarden.gg/api"
 secretEnvs:
   - AUTH_KEYCLOAK_SECRET: "keycloak-client-secret"
@@ -56,6 +57,8 @@ secretEnvs:
   - ADMIN_API_KEY: "admin-api-key"
   - EDMTRAIN_API_KEY: "edmtrain-api-key"
   - REDIS_PASSWORD: "redis-password"
+  - NEXT_PUBLIC_SENTRY_DSN: "sentry-dsn"
+  - NEXT_PUBLIC_OPENPANEL_CLIENT_ID: "openpanel-client-id"
 httpRoute:
   enabled: true
   hostname: hausparty.techgarden.gg
