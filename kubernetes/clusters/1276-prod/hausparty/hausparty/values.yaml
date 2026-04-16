@@ -13,13 +13,23 @@ health:
   startupProbeSeconds: 60
   port: main
   type: HTTP
-  path: /
+  # Dedicated probe route — hits a nodejs runtime handler that returns
+  # a static 200 with no streaming. Fixes the 18% TransformStream
+  # failure rate we saw when probes hit `/` while it was being RSC-
+  # streamed to real users.
+  path: /api/health
 resources:
   requests:
-    cpu: 100m
+    cpu: 50m
     memory: 256Mi
   limits:
     memory: 512Mi
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 8
+  targetCPUUtilizationPercentage: 70
+  targetMemoryUtilizationPercentage: 80
 envs:
   - AUTH_KEYCLOAK_ID: "hausparty"
   - AUTH_KEYCLOAK_ISSUER: "https://sso.techgarden.gg/realms/hausparty"
@@ -31,6 +41,10 @@ envs:
   - PG_PORT: "5432"
   - PG_DB: "hausparty"
   - PG_USER: "hausparty_app"
+  # Redis (Dragonfly) for rate-limit counters. REDIS_PASSWORD is a
+  # secretEnv emitted before this env by the generic-service chart, so
+  # k8s env-var interpolation expands $(REDIS_PASSWORD) at pod start.
+  - REDIS_URL: "redis://default:$(REDIS_PASSWORD)@hausparty-redis.hausparty.svc.cluster.local:6379"
   # Client-side observability (core cluster shared infra)
   - NEXT_PUBLIC_SENTRY_DSN: "https://8b390977f5124743b2fd3ce7708df89e@glitchtip.techgarden.gg/1"
   - NEXT_PUBLIC_OPENPANEL_CLIENT_ID: "d7bda746-ab82-4c2a-8d50-efb9d32d0489"
@@ -41,6 +55,7 @@ secretEnvs:
   - PG_PASSWORD: "pg-password"
   - ADMIN_API_KEY: "admin-api-key"
   - EDMTRAIN_API_KEY: "edmtrain-api-key"
+  - REDIS_PASSWORD: "redis-password"
 httpRoute:
   enabled: true
   hostname: hausparty.techgarden.gg
