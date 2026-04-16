@@ -31,6 +31,10 @@ envs:
   - PG_PORT: "5432"
   - PG_DB: "hausparty"
   - PG_USER: "hausparty_app"
+  # Redis (Dragonfly) for rate-limit counters. Dev instance has no auth —
+  # access restricted by the operator's default NetworkPolicy. Prod wires
+  # in a password via secretEnvs.
+  - REDIS_URL: "redis://hausparty-redis.hausparty.svc.cluster.local:6379"
   # Client-side observability (core cluster shared infra)
   - NEXT_PUBLIC_SENTRY_DSN: "https://8b390977f5124743b2fd3ce7708df89e@glitchtip.techgarden.gg/1"
   - NEXT_PUBLIC_OPENPANEL_CLIENT_ID: "d7bda746-ab82-4c2a-8d50-efb9d32d0489"
