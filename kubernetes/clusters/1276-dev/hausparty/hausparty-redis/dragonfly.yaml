@@ -21,9 +21,11 @@ spec:
       memory: 128Mi
     limits:
       memory: 512Mi
-  # Dev: no authentication. Access limited by the operator's default
-  # NetworkPolicy (admin port restricted to operator + peer pods). Prod
-  # promotion adds authentication.passwordFromSecret + ExternalSecret.
+  # Dev: no authentication. Prod will add authentication.passwordFromSecret
+  # + ExternalSecret on promotion.
   #
-  # Prometheus scraping lands in Phase 6 (observability) via a standalone
-  # PodMonitor resource — the operator doesn't manage one natively.
+  # NetworkPolicy disabled so Alloy (in monitoring namespace) can scrape
+  # the admin port (9999) for Prometheus metrics — the operator's default
+  # policy only allows controller-manager + peer Dragonfly pods. For prod
+  # we'll either label Alloy or use a separate metrics exporter.
+  networkPolicyEnabled: false

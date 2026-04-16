@@ -138,6 +138,92 @@ alloy:
         scrape_timeout  = "10s"
       }
 
+      // ── Hausparty app metrics ──
+      // Scrapes /api/metrics on every hausparty app pod (port 3000).
+      // Excludes loadtest pods (label app.kubernetes.io/component=loadtest)
+      // so k6 runner pods don't get scraped.
+      discovery.relabel "hausparty_app_pods" {
+        targets = discovery.kubernetes.pods.targets
+        rule {
+          source_labels = ["__meta_kubernetes_pod_label_app_kubernetes_io_name"]
+          regex         = "hausparty"
+          action        = "keep"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_pod_label_app_kubernetes_io_component"]
+          regex         = "loadtest"
+          action        = "drop"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_pod_container_port_number"]
+          regex         = "3000"
+          action        = "keep"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_pod_node_name"]
+          regex         = "(.+)-s\\d+"
+          target_label  = "cluster"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_namespace"]
+          target_label  = "namespace"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_pod_name"]
+          target_label  = "pod"
+        }
+      }
+
+      prometheus.scrape "hausparty_app" {
+        targets         = discovery.relabel.hausparty_app_pods.output
+        metrics_path    = "/api/metrics"
+        forward_to      = [prometheus.remote_write.lgtm.receiver]
+        scrape_interval = "30s"
+        scrape_timeout  = "10s"
+      }
+
+      // ── Dragonfly metrics ──
+      // Dragonfly exposes Prometheus metrics on its admin port (9999).
+      // Requires the Dragonfly CR to have networkPolicyEnabled: false
+      // (default operator NP restricts 9999 to peer pods + controller).
+      discovery.relabel "dragonfly_pods" {
+        targets = discovery.kubernetes.pods.targets
+        rule {
+          source_labels = ["__meta_kubernetes_pod_label_app_kubernetes_io_name"]
+          regex         = "dragonfly"
+          action        = "keep"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_pod_container_port_number"]
+          regex         = "9999"
+          action        = "keep"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_pod_node_name"]
+          regex         = "(.+)-s\\d+"
+          target_label  = "cluster"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_namespace"]
+          target_label  = "namespace"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_pod_name"]
+          target_label  = "pod"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_pod_label_app"]
+          target_label  = "dragonfly_instance"
+        }
+      }
+
+      prometheus.scrape "dragonfly" {
+        targets         = discovery.relabel.dragonfly_pods.output
+        forward_to      = [prometheus.remote_write.lgtm.receiver]
+        scrape_interval = "30s"
+        scrape_timeout  = "10s"
+      }
+
       // Add cluster label to kube-state-metrics
       // KSM pod metrics lack a "node" label, so fall back to the Alloy
       // pod's own node name (K8S_NODE_NAME) to derive the cluster.
