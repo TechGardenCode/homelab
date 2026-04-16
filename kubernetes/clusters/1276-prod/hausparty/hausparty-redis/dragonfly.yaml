@@ -1,0 +1,35 @@
+apiVersion: dragonflydb.io/v1alpha1
+kind: Dragonfly
+metadata:
+  name: hausparty-redis
+  namespace: hausparty
+  labels:
+    app.kubernetes.io/name: hausparty-redis
+    app.kubernetes.io/part-of: hausparty
+spec:
+  image: docker.dragonflydb.io/dragonflydb/dragonfly:v1.38.0
+  replicas: 1
+  # Pin to 1 IO thread: Dragonfly auto-scales threads to host CPU count
+  # and requires ~256Mi per thread. On the dev node that default is
+  # 1Gi minimum — overrunning our 512Mi limit. Rate-limit counters
+  # don't need concurrency.
+  args:
+    - "--proactor_threads=1"
+  # Prod diverges from dev here: auth is enforced via a password
+  # sourced from the hausparty Secret (populated by the ExternalSecret
+  # row `redis-password` → Bitwarden entry hausparty-prod-redis-password).
+  authentication:
+    passwordFromSecret:
+      name: hausparty
+      key: redis-password
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      memory: 512Mi
+  # NetworkPolicy disabled so Alloy (in monitoring namespace) can scrape
+  # the admin port (9999) for Prometheus metrics — the operator's default
+  # policy only allows controller-manager + peer Dragonfly pods. Follow-up:
+  # custom NP allowing monitoring namespace + peer pods.
+  networkPolicyEnabled: false
