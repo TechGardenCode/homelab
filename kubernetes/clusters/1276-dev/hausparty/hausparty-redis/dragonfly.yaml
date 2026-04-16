@@ -9,6 +9,12 @@ metadata:
 spec:
   image: docker.dragonflydb.io/dragonflydb/dragonfly:v1.38.0
   replicas: 1
+  # Pin to 1 IO thread: Dragonfly auto-scales threads to host CPU count and
+  # requires ~256Mi per thread. On the 4-core dev node that defaults to
+  # 1Gi minimum — overrunning our 512Mi limit. Rate-limit counters don't
+  # need concurrency.
+  args:
+    - "--proactor_threads=1"
   resources:
     requests:
       cpu: 50m
