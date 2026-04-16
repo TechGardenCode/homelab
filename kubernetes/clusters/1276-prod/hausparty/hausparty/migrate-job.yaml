@@ -19,7 +19,7 @@ spec:
         - name: ghcr-credentials
       containers:
         - name: migrate
-          image: ghcr.io/techgardencode/hausparty:47d70f9140d8a494ce8a292e38f9867dd689592d
+          image: ghcr.io/techgardencode/hausparty:8be082d5459deb7f2818d11248ab05350a1160c7
           command: ["node", "scripts/migrate.mjs"]
           env:
             - name: PG_HOSTNAME
