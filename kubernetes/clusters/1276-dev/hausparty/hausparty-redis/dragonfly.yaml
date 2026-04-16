@@ -1,0 +1,23 @@
+apiVersion: dragonflydb.io/v1alpha1
+kind: Dragonfly
+metadata:
+  name: hausparty-redis
+  namespace: hausparty
+  labels:
+    app.kubernetes.io/name: hausparty-redis
+    app.kubernetes.io/part-of: hausparty
+spec:
+  image: docker.dragonflydb.io/dragonflydb/dragonfly:v1.38.0
+  replicas: 1
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      memory: 512Mi
+  # Dev: no authentication. Access limited by the operator's default
+  # NetworkPolicy (admin port restricted to operator + peer pods). Prod
+  # promotion adds authentication.passwordFromSecret + ExternalSecret.
+  #
+  # Prometheus scraping lands in Phase 6 (observability) via a standalone
+  # PodMonitor resource — the operator doesn't manage one natively.
