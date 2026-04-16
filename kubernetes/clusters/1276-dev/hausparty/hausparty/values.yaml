@@ -20,6 +20,12 @@ resources:
     memory: 128Mi
   limits:
     memory: 256Mi
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 70
+  targetMemoryUtilizationPercentage: 80
 envs:
   - AUTH_KEYCLOAK_ID: "hausparty"
   - AUTH_KEYCLOAK_ISSUER: "https://sso.dev.techgarden.gg/realms/hausparty"
