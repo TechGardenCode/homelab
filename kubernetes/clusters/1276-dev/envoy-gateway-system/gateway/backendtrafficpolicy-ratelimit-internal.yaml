@@ -1,3 +1,8 @@
+# DDoS floor only. Per-app rate limiting is the job of each HTTPRoute's
+# own BackendTrafficPolicy (generic-service chart default since 43d5410).
+# This policy catches truly pathological volume across the whole gateway
+# before it reaches any route — legitimate per-IP traffic should never
+# approach 30000 req/min against a single cluster ingress.
 apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: BackendTrafficPolicy
 metadata:
@@ -13,5 +18,9 @@ spec:
     local:
       rules:
         - limit:
-            requests: 1000
+            requests: 30000
             unit: Minute
+          clientSelectors:
+            - sourceCIDR:
+                value: 0.0.0.0/0
+                type: Distinct
