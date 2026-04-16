@@ -65,7 +65,17 @@ gateway:
     tunnelTarget: ""
 
 backendTrafficPolicy:
-  enabled: false
+  # Default-on so every HTTPRoute gets per-IP rate-limit isolation.
+  # Complements app-layer rate limiting (where available) and prevents
+  # one rogue caller from exhausting the shared gateway budget for
+  # unrelated apps. Opt out per-app if truly needed.
+  enabled: true
+  rateLimit:
+    enabled: true
+    # Generous per-IP floor. App-level limiters (e.g. hausparty Phase 2)
+    # are tighter and catch specific abuse patterns; this bucket is the
+    # safety net at the edge for apps without app-layer limits.
+    perIPRequestsPerMinute: 600
   routingMode: single  # single | active-active | sticky
   healthCheckPath: /healthz
   stickyTTL: "3600s"

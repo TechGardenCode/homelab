@@ -1,4 +1,4 @@
-{{- if .Values.backendTrafficPolicy.enabled -}}
+{{- if and .Values.backendTrafficPolicy.enabled .Values.httpRoute.enabled -}}
 apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: BackendTrafficPolicy
 metadata:
@@ -10,6 +10,22 @@ spec:
     group: gateway.networking.k8s.io
     kind: HTTPRoute
     name: {{ include "generic-service.name" . }}
+  {{- if .Values.backendTrafficPolicy.rateLimit.enabled }}
+  # Per-HTTPRoute rate limit. Keyed by distinct source IP so one app's
+  # abusive caller can't exhaust the budget of any other app on the same
+  # gateway. Complement to app-layer rate limiting, not a replacement.
+  rateLimit:
+    type: Local
+    local:
+      rules:
+        - limit:
+            requests: {{ .Values.backendTrafficPolicy.rateLimit.perIPRequestsPerMinute }}
+            unit: Minute
+          clientSelectors:
+            - sourceCIDR:
+                value: 0.0.0.0/0
+                type: Distinct
+  {{- end }}
   {{- if eq .Values.backendTrafficPolicy.routingMode "sticky" }}
   loadBalancer:
     type: ConsistentHash
@@ -36,7 +52,7 @@ spec:
       timeout: "3s"
       unhealthyThreshold: 3
       healthyThreshold: 1
-  {{- else }}
+  {{- else if not .Values.backendTrafficPolicy.rateLimit.enabled }}
   loadBalancer:
     type: RoundRobin
   {{- end }}
