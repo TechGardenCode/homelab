@@ -1,0 +1,58 @@
+---
+# Fail any scraper_runs row stuck in 'running' for more than an hour.
+# Protects against pod kills mid-run leaving the UI thinking a scrape
+# is in-flight forever — we saw this in dev with an 11-day-old row.
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: hausparty-sweep-stuck-runs
+  namespace: hausparty
+  labels:
+    app.kubernetes.io/name: hausparty-sweep-stuck-runs
+    app.kubernetes.io/part-of: hausparty
+spec:
+  schedule: "*/10 * * * *"
+  timeZone: Etc/UTC
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      completions: 1
+      parallelism: 1
+      backoffLimit: 0
+      activeDeadlineSeconds: 120
+      template:
+        spec:
+          restartPolicy: Never
+          terminationGracePeriodSeconds: 30
+          containers:
+            - name: curl
+              image: curlimages/curl:8.11.0
+              env:
+                - name: ADMIN_API_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: hausparty
+                      key: admin-api-key
+              command: ["/bin/sh", "-c"]
+              args:
+                - |
+                  set -eu
+                  echo "[$(date -u)] Sweeping stuck scraper runs"
+                  STATUS=$(curl -sS -o /tmp/resp.json -w '%{http_code}' \
+                    -X POST \
+                    -H "Authorization: Bearer ${ADMIN_API_KEY}" \
+                    --max-time 30 \
+                    http://hausparty.hausparty.svc.cluster.local:3000/api/admin/sweep-stuck-runs)
+                  cat /tmp/resp.json; echo
+                  if [ "$STATUS" != "200" ]; then
+                    echo "[$(date -u)] HTTP $STATUS — failure"; exit 1
+                  fi
+                  echo "[$(date -u)] OK"
+              resources:
+                requests:
+                  cpu: 10m
+                  memory: 16Mi
+                limits:
+                  memory: 32Mi
