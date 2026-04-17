@@ -1,0 +1,58 @@
+---
+# Drain pending user submissions every 15 minutes so nothing sits in
+# 'pending' longer than a quarter-hour. The endpoint is idempotent —
+# if no submissions are pending, it returns {processed: 0}.
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: hausparty-submission-drain
+  namespace: hausparty
+  labels:
+    app.kubernetes.io/name: hausparty-submission-drain
+    app.kubernetes.io/part-of: hausparty
+spec:
+  schedule: "*/15 * * * *"
+  timeZone: Etc/UTC
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      completions: 1
+      parallelism: 1
+      backoffLimit: 0
+      activeDeadlineSeconds: 300
+      template:
+        spec:
+          restartPolicy: Never
+          terminationGracePeriodSeconds: 30
+          containers:
+            - name: curl
+              image: curlimages/curl:8.11.0
+              env:
+                - name: ADMIN_API_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: hausparty
+                      key: admin-api-key
+              command: ["/bin/sh", "-c"]
+              args:
+                - |
+                  set -eu
+                  echo "[$(date -u)] Draining pending submissions"
+                  STATUS=$(curl -sS -o /tmp/resp.json -w '%{http_code}' \
+                    -X POST \
+                    -H "Authorization: Bearer ${ADMIN_API_KEY}" \
+                    --max-time 60 \
+                    http://hausparty.hausparty.svc.cluster.local:3000/api/admin/process-submissions)
+                  cat /tmp/resp.json; echo
+                  if [ "$STATUS" != "200" ]; then
+                    echo "[$(date -u)] HTTP $STATUS — failure"; exit 1
+                  fi
+                  echo "[$(date -u)] OK"
+              resources:
+                requests:
+                  cpu: 10m
+                  memory: 16Mi
+                limits:
+                  memory: 32Mi

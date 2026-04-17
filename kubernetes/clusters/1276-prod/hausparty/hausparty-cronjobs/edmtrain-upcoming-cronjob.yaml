@@ -1,0 +1,63 @@
+---
+# Daily EDMTrain pull — next 90 days of events.
+# 03:00 UTC gives the API a fresh window before any dev activity.
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: hausparty-scraper-edmtrain-upcoming
+  namespace: hausparty
+  labels:
+    app.kubernetes.io/name: hausparty-scraper-edmtrain-upcoming
+    app.kubernetes.io/part-of: hausparty
+spec:
+  schedule: "0 3 * * *"
+  timeZone: Etc/UTC
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      completions: 1
+      parallelism: 1
+      backoffLimit: 0
+      activeDeadlineSeconds: 900
+      template:
+        spec:
+          restartPolicy: Never
+          terminationGracePeriodSeconds: 30
+          containers:
+            - name: curl
+              image: curlimages/curl:8.11.0
+              env:
+                - name: ADMIN_API_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: hausparty
+                      key: admin-api-key
+              command: ["/bin/sh", "-c"]
+              args:
+                - |
+                  set -eu
+                  NOW_EPOCH=$(date -u +%s)
+                  TODAY=$(date -u +%Y-%m-%d)
+                  END=$(date -u -d "@$((NOW_EPOCH + 90 * 86400))" +%Y-%m-%d)
+                  echo "[$(date -u)] Triggering edmtrain scrape ${TODAY} → ${END}"
+                  STATUS=$(curl -sS -o /tmp/resp.json -w '%{http_code}' \
+                    -X POST \
+                    -H "Authorization: Bearer ${ADMIN_API_KEY}" \
+                    -H "Content-Type: application/json" \
+                    --max-time 60 \
+                    --data "{\"scraperName\":\"edmtrain\",\"params\":{\"startDate\":\"${TODAY}\",\"endDate\":\"${END}\"}}" \
+                    http://hausparty.hausparty.svc.cluster.local:3000/api/admin/scraper-run)
+                  cat /tmp/resp.json; echo
+                  # 202 = started, 409 = already in-flight (expected if a manual run is mid-flight)
+                  case "$STATUS" in
+                    202|409) echo "[$(date -u)] HTTP $STATUS — OK"; exit 0 ;;
+                    *)       echo "[$(date -u)] HTTP $STATUS — failure"; exit 1 ;;
+                  esac
+              resources:
+                requests:
+                  cpu: 10m
+                  memory: 16Mi
+                limits:
+                  memory: 32Mi
