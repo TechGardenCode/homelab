@@ -8,3 +8,4 @@ resources:
   - edmtrain-festivals-cronjob.yaml
   - submission-drain-cronjob.yaml
   - sweep-stuck-runs-cronjob.yaml
+  - scan-merge-candidates-cronjob.yaml

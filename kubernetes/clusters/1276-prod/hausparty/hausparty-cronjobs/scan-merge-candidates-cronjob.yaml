@@ -1,0 +1,72 @@
+---
+# Weekly sweep for likely-duplicate sets — tags them with
+# merge_candidate_for so admins see them in the plan-10 merge UI.
+# Runs Mon 05:00 UTC — after the 04:00 festivals scrape so any new
+# festival-dupe candidates are picked up in the same hour.
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: hausparty-scan-merge-candidates
+  namespace: hausparty
+  labels:
+    app.kubernetes.io/name: hausparty-scan-merge-candidates
+    app.kubernetes.io/part-of: hausparty
+spec:
+  schedule: "0 5 * * 1"
+  timeZone: Etc/UTC
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      completions: 1
+      parallelism: 1
+      backoffLimit: 0
+      activeDeadlineSeconds: 600
+      template:
+        spec:
+          restartPolicy: Never
+          terminationGracePeriodSeconds: 30
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 100
+            runAsGroup: 101
+            seccompProfile:
+              type: RuntimeDefault
+          containers:
+            - name: curl
+              image: curlimages/curl:8.11.0
+              securityContext:
+                allowPrivilegeEscalation: false
+                capabilities:
+                  drop:
+                    - ALL
+              env:
+                - name: ADMIN_API_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: hausparty
+                      key: admin-api-key
+              command: ["/bin/sh", "-c"]
+              args:
+                - |
+                  set -eu
+                  echo "[$(date -u)] Scanning for merge candidates"
+                  STATUS=$(curl -sS -o /tmp/resp.json -w '%{http_code}' \
+                    -X POST \
+                    -H "Authorization: Bearer ${ADMIN_API_KEY}" \
+                    -H "Content-Type: application/json" \
+                    --max-time 120 \
+                    --data '{}' \
+                    http://hausparty.hausparty.svc.cluster.local:3000/api/admin/scan-merge-candidates)
+                  cat /tmp/resp.json; echo
+                  if [ "$STATUS" != "200" ]; then
+                    echo "[$(date -u)] HTTP $STATUS — failure"; exit 1
+                  fi
+                  echo "[$(date -u)] OK"
+              resources:
+                requests:
+                  cpu: 10m
+                  memory: 16Mi
+                limits:
+                  memory: 32Mi
