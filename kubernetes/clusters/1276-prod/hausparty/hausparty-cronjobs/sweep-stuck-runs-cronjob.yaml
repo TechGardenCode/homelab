@@ -26,9 +26,20 @@ spec:
         spec:
           restartPolicy: Never
           terminationGracePeriodSeconds: 30
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 100
+            runAsGroup: 101
+            seccompProfile:
+              type: RuntimeDefault
           containers:
             - name: curl
               image: curlimages/curl:8.11.0
+              securityContext:
+                allowPrivilegeEscalation: false
+                capabilities:
+                  drop:
+                    - ALL
               env:
                 - name: ADMIN_API_KEY
                   valueFrom:
