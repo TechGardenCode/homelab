@@ -18,9 +18,12 @@ apps:
   kian-coffee:
     type: values
     paths:
-      - kubernetes/clusters/1276-dev/default/kian-coffee/values.yaml
-      - kubernetes/clusters/1276-prod/default/kian-coffee/values.yaml
-      - kubernetes/clusters/1501-prod/default/kian-coffee/values.yaml
+      - path: kubernetes/clusters/1276-dev/default/kian-coffee/values.yaml
+        env: dev
+      - path: kubernetes/clusters/1276-prod/default/kian-coffee/values.yaml
+        env: prod
+      - path: kubernetes/clusters/1501-prod/default/kian-coffee/values.yaml
+        env: prod
 
   techgarden-www:
     type: values
