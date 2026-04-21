@@ -1,19 +1,15 @@
 image:
   repository: "ghcr.io/techgardencode/kian.coffee"
-  tag: "latest@sha256:c17bbbfefd87f6d0a1ebdae52f6db2d5ecf5424636e45d7da43bd590a3d517e0"
-
+  tag: "90239740af13080250faef0af3f903f7ab4a4078"
 ports:
   - name: main
     containerPort: 80
-
 service:
   type: ClusterIP
-
 # Exposure: Tier 3 (Cloudflare Tunnel) + Internal
 httpRoute:
   enabled: true
   hostname: kian.coffee
-
 gateway:
   internal:
     enabled: true
