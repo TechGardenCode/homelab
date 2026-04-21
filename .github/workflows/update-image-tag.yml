@@ -169,8 +169,10 @@ jobs:
           git commit -m "promote: ${APP_NAME} to ${SHORT_SHA}"
           git push -f origin "$BRANCH"
 
-          # Close existing promote PRs for this app
-          EXISTING=$(gh pr list --search "head:promote/${APP_NAME}-" --json number --jq '.[].number' 2>/dev/null || true)
+          # Close existing promote PRs for this app — excluding the current branch,
+          # otherwise --delete-branch would delete the branch we just pushed.
+          EXISTING=$(gh pr list --search "head:promote/${APP_NAME}-" --json number,headRefName \
+            --jq ".[] | select(.headRefName != \"${BRANCH}\") | .number" 2>/dev/null || true)
           for PR_NUM in $EXISTING; do
             gh pr close "$PR_NUM" --delete-branch 2>/dev/null || true
           done
