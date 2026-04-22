@@ -3,9 +3,13 @@ image:
   tag: "c203baf925f793399a25b8a2bebaf6f1a98b7c0a"
 ports:
   - name: main
-    containerPort: 80
+    containerPort: 4000
 service:
   type: ClusterIP
+# SSR runtime exposes a dedicated /health endpoint for probes — the
+# generic-service chart defaults to `/`, which returns a full SSR render.
+health:
+  path: /health
 # Exposure: Tier 3 (Cloudflare Tunnel) + Internal
 httpRoute:
   enabled: true
