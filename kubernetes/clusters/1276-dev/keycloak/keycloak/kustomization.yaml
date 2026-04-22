@@ -3,7 +3,7 @@ kind: Kustomization
 
 helmCharts:
   - name: keycloakx
-    version: 7.1.9
+    version: 7.1.11
     releaseName: keycloak
     repo: https://codecentric.github.io/helm-charts
     namespace: keycloak
