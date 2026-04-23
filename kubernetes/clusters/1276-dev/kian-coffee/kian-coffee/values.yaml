@@ -14,3 +14,37 @@ health:
 httpRoute:
   enabled: true
   hostname: dev.kian.coffee
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 256Mi
+  limits:
+    memory: 512Mi
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 4
+  targetCPUUtilizationPercentage: 70
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  runAsGroup: 1000
+  fsGroup: 1000
+  seccompProfile:
+    type: RuntimeDefault
+
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop:
+      - ALL
+
+# Paired with readOnlyRootFilesystem above — gives Node/Angular a writable
+# scratch space without exposing the rest of the image to runtime writes.
+emptyDirs:
+  - name: tmp
+    containerPath: /tmp
