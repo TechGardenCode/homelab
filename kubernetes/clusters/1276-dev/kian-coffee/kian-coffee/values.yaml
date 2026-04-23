@@ -1,6 +1,6 @@
 image:
   repository: "ghcr.io/techgardencode/kian.coffee"
-  tag: "722913a24f725a1518ad0ae39174905f5a7d79a6"
+  tag: "3669e8582f3120e1c75b640ebc16d062bb0b49be"
 ports:
   - name: main
     containerPort: 4000
@@ -14,20 +14,17 @@ health:
 httpRoute:
   enabled: true
   hostname: dev.kian.coffee
-
 resources:
   requests:
     cpu: 50m
     memory: 256Mi
   limits:
     memory: 512Mi
-
 autoscaling:
   enabled: true
   minReplicas: 2
   maxReplicas: 4
   targetCPUUtilizationPercentage: 70
-
 podSecurityContext:
   runAsNonRoot: true
   runAsUser: 1000
@@ -35,14 +32,12 @@ podSecurityContext:
   fsGroup: 1000
   seccompProfile:
     type: RuntimeDefault
-
 securityContext:
   allowPrivilegeEscalation: false
   readOnlyRootFilesystem: true
   capabilities:
     drop:
       - ALL
-
 # Paired with readOnlyRootFilesystem above — gives Node/Angular a writable
 # scratch space without exposing the rest of the image to runtime writes.
 emptyDirs:
