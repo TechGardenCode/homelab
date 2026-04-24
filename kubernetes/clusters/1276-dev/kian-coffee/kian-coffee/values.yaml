@@ -8,6 +8,17 @@ service:
   type: ClusterIP
 health:
   path: /health
+# Telemetry: browser SDK config is injected at pod start by
+# docker/30-runtime-config.sh (in the app image) via envsubst. APP_ENV is
+# deploy-driven so the same image can serve dev/prod with different labels;
+# client ID + DSN come from the `kian-coffee` Secret (ExternalSecret from
+# BWS). GlitchTip project `kian-coffee-dev`; OpenPanel project
+# `kian-coffee-dev`.
+envs:
+  - APP_ENV: "dev"
+secretEnvs:
+  - OPENPANEL_CLIENT_ID: "openpanel-client-id"
+  - GLITCHTIP_DSN: "glitchtip-dsn"
 # Exposure: Tier 1 (Internal only)
 httpRoute:
   enabled: true

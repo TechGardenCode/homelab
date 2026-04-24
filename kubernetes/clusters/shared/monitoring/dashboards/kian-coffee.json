@@ -1,0 +1,188 @@
+{
+  "annotations": { "list": [] },
+  "description": "Nginx request + error telemetry for kian.coffee. Browser events and JS errors live in OpenPanel and GlitchTip respectively — links at the top.",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [
+    {
+      "title": "OpenPanel (events + sessions)",
+      "url": "https://openpanel.techgarden.gg",
+      "targetBlank": true,
+      "type": "link",
+      "icon": "external link",
+      "tags": []
+    },
+    {
+      "title": "GlitchTip (JS errors)",
+      "url": "https://glitchtip.techgarden.gg",
+      "targetBlank": true,
+      "type": "link",
+      "icon": "external link",
+      "tags": []
+    }
+  ],
+  "liveNow": false,
+  "panels": [
+    {
+      "type": "timeseries",
+      "title": "Requests / min",
+      "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (status) (count_over_time({namespace=\"kian-coffee\", cluster=~\"${env:regex}\"} | json [1m]))",
+          "legendFormat": "{{status}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": { "custom": { "drawStyle": "bars", "stacking": { "mode": "normal" } }, "unit": "reqps" },
+        "overrides": []
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "4xx / 5xx rate",
+      "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum by (status) (count_over_time({namespace=\"kian-coffee\", cluster=~\"${env:regex}\"} | json | status >= 400 [1m]))",
+          "legendFormat": "{{status}}"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": { "custom": { "drawStyle": "line", "fillOpacity": 10 }, "unit": "reqps" },
+        "overrides": []
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "Request time p95 (s)",
+      "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "quantile_over_time(0.95, {namespace=\"kian-coffee\", cluster=~\"${env:regex}\"} | json | unwrap request_time [5m])",
+          "legendFormat": "p95"
+        },
+        {
+          "refId": "B",
+          "expr": "quantile_over_time(0.50, {namespace=\"kian-coffee\", cluster=~\"${env:regex}\"} | json | unwrap request_time [5m])",
+          "legendFormat": "p50"
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "s" }, "overrides": [] }
+    },
+    {
+      "type": "table",
+      "title": "Top paths (last 1h)",
+      "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "topk(15, sum by (path) (count_over_time({namespace=\"kian-coffee\", cluster=~\"${env:regex}\"} | json | path!~\"/api/op/.*|/health|.*\\\\.(js|css|woff2|png|jpg|svg|ico)\" [1h])))",
+          "instant": true,
+          "legendFormat": "{{path}}"
+        }
+      ],
+      "fieldConfig": { "defaults": {}, "overrides": [] }
+    },
+    {
+      "type": "table",
+      "title": "Top referers (last 24h)",
+      "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 16 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "topk(15, sum by (referer) (count_over_time({namespace=\"kian-coffee\", cluster=~\"${env:regex}\"} | json | referer != \"\" | referer !~ \"https?://(kian|dev\\\\.kian)\\\\.coffee.*\" [24h])))",
+          "instant": true,
+          "legendFormat": "{{referer}}"
+        }
+      ],
+      "fieldConfig": { "defaults": {}, "overrides": [] }
+    },
+    {
+      "type": "stat",
+      "title": "Total requests (window)",
+      "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
+      "gridPos": { "h": 4, "w": 6, "x": 12, "y": 16 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum(count_over_time({namespace=\"kian-coffee\", cluster=~\"${env:regex}\"} | json [$__range]))",
+          "instant": true
+        }
+      ],
+      "fieldConfig": { "defaults": { "unit": "short" }, "overrides": [] }
+    },
+    {
+      "type": "stat",
+      "title": "Error rate (window)",
+      "datasource": { "type": "loki", "uid": "${DS_LOKI}" },
+      "gridPos": { "h": 4, "w": 6, "x": 18, "y": 16 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum(count_over_time({namespace=\"kian-coffee\", cluster=~\"${env:regex}\"} | json | status >= 500 [$__range])) / sum(count_over_time({namespace=\"kian-coffee\", cluster=~\"${env:regex}\"} | json [$__range]))",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 0.01 },
+              { "color": "red", "value": 0.05 }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    }
+  ],
+  "refresh": "1m",
+  "schemaVersion": 39,
+  "style": "dark",
+  "tags": ["kian-coffee", "nginx", "static-site"],
+  "templating": {
+    "list": [
+      {
+        "name": "env",
+        "label": "Environment",
+        "type": "custom",
+        "current": { "text": "prod", "value": "1276-prod|1501-prod" },
+        "options": [
+          { "text": "dev", "value": "1276-dev", "selected": false },
+          { "text": "prod", "value": "1276-prod|1501-prod", "selected": true }
+        ],
+        "query": "dev : 1276-dev, prod : 1276-prod|1501-prod",
+        "includeAll": false,
+        "multi": false
+      },
+      {
+        "name": "DS_LOKI",
+        "label": "Loki datasource",
+        "type": "datasource",
+        "query": "loki",
+        "current": {}
+      }
+    ]
+  },
+  "time": { "from": "now-24h", "to": "now" },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "kian.coffee — nginx overview",
+  "uid": "kian-coffee-nginx",
+  "version": 1,
+  "weekStart": ""
+}
