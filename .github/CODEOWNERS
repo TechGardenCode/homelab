@@ -1,0 +1,11 @@
+# Default owner for the homelab repo.
+# Extend this file as contributors are added.
+
+*                                               @techgardencode
+
+# ArgoCD root — changes here affect every Application.
+/kubernetes/clusters/1276-core/argocd/          @techgardencode
+
+# Image promotion + validation pipelines.
+/.github/workflows/                             @techgardencode
+/ci/                                            @techgardencode
