@@ -1,0 +1,12 @@
+auth:
+  existingSecret: keycloak
+  passwordSecretKey: password
+service:
+  type: ClusterIP
+ingress:
+  enabled: false
+proxyHeaders: xforwarded
+postgresql:
+  auth:
+    existingSecret: keycloak
+production: true

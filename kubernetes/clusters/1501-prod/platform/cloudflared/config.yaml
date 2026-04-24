@@ -1,0 +1,21 @@
+tunnel: 9221faf4-41f8-4aa6-9cbc-1b757c2a2c07
+credentials-file: /etc/cloudflared/credentials.json
+no-autoupdate: true
+ingress:
+  - hostname: "*.techgarden.gg"
+    service: https://10.10.62.3:443
+    originRequest:
+      originServerName: techgarden.gg
+  - hostname: techgarden.gg
+    service: https://10.10.62.3:443
+    originRequest:
+      originServerName: techgarden.gg
+  - hostname: "*.kian.coffee"
+    service: https://10.10.62.3:443
+    originRequest:
+      originServerName: kian.coffee
+  - hostname: kian.coffee
+    service: https://10.10.62.3:443
+    originRequest:
+      originServerName: kian.coffee
+  - service: http_status:404

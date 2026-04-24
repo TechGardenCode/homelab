@@ -1,0 +1,59 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: wiki-post-deploy-verify
+  namespace: wiki
+  annotations:
+    argocd.argoproj.io/hook: PostSync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+spec:
+  backoffLimit: 3
+  activeDeadlineSeconds: 180
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: verify
+          image: curlimages/curl:8.12.1
+          env:
+            - name: GITHUB_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: github-deploy-token
+                  key: token
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -e
+              URL="http://wiki.wiki.svc.cluster.local/version.json"
+              ATTEMPTS=12
+              INTERVAL=10
+              SHA=""
+              echo "Waiting for version.json to become available..."
+              for i in $(seq 1 $ATTEMPTS); do
+                SHA=$(curl -s "$URL" 2>/dev/null | sed -n 's/.*"sha":"\([^"]*\)".*/\1/p')
+                if [ -n "$SHA" ]; then
+                  echo "Attempt $i: found SHA=$SHA"
+                  break
+                fi
+                echo "Attempt $i/$ATTEMPTS: version.json not ready, retrying in ${INTERVAL}s..."
+                sleep $INTERVAL
+              done
+              if [ -z "$SHA" ]; then
+                echo "ERROR: version.json not available after $ATTEMPTS attempts"
+                exit 1
+              fi
+              echo "Deployed SHA: $SHA"
+              curl -sf -X POST \
+                -H "Authorization: token $GITHUB_TOKEN" \
+                -H "Accept: application/vnd.github+json" \
+                "https://api.github.com/repos/techgardencode/kian.sh/dispatches" \
+                -d "{\"event_type\":\"deploy-verified\",\"client_payload\":{\"app\":\"wiki\",\"env\":\"prod\",\"sha\":\"$SHA\"}}"
+              echo "Dispatched deploy-verified event"
+          resources:
+            requests:
+              cpu: 5m
+              memory: 16Mi
+            limits:
+              memory: 32Mi

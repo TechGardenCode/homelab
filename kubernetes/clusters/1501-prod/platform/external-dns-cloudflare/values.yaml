@@ -1,0 +1,24 @@
+policy: upsert-only
+
+registry: txt
+txtPrefix: "edns-"
+txtOwnerId: "cloudflare"
+
+extraArgs:
+  - "--annotation-filter=dns.kian.sh/provider=cloudflare"
+  - "--cloudflare-proxied"
+  - "--default-targets=9221faf4-41f8-4aa6-9cbc-1b757c2a2c07.cfargotunnel.com"
+  - "--force-default-targets"
+
+sources:
+  - gateway-httproute
+
+provider:
+  name: cloudflare
+
+env:
+  - name: CF_API_TOKEN
+    valueFrom:
+      secretKeyRef:
+        name: cloudflare-external-dns
+        key: CF_API_TOKEN

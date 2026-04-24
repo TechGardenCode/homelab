@@ -1,0 +1,25 @@
+# DDoS floor only. Per-app rate limiting is the job of each HTTPRoute's
+# own BackendTrafficPolicy (generic-service chart default since 43d5410).
+# Cloudflare sits in front of this gateway and provides the primary
+# edge protection; this policy is backstop-only.
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: BackendTrafficPolicy
+metadata:
+  name: public-rate-limit
+  namespace: envoy-gateway-system
+spec:
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: Gateway
+    name: eg-public
+  rateLimit:
+    type: Local
+    local:
+      rules:
+        - limit:
+            requests: 10000
+            unit: Minute
+          clientSelectors:
+            - sourceCIDR:
+                value: 0.0.0.0/0
+                type: Distinct

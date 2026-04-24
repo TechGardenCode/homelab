@@ -1,0 +1,30 @@
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: internal-security-policy
+  namespace: envoy-gateway-system
+spec:
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: Gateway
+    name: eg-internal
+  cors:
+    allowOrigins:
+      - "https://*.kian.sh"
+      - "https://*.prod.kian.sh"
+      - "https://*.techgarden.gg"
+      - "https://kian.coffee"
+      - "https://*.kian.coffee"
+    allowMethods:
+      - GET
+      - POST
+      - PUT
+      - DELETE
+      - OPTIONS
+    allowHeaders:
+      - "Authorization"
+      - "Content-Type"
+      - "Accept"
+      - "X-Requested-With"
+      - "Cache-Control"
+    maxAge: "24h"

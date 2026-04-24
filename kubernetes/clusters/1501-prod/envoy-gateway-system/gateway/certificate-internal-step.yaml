@@ -1,0 +1,15 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: eg-tls-cert
+  namespace: envoy-gateway-system
+spec:
+  duration: 24h
+  renewBefore: 8h
+  secretName: eg-tls-cert
+  issuerRef:
+    group: certmanager.step.sm
+    kind: StepClusterIssuer
+    name: step-issuer
+  dnsNames:
+    - "*.prod.internal.kian.sh"

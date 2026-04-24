@@ -1,0 +1,27 @@
+image:
+  repository: "ghcr.io/techgardencode/techgarden-blog"
+  tag: "f4e1eed15874f2c6959da9772c00d741fe6c9e43"
+ports:
+  - name: main
+    containerPort: 8080
+service:
+  type: ClusterIP
+httpRoute:
+  enabled: true
+  hostname: blog.techgarden.gg
+gateway:
+  public:
+    enabled: true
+    tunnelTarget: 9221faf4-41f8-4aa6-9cbc-1b757c2a2c07.cfargotunnel.com
+envs:
+  blog:
+    PG_HOSTNAME: 10.10.60.80
+    PG_PORT: "5432"
+    PG_DB: postgres
+    PG_USER: tg_blog
+    KEYCLOAK_ISSUER_URI: https://sso.techgarden.gg/realms/techgarden
+secretEnvs:
+  blog:
+    PG_PASSWORD: PG_PASSWORD
+health:
+  path: /actuator/health

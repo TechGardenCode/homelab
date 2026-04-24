@@ -1,0 +1,23 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: kian-coffee-www-redirect
+  namespace: kian-coffee
+  annotations:
+    dns.kian.sh/provider: cloudflare
+    external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
+    external-dns.alpha.kubernetes.io/target: 9221faf4-41f8-4aa6-9cbc-1b757c2a2c07.cfargotunnel.com
+spec:
+  parentRefs:
+    - name: eg-public
+      namespace: envoy-gateway-system
+    - name: eg-internal
+      namespace: envoy-gateway-system
+  hostnames:
+    - www.kian.coffee
+  rules:
+    - filters:
+        - type: RequestRedirect
+          requestRedirect:
+            hostname: kian.coffee
+            statusCode: 301

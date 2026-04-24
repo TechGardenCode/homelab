@@ -1,0 +1,25 @@
+image:
+  repository: "ghcr.io/techgardencode/techgarden-profile"
+  tag: "938fb895e6189eacbb94e5d7caf60fc3b6c64f84"
+ports:
+  - name: main
+    containerPort: 8080
+service:
+  type: ClusterIP
+httpRoute:
+  enabled: true
+  hostname: profile.prod.internal.kian.sh
+envs:
+  profile:
+    PG_HOSTNAME: 10.10.60.80
+    PG_PORT: "5432"
+    PG_DB: postgres
+    PG_USER: tg_profile
+    APP_BLOG_URL: http://techgarden-blog:8080
+    KEYCLOAK_ISSUER_URI: https://sso.techgarden.gg/realms/techgarden
+secretEnvs:
+  profile:
+    PG_PASSWORD: PG_PASSWORD
+    CLIENT_SECRET: CLIENT_SECRET
+health:
+  path: /actuator/health

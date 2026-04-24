@@ -1,0 +1,19 @@
+image:
+  repository: "ghcr.io/techgardencode/techgarden-bff"
+  tag: "b9acaba069953fda1b0b1c245248fbf6c299eaf6"
+ports:
+  - name: main
+    containerPort: 8080
+service:
+  type: ClusterIP
+envs:
+  - SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_KEYCLOAK_ISSUER_URI: https://sso.techgarden.gg/realms/techgarden
+  - REDIS_HOST: redis.techgarden.svc.cluster.local
+  - BFF_SERVICES_PROFILE: http://techgarden-profile:8080
+  - KEYCLOAK_TOKEN_ENDPOINT: https://sso.techgarden.gg/realms/techgarden/protocol/openid-connect/token
+secretEnvs:
+  bff:
+    CLIENT_SECRET: CLIENT_SECRET
+    REDIS_PASSWORD: REDIS_PASSWORD
+health:
+  path: /actuator/health
