@@ -3,6 +3,7 @@ kind: Kustomization
 
 resources:
   - httproute-www-redirect.yaml
+  - externalsecret.yaml
 
 helmGlobals:
   chartHome: ../../../../../helm-charts

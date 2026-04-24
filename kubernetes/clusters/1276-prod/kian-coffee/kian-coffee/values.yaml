@@ -8,6 +8,16 @@ service:
   type: ClusterIP
 health:
   path: /health
+# Telemetry: browser SDK config is injected at pod start by
+# docker/30-runtime-config.sh (in the app image) via envsubst. Prod DSN +
+# client ID are shared between 1276-prod and 1501-prod — GlitchTip project
+# `kian-coffee-prod`, OpenPanel project `kian-coffee-prod`. APP_ENV stays
+# `prod` across both clusters so telemetry collapses to a single surface.
+envs:
+  - APP_ENV: "prod"
+secretEnvs:
+  - OPENPANEL_CLIENT_ID: "openpanel-client-id"
+  - GLITCHTIP_DSN: "glitchtip-dsn"
 # Exposure: Tier 3 (Cloudflare Tunnel) + Internal
 httpRoute:
   enabled: true
