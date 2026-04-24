@@ -1,0 +1,27 @@
+---
+extends: default
+
+rules:
+  # Kustomize and Helm values files frequently exceed 80 cols.
+  line-length:
+    max: 140
+    level: warning
+  # Manifest comments often describe long commands or URLs.
+  comments:
+    min-spaces-from-content: 1
+  # GitHub Actions and Helm values commonly use mixed-style indentation.
+  indentation:
+    spaces: 2
+    indent-sequences: consistent
+  # Bracket/brace flow style isn't standardized across the repo.
+  braces:
+    max-spaces-inside: 1
+  # Truthy check false-positives on on/off used in Helm conditionals.
+  truthy:
+    allowed-values: ["true", "false", "on", "off"]
+    check-keys: false
+
+ignore: |
+  helm-charts/*/templates/
+  kubernetes/bootstrap/secrets/
+  **/charts/

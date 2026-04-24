@@ -3,3 +3,21 @@
 **/out
 **/secrets
 kubernetes/bootstrap/secrets/shared
+
+# Build artifacts (none of these should ever be committed)
+.next/
+dist/
+build/
+node_modules/
+
+# Editor / OS noise
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Local env files (secrets live in Bitwarden, not here)
+.env
+.env.local
+.env.*.local

@@ -1,0 +1,49 @@
+---
+# Local validation that mirrors .github/workflows/validate-and-audit.yml.
+# Run: `pre-commit install` once; hooks run on every commit thereafter.
+# For pre-push checks run `pre-commit run --hook-stage pre-push --all-files`.
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+        args: [--allow-multiple-documents]
+        # Skip Helm templates — they use `{{ }}` which isn't valid YAML.
+        exclude: ^helm-charts/.*/templates/.*\.yaml$
+      - id: check-merge-conflict
+      - id: check-added-large-files
+        args: [--maxkb=500]
+
+  - repo: https://github.com/adrienverge/yamllint
+    rev: v1.35.1
+    hooks:
+      - id: yamllint
+        args: [-c, .yamllint]
+        exclude: ^(helm-charts/.*/templates/|kubernetes/bootstrap/secrets/)
+
+  # Kustomize build is heavy — run only on pre-push.
+  - repo: local
+    hooks:
+      - id: kustomize-build-changed-clusters
+        name: kustomize build (changed clusters)
+        entry: scripts/pre-push/kustomize-build-changed.sh
+        language: script
+        stages: [pre-push]
+        pass_filenames: false
+      - id: helm-template-generic-service
+        name: helm template generic-service
+        entry: helm template test helm-charts/generic-service --set image.repository=test --set image.tag=latest
+        language: system
+        stages: [pre-push]
+        pass_filenames: false
+        files: ^helm-charts/generic-service/
+      - id: helm-template-namespace
+        name: helm template namespace
+        entry: helm template test helm-charts/namespace --set name=test
+        language: system
+        stages: [pre-push]
+        pass_filenames: false
+        files: ^helm-charts/namespace/

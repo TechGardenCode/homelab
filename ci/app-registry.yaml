@@ -1,3 +1,4 @@
+---
 # App Registry — maps dispatch app names to their manifest paths.
 # Used by .github/workflows/update-image-tag.yml to update image tags
 # when a side-project CI dispatches an "update-image" event.
@@ -5,6 +6,12 @@
 # Types:
 #   values        — updates image.tag in a Helm values.yaml
 #   kustomization — updates images[].newTag in a kustomization.yaml
+#
+# Path format:
+#   Each entry under `paths:` must be an object with `path` and `env`.
+#   `env: dev` targets the 1276-dev cluster; `env: prod` targets prod clusters.
+#   The `env` label is required so the promote-to-prod workflow can open a
+#   promotion PR for prod paths after a dev dispatch lands on main.
 
 apps:
   wiki:
@@ -28,27 +35,36 @@ apps:
   techgarden-www:
     type: values
     paths:
-      - kubernetes/clusters/1276-dev/techgarden/www/values.yaml
-      - kubernetes/clusters/1276-prod/techgarden/www/values.yaml
-      - kubernetes/clusters/1501-prod/techgarden/www/values.yaml
+      - path: kubernetes/clusters/1276-dev/techgarden/www/values.yaml
+        env: dev
+      - path: kubernetes/clusters/1276-prod/techgarden/www/values.yaml
+        env: prod
+      - path: kubernetes/clusters/1501-prod/techgarden/www/values.yaml
+        env: prod
 
   techgarden-bff:
     type: values
     paths:
-      - kubernetes/clusters/1276-dev/techgarden/bff/values.yaml
-      - kubernetes/clusters/1276-prod/techgarden/bff/values.yaml
+      - path: kubernetes/clusters/1276-dev/techgarden/bff/values.yaml
+        env: dev
+      - path: kubernetes/clusters/1276-prod/techgarden/bff/values.yaml
+        env: prod
 
   techgarden-blog:
     type: values
     paths:
-      - kubernetes/clusters/1276-dev/techgarden/blog/values.yaml
-      - kubernetes/clusters/1276-prod/techgarden/blog/values.yaml
+      - path: kubernetes/clusters/1276-dev/techgarden/blog/values.yaml
+        env: dev
+      - path: kubernetes/clusters/1276-prod/techgarden/blog/values.yaml
+        env: prod
 
   techgarden-profile:
     type: values
     paths:
-      - kubernetes/clusters/1276-dev/techgarden/profile/values.yaml
-      - kubernetes/clusters/1276-prod/techgarden/profile/values.yaml
+      - path: kubernetes/clusters/1276-dev/techgarden/profile/values.yaml
+        env: dev
+      - path: kubernetes/clusters/1276-prod/techgarden/profile/values.yaml
+        env: prod
 
   hausparty:
     type: values
@@ -61,4 +77,5 @@ apps:
   lizard-www:
     type: values
     paths:
-      - kubernetes/clusters/1276-prod/lizard/www/values.yaml
+      - path: kubernetes/clusters/1276-prod/lizard/www/values.yaml
+        env: prod
