@@ -6,8 +6,6 @@ ports:
     containerPort: 4000
 service:
   type: ClusterIP
-# SSR runtime exposes a dedicated /health endpoint for probes — the
-# generic-service chart defaults to `/`, which returns a full SSR render.
 health:
   path: /health
 # Exposure: Tier 1 (Internal only)
@@ -38,8 +36,12 @@ securityContext:
   capabilities:
     drop:
       - ALL
-# Paired with readOnlyRootFilesystem above — gives Node/Angular a writable
-# scratch space without exposing the rest of the image to runtime writes.
+# Paired with readOnlyRootFilesystem above. nginx needs /var/cache/nginx
+# + /var/run writable at startup; /tmp is general scratch.
 emptyDirs:
   - name: tmp
     containerPath: /tmp
+  - name: nginx-cache
+    containerPath: /var/cache/nginx
+  - name: nginx-run
+    containerPath: /var/run
