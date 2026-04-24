@@ -30,19 +30,12 @@ jobs:
 
           TYPE=$(yq e ".apps.\"${APP_NAME}\".type" "$REGISTRY")
 
-          # Detect path format: objects ({path, env}) vs plain strings
-          HAS_PATH_FIELD=$(yq e ".apps.\"${APP_NAME}\".paths[0].path // \"\"" "$REGISTRY")
-
-          if [ -n "$HAS_PATH_FIELD" ]; then
-            # Object format — filter by env if provided, otherwise update all
-            if [ -n "$ENV_FILTER" ]; then
-              PATHS=$(yq e ".apps.\"${APP_NAME}\".paths[] | select(.env == \"${ENV_FILTER}\") | .path" "$REGISTRY")
-            else
-              PATHS=$(yq e ".apps.\"${APP_NAME}\".paths[].path" "$REGISTRY")
-            fi
+          # Path schema is always {path, env}. Filter by env when the
+          # dispatch provided one; otherwise update every registered path.
+          if [ -n "$ENV_FILTER" ]; then
+            PATHS=$(yq e ".apps.\"${APP_NAME}\".paths[] | select(.env == \"${ENV_FILTER}\") | .path" "$REGISTRY")
           else
-            # Legacy flat string format — update all paths
-            PATHS=$(yq e ".apps.\"${APP_NAME}\".paths[]" "$REGISTRY")
+            PATHS=$(yq e ".apps.\"${APP_NAME}\".paths[].path" "$REGISTRY")
           fi
 
           if [ -z "$PATHS" ]; then
