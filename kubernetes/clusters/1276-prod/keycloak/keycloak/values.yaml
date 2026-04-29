@@ -2,7 +2,7 @@ fullnameOverride: keycloak
 
 image:
   repository: quay.io/keycloak/keycloak
-  tag: "26.2"
+  tag: "26.6"
 
 command:
   - "/opt/keycloak/bin/kc.sh"
