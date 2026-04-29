@@ -2,7 +2,7 @@ fullnameOverride: glitchtip
 
 image:
   repository: glitchtip/glitchtip
-  tag: "6.1.4"
+  tag: "6.1.6"
 
 # Applied to web, worker, and migration job. No SMTP is wired up on the
 # homelab yet, so transactional email is dumped to the pod log console.
