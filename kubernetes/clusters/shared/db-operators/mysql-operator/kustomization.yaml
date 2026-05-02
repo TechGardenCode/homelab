@@ -8,3 +8,12 @@ helmCharts:
     includeCRDs: true
     releaseName: mysql-operator
     namespace: db-operators
+
+patches:
+  - target:
+      kind: Deployment
+      name: mysql-operator
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/readinessProbe/initialDelaySeconds
+        value: 30
