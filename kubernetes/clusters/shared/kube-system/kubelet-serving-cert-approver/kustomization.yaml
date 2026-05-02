@@ -1,0 +1,29 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# kubelet-serving-cert-approver auto-approves CSRs with the
+# `kubernetes.io/kubelet-serving` signer. Without it, those CSRs sit Pending and
+# metrics-server (and anything else scraping kubelet over TLS) needs
+# `--kubelet-insecure-tls` as a workaround. Once this controller is healthy,
+# that flag can be dropped from `metrics-server/values.yaml`.
+#
+# Upstream pins to vX.Y.Z via the URL ref. Renovate (kustomize manager) tracks
+# the version.
+
+namespace: kube-system
+
+resources:
+  - https://raw.githubusercontent.com/alex1989hu/kubelet-serving-cert-approver/v0.10.3/deploy/standalone-install.yaml
+
+patches:
+  # Drop the upstream Namespace — we deploy into the existing kube-system
+  # namespace; applying the upstream's pod-security: restricted labels to
+  # kube-system would break every non-restricted pod in there.
+  - patch: |-
+      $patch: delete
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: kubelet-serving-cert-approver
+    target:
+      kind: Namespace
