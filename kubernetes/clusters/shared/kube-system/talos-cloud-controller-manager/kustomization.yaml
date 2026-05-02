@@ -1,0 +1,18 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# talos-cloud-controller-manager: reads Talos node metadata via the
+# kubernetesTalosAPIAccess feature (granted in talos/base/talos-ccm-prereqs.yaml)
+# and populates each Node's addresses, providerID, and topology labels.
+#
+# Requires kubelet --cloud-provider=external — also set in talos-ccm-prereqs.
+#
+# Renovate (helm manager) tracks the chart version.
+
+helmCharts:
+  - name: talos-cloud-controller-manager
+    version: 0.5.4
+    repo: oci://ghcr.io/siderolabs/charts
+    releaseName: talos-cloud-controller-manager
+    namespace: kube-system
+    valuesFile: values.yaml

@@ -1,0 +1,28 @@
+# talos-cloud-controller-manager — values for homelab clusters.
+# Single replica is fine for a 3-CP homelab; uses leader election so HA isn't
+# needed. nodeSelector + tolerations match the chart defaults (control-plane
+# only). The chart's default enabled controllers (cloud-node, node-csr-approval)
+# cover what we need.
+
+replicaCount: 1
+
+# Topology transformations: write zone label from Talos cluster name.
+# Each cluster's metadata.platform exposes its name; we map talos-{cluster}
+# to a zone label. Useful once we add zone-aware scheduling.
+transformations:
+  - name: cluster-zone-label
+    nodeSelector:
+      - matchExpressions:
+          - key: hostname
+            operator: Exists
+    annotations:
+      cluster.x-k8s.io/cluster-name: "{{ .ClusterName }}"
+    labels:
+      topology.kubernetes.io/zone: "{{ .ClusterName }}"
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    memory: 128Mi
