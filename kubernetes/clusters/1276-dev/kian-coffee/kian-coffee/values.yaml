@@ -1,6 +1,6 @@
 image:
   repository: "ghcr.io/techgardencode/kian.coffee"
-  tag: "e637f84b313d8ba6791de0690581180aa999d03f"
+  tag: "95717d76be77128e606c9a96d5005d90cd0fc791"
 ports:
   - name: main
     containerPort: 4000
