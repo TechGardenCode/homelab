@@ -4,7 +4,7 @@ kind: Kustomization
 helmCharts:
   - repo: https://mysql.github.io/mysql-operator/
     name: mysql-operator
-    version: 2.2.7
+    version: 2.2.8
     includeCRDs: true
     releaseName: mysql-operator
     namespace: db-operators
