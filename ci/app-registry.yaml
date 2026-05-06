@@ -32,6 +32,12 @@ apps:
       - path: kubernetes/clusters/1501-prod/kian-coffee/kian-coffee/values.yaml
         env: prod
 
+  kian-coffee-blog:
+    type: values
+    paths:
+      - path: kubernetes/clusters/1276-dev/kian-coffee/kian-coffee-blog/values.yaml
+        env: dev
+
   techgarden-www:
     type: values
     paths:

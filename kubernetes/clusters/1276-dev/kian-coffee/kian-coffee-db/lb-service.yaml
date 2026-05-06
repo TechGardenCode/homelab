@@ -1,0 +1,28 @@
+---
+# MetalLB LoadBalancer for psql access from outside the cluster (e.g. local
+# debugging via db.kian-coffee.dev.kian.coffee:5432). MetalLB auto-allocates
+# from the dev pool; external-dns publishes the resulting IP under the
+# hostname, so consumers reference the hostname only. Selector targets the
+# CNPG primary so writes always land on the leader.
+#
+# Diverges from the {techgarden,hausparty,keycloak}-db pattern, which pins
+# `metallb.io/loadBalancerIPs` to a sequential IP (.140, .141, .142). For a
+# single-developer dev DB with hostname-only consumers, auto-allocation is
+# simpler and avoids a manual IP-tracking step.
+apiVersion: v1
+kind: Service
+metadata:
+  name: kian-coffee-db-lb
+  namespace: kian-coffee
+  annotations:
+    dns.kian.sh/provider: internal
+    external-dns.alpha.kubernetes.io/hostname: db.kian-coffee.dev.kian.coffee
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 5432
+      targetPort: 5432
+      protocol: TCP
+  selector:
+    cnpg.io/cluster: kian-coffee-db
+    role: primary

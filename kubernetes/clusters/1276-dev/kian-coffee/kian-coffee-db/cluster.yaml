@@ -1,0 +1,42 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: kian-coffee-db
+  namespace: kian-coffee
+spec:
+  instances: 1
+
+  enableSuperuserAccess: true
+  superuserSecret:
+    name: kian-coffee-db-superuser
+
+  postgresql:
+    pg_hba:
+      - host all postgres all scram-sha-256
+      - host all all all scram-sha-256
+
+  storage:
+    size: 5Gi
+    storageClass: freenas-iscsi-ssd-csi
+
+  bootstrap:
+    initdb:
+      database: kian_coffee
+      owner: kian_coffee
+      secret:
+        name: kian-coffee-db-app-credentials
+      postInitSQL:
+        - CREATE SCHEMA IF NOT EXISTS blog AUTHORIZATION kian_coffee
+        - CREATE EXTENSION IF NOT EXISTS pgcrypto
+
+  monitoring:
+    enablePodMonitor: true
+    disableDefaultQueries: false
+
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      memory: 512Mi
