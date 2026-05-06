@@ -8,14 +8,18 @@ service:
   type: ClusterIP
 health:
   path: /health
-# Telemetry: browser SDK config is injected at pod start by
-# docker/30-runtime-config.sh (in the app image) via envsubst. APP_ENV is
-# deploy-driven so the same image can serve dev/prod with different labels;
-# client ID + DSN come from the `kian-coffee` Secret (ExternalSecret from
-# BWS). GlitchTip project `kian-coffee-dev`; OpenPanel project
-# `kian-coffee-dev`.
+# Telemetry: browser SDK config is rendered into /runtime-config.js by the
+# Node SSR server (src/server.ts) from these env vars; same path nginx used
+# to serve. APP_ENV is deploy-driven so the same image can serve dev/prod
+# with different labels; client ID + DSN come from the `kian-coffee` Secret
+# (ExternalSecret from BWS). GlitchTip project `kian-coffee-dev`; OpenPanel
+# project `kian-coffee-dev`.
 envs:
   - APP_ENV: "dev"
+  # SSR fetches the blog API in-cluster — Node fetch can't resolve relative
+  # URLs, so the SSR config injects this absolute base. Browser code uses
+  # an empty string and rides same-origin path-routing through the gateway.
+  - BLOG_API_BASE: "http://kian-coffee-blog.kian-coffee.svc.cluster.local:8080"
 secretEnvs:
   - OPENPANEL_CLIENT_ID: "openpanel-client-id"
   - GLITCHTIP_DSN: "glitchtip-dsn"
@@ -23,12 +27,16 @@ secretEnvs:
 httpRoute:
   enabled: true
   hostname: dev.kian.coffee
+# Node SSR is heavier than nginx static — bump memory headroom for Angular's
+# render path and give a touch more CPU baseline. CPU limit intentionally
+# omitted; CFS throttling on Node event loops causes worse tail latency than
+# letting bursts run free.
 resources:
   requests:
-    cpu: 50m
-    memory: 256Mi
+    cpu: 100m
+    memory: 384Mi
   limits:
-    memory: 512Mi
+    memory: 768Mi
 autoscaling:
   enabled: true
   minReplicas: 2
@@ -47,12 +55,8 @@ securityContext:
   capabilities:
     drop:
       - ALL
-# Paired with readOnlyRootFilesystem above. nginx needs /var/cache/nginx
-# + /var/run writable at startup; /tmp is general scratch.
+# Node only needs /tmp scratch under readOnlyRootFilesystem. (Old nginx
+# emptyDirs for /var/cache/nginx and /var/run are gone with the runtime swap.)
 emptyDirs:
   - name: tmp
     containerPath: /tmp
-  - name: nginx-cache
-    containerPath: /var/cache/nginx
-  - name: nginx-run
-    containerPath: /var/run
