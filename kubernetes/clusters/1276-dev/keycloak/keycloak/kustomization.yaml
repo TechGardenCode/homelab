@@ -12,5 +12,16 @@ helmCharts:
 resources:
   - base/externalsecret.yaml
   - base/externalsecret-realm.yaml
-  - base/realm-configmap.yaml
   - base/httproute.yaml
+
+configMapGenerator:
+  - name: keycloak-realm-config
+    namespace: keycloak
+    files:
+      - base/realms/accounts-realm.json
+      - base/realms/techgarden-realm.json
+      - base/realms/hausparty-realm.json
+      - base/realms/kian-coffee-realm.json
+
+generatorOptions:
+  disableNameSuffixHash: true
