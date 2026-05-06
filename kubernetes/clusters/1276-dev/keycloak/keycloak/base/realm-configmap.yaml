@@ -184,6 +184,40 @@ data:
           "defaultClientScopes": ["openid", "basic", "api.blog", "api.profile"]
         }
       ],
+      "identityProviders": [
+        {
+          "alias": "accounts",
+          "displayName": "Sign in with Accounts",
+          "providerId": "oidc",
+          "enabled": true,
+          "trustEmail": true,
+          "storeToken": false,
+          "addReadTokenRoleOnCreate": false,
+          "firstBrokerLoginFlowAlias": "first broker login",
+          "config": {
+            "issuer": "https://sso.dev.techgarden.gg/realms/accounts",
+            "authorizationUrl": "https://sso.dev.techgarden.gg/realms/accounts/protocol/openid-connect/auth",
+            "tokenUrl": "https://sso.dev.techgarden.gg/realms/accounts/protocol/openid-connect/token",
+            "userInfoUrl": "https://sso.dev.techgarden.gg/realms/accounts/protocol/openid-connect/userinfo",
+            "logoutUrl": "https://sso.dev.techgarden.gg/realms/accounts/protocol/openid-connect/logout",
+            "jwksUrl": "https://sso.dev.techgarden.gg/realms/accounts/protocol/openid-connect/certs",
+            "useJwksUrl": "true",
+            "validateSignature": "true",
+            "clientId": "broker-techgarden",
+            "clientSecret": "${KC_BROKER_TECHGARDEN_SECRET}",
+            "syncMode": "FORCE",
+            "defaultScope": "openid profile email"
+          }
+        }
+      ],
+      "identityProviderMappers": [
+        {
+          "name": "hardcoded-app_admin",
+          "identityProviderAlias": "accounts",
+          "identityProviderMapper": "oidc-hardcoded-role-idp-mapper",
+          "config": { "role": "app_admin", "syncMode": "INHERIT" }
+        }
+      ],
       "users": [
         {
           "username": "techgardencode",
@@ -240,6 +274,40 @@ data:
           "redirectUris": ["https://hausparty.dev.techgarden.gg/*", "http://localhost:3000/*"],
           "webOrigins": ["https://hausparty.dev.techgarden.gg", "http://localhost:3000"],
           "defaultClientScopes": ["openid", "basic", "profile", "email"]
+        }
+      ],
+      "identityProviders": [
+        {
+          "alias": "accounts",
+          "displayName": "Sign in with Accounts",
+          "providerId": "oidc",
+          "enabled": true,
+          "trustEmail": true,
+          "storeToken": false,
+          "addReadTokenRoleOnCreate": false,
+          "firstBrokerLoginFlowAlias": "first broker login",
+          "config": {
+            "issuer": "https://sso.dev.techgarden.gg/realms/accounts",
+            "authorizationUrl": "https://sso.dev.techgarden.gg/realms/accounts/protocol/openid-connect/auth",
+            "tokenUrl": "https://sso.dev.techgarden.gg/realms/accounts/protocol/openid-connect/token",
+            "userInfoUrl": "https://sso.dev.techgarden.gg/realms/accounts/protocol/openid-connect/userinfo",
+            "logoutUrl": "https://sso.dev.techgarden.gg/realms/accounts/protocol/openid-connect/logout",
+            "jwksUrl": "https://sso.dev.techgarden.gg/realms/accounts/protocol/openid-connect/certs",
+            "useJwksUrl": "true",
+            "validateSignature": "true",
+            "clientId": "broker-hausparty",
+            "clientSecret": "${KC_BROKER_HAUSPARTY_SECRET}",
+            "syncMode": "FORCE",
+            "defaultScope": "openid profile email"
+          }
+        }
+      ],
+      "identityProviderMappers": [
+        {
+          "name": "hardcoded-site_admin",
+          "identityProviderAlias": "accounts",
+          "identityProviderMapper": "oidc-hardcoded-role-idp-mapper",
+          "config": { "role": "site_admin", "syncMode": "INHERIT" }
         }
       ],
       "users": [
