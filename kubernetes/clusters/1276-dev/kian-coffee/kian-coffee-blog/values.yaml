@@ -38,7 +38,13 @@ secretEnvs:
     PG_PASSWORD: PG_PASSWORD
     FLYWAY_PASSWORD: PG_PASSWORD
     BLOG_ADMIN_SUB: BLOG_ADMIN_SUB
-    SENTRY_DSN: SENTRY_DSN
+    # SENTRY_DSN intentionally NOT injected until GlitchTip project exists.
+    # The Sentry Java SDK doesn't gracefully no-op on a non-empty-but-invalid
+    # DSN — it throws "Invalid DSN scheme" at bean construction and crashes
+    # the Spring context. Without the env var, application.yml's empty
+    # default kicks in and Sentry autoconfig disables itself. Re-enable by
+    # uncommenting the line below once the BWS secret has a real DSN value:
+    # SENTRY_DSN: SENTRY_DSN
 
 resources:
   requests:
