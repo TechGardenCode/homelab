@@ -1,0 +1,81 @@
+{
+  "realm": "hausparty",
+  "enabled": true,
+  "registrationAllowed": false,
+  "sslRequired": "all",
+  "bruteForceProtected": true,
+  "failureFactor": 5,
+  "waitIncrementSeconds": 60,
+  "maxFailureWaitSeconds": 900,
+  "maxDeltaTimeSeconds": 43200,
+  "roles": {
+    "realm": [
+      {
+        "name": "site_admin",
+        "description": "Hausparty site administrator"
+      }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "hausparty",
+      "enabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "${KC_CLIENT_HAUSPARTY_SECRET}",
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "redirectUris": [
+        "https://hausparty.techgarden.gg/*"
+      ],
+      "webOrigins": [
+        "https://hausparty.techgarden.gg"
+      ],
+      "defaultClientScopes": [
+        "openid",
+        "basic",
+        "profile",
+        "email"
+      ]
+    }
+  ],
+  "identityProviders": [
+    {
+      "alias": "accounts",
+      "displayName": "Sign in with Accounts",
+      "providerId": "oidc",
+      "enabled": true,
+      "trustEmail": true,
+      "storeToken": false,
+      "addReadTokenRoleOnCreate": false,
+      "firstBrokerLoginFlowAlias": "first broker login",
+      "config": {
+        "issuer": "https://sso.techgarden.gg/realms/accounts",
+        "authorizationUrl": "https://sso.techgarden.gg/realms/accounts/protocol/openid-connect/auth",
+        "tokenUrl": "https://sso.techgarden.gg/realms/accounts/protocol/openid-connect/token",
+        "userInfoUrl": "https://sso.techgarden.gg/realms/accounts/protocol/openid-connect/userinfo",
+        "logoutUrl": "https://sso.techgarden.gg/realms/accounts/protocol/openid-connect/logout",
+        "jwksUrl": "https://sso.techgarden.gg/realms/accounts/protocol/openid-connect/certs",
+        "useJwksUrl": "true",
+        "validateSignature": "true",
+        "clientId": "broker-hausparty",
+        "clientSecret": "${KC_BROKER_HAUSPARTY_SECRET}",
+        "syncMode": "FORCE",
+        "defaultScope": "openid profile email"
+      }
+    }
+  ],
+  "identityProviderMappers": [
+    {
+      "name": "hardcoded-site_admin",
+      "identityProviderAlias": "accounts",
+      "identityProviderMapper": "oidc-hardcoded-role-idp-mapper",
+      "config": {
+        "role": "site_admin",
+        "syncMode": "INHERIT"
+      }
+    }
+  ]
+}

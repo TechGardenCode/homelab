@@ -66,6 +66,36 @@ extraEnv: |
       secretKeyRef:
         name: keycloak-realm-secrets
         key: hausparty-client-secret
+  - name: KC_USER_KIAN_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: keycloak-realm-secrets
+        key: user-kian-password
+  - name: KC_USER_TECHGARDENCODE_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: keycloak-realm-secrets
+        key: user-techgardencode-password
+  - name: KC_BROKER_TECHGARDEN_SECRET
+    valueFrom:
+      secretKeyRef:
+        name: keycloak-realm-secrets
+        key: broker-techgarden-secret
+  - name: KC_BROKER_HAUSPARTY_SECRET
+    valueFrom:
+      secretKeyRef:
+        name: keycloak-realm-secrets
+        key: broker-hausparty-secret
+  - name: KC_BROKER_KIAN_COFFEE_SECRET
+    valueFrom:
+      secretKeyRef:
+        name: keycloak-realm-secrets
+        key: broker-kian-coffee-secret
+  - name: KC_BROKER_MASTER_SECRET
+    valueFrom:
+      secretKeyRef:
+        name: keycloak-realm-secrets
+        key: broker-master-secret
 
 resources:
   requests:
