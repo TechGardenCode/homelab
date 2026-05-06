@@ -97,7 +97,7 @@ data:
           "emailVerified": true,
           "credentials": [{ "type": "password", "value": "${KC_USER_KIAN_PASSWORD}", "temporary": false }],
           "requiredActions": ["CONFIGURE_TOTP"],
-          "realmRoles": ["infra-admin", "app-admin"]
+          "realmRoles": ["default-roles-accounts", "infra-admin", "app-admin"]
         },
         {
           "username": "techgardencode",
@@ -108,7 +108,7 @@ data:
           "emailVerified": true,
           "credentials": [{ "type": "password", "value": "${KC_USER_TECHGARDENCODE_PASSWORD}", "temporary": false }],
           "requiredActions": ["CONFIGURE_TOTP"],
-          "realmRoles": ["app-admin"]
+          "realmRoles": ["default-roles-accounts", "app-admin"]
         }
       ]
     }
