@@ -5,6 +5,113 @@ metadata:
   name: keycloak-realm-config
   namespace: keycloak
 data:
+  accounts-realm.json: |
+    {
+      "realm": "accounts",
+      "enabled": true,
+      "displayName": "Accounts",
+      "registrationAllowed": false,
+      "loginWithEmailAllowed": true,
+      "duplicateEmailsAllowed": false,
+      "verifyEmail": false,
+      "passwordPolicy": "length(14) and notUsername and passwordHistory(5)",
+      "otpPolicyType": "totp",
+      "otpPolicyAlgorithm": "HmacSHA256",
+      "otpPolicyDigits": 6,
+      "otpPolicyPeriod": 30,
+      "bruteForceProtected": true,
+      "permanentLockout": false,
+      "failureFactor": 5,
+      "sslRequired": "external",
+      "roles": {
+        "realm": [
+          { "name": "infra-admin", "description": "Cross-realm infrastructure admin" },
+          { "name": "app-admin",   "description": "Cross-realm application admin" }
+        ]
+      },
+      "clients": [
+        {
+          "clientId": "broker-techgarden",
+          "enabled": true,
+          "clientAuthenticatorType": "client-secret",
+          "secret": "${KC_BROKER_TECHGARDEN_SECRET}",
+          "protocol": "openid-connect",
+          "publicClient": false,
+          "standardFlowEnabled": true,
+          "directAccessGrantsEnabled": false,
+          "serviceAccountsEnabled": false,
+          "redirectUris": ["https://sso.dev.techgarden.gg/realms/techgarden/broker/accounts/endpoint"],
+          "webOrigins": [],
+          "defaultClientScopes": ["openid", "basic", "profile", "email"]
+        },
+        {
+          "clientId": "broker-hausparty",
+          "enabled": true,
+          "clientAuthenticatorType": "client-secret",
+          "secret": "${KC_BROKER_HAUSPARTY_SECRET}",
+          "protocol": "openid-connect",
+          "publicClient": false,
+          "standardFlowEnabled": true,
+          "directAccessGrantsEnabled": false,
+          "serviceAccountsEnabled": false,
+          "redirectUris": ["https://sso.dev.techgarden.gg/realms/hausparty/broker/accounts/endpoint"],
+          "webOrigins": [],
+          "defaultClientScopes": ["openid", "basic", "profile", "email"]
+        },
+        {
+          "clientId": "broker-kian-coffee",
+          "enabled": true,
+          "clientAuthenticatorType": "client-secret",
+          "secret": "${KC_BROKER_KIAN_COFFEE_SECRET}",
+          "protocol": "openid-connect",
+          "publicClient": false,
+          "standardFlowEnabled": true,
+          "directAccessGrantsEnabled": false,
+          "serviceAccountsEnabled": false,
+          "redirectUris": ["https://sso.dev.techgarden.gg/realms/kian-coffee/broker/accounts/endpoint"],
+          "webOrigins": [],
+          "defaultClientScopes": ["openid", "basic", "profile", "email"]
+        },
+        {
+          "clientId": "broker-master",
+          "enabled": true,
+          "clientAuthenticatorType": "client-secret",
+          "secret": "${KC_BROKER_MASTER_SECRET}",
+          "protocol": "openid-connect",
+          "publicClient": false,
+          "standardFlowEnabled": true,
+          "directAccessGrantsEnabled": false,
+          "serviceAccountsEnabled": false,
+          "redirectUris": ["https://sso.dev.techgarden.gg/realms/master/broker/accounts/endpoint"],
+          "webOrigins": [],
+          "defaultClientScopes": ["openid", "basic", "profile", "email"]
+        }
+      ],
+      "users": [
+        {
+          "username": "kian",
+          "email": "kian@kian.sh",
+          "firstName": "Kian",
+          "lastName": "Alikhani",
+          "enabled": true,
+          "emailVerified": true,
+          "credentials": [{ "type": "password", "value": "${KC_USER_KIAN_PASSWORD}", "temporary": false }],
+          "requiredActions": ["CONFIGURE_TOTP"],
+          "realmRoles": ["infra-admin", "app-admin"]
+        },
+        {
+          "username": "techgardencode",
+          "email": "techgardencode@techgarden.gg",
+          "firstName": "TechGarden",
+          "lastName": "Code",
+          "enabled": true,
+          "emailVerified": true,
+          "credentials": [{ "type": "password", "value": "${KC_USER_TECHGARDENCODE_PASSWORD}", "temporary": false }],
+          "requiredActions": ["CONFIGURE_TOTP"],
+          "realmRoles": ["app-admin"]
+        }
+      ]
+    }
   techgarden-realm.json: |
     {
       "realm": "techgarden",
