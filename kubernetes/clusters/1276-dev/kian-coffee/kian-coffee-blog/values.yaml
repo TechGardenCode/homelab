@@ -1,7 +1,7 @@
 image:
   repository: "ghcr.io/techgardencode/kian-coffee-blog"
   # tag: bot-managed via app-registry.yaml; do not edit by hand
-  tag: "e57cef523fac64786c03046dab8109fb8d4a8dba"
+  tag: "7cd4a4f2ee6791f064a31a653000d8989b4fb604"
 ports:
   - name: main
     containerPort: 8080
@@ -10,13 +10,11 @@ service:
 health:
   path: /actuator/health/readiness
   port: main
-
 # Multi-path API routing happens via the standalone httproute.yaml in this
 # directory (the chart's single-path HTTPRoute can't express the apex
 # /api/posts + /api/media + /feed + /sitemap.xml split we need).
 httpRoute:
   enabled: false
-
 envs:
   blog:
     PG_HOST: kian-coffee-db-rw.kian-coffee.svc.cluster.local
@@ -32,7 +30,6 @@ envs:
     SENTRY_ENVIRONMENT: dev
     CORS_ORIGINS: "https://kian.coffee,https://dev.kian.coffee"
     JAVA_OPTS: "-XX:MaxRAMPercentage=75 -XX:+UseG1GC"
-
 secretEnvs:
   blog:
     PG_PASSWORD: PG_PASSWORD
@@ -45,17 +42,14 @@ secretEnvs:
     # default kicks in and Sentry autoconfig disables itself. Re-enable by
     # uncommenting the line below once the BWS secret has a real DSN value:
     # SENTRY_DSN: SENTRY_DSN
-
 resources:
   requests:
     cpu: 150m
     memory: 512Mi
   limits:
     memory: 1Gi
-
 autoscaling:
   enabled: false
-
 podSecurityContext:
   runAsNonRoot: true
   runAsUser: 1000
@@ -63,14 +57,12 @@ podSecurityContext:
   fsGroup: 1000
   seccompProfile:
     type: RuntimeDefault
-
 securityContext:
   allowPrivilegeEscalation: false
   readOnlyRootFilesystem: true
   capabilities:
     drop:
       - ALL
-
 # JVM scratch + temurin layer needs /tmp writable.
 emptyDirs:
   - name: tmp
