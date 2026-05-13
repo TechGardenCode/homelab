@@ -10,7 +10,7 @@ resources:
 helmCharts:
   # Install Envoy Gateway controller
   - name: gateway-helm
-    version: 1.7.2
+    version: 1.8.0
     releaseName: gateway-helm
     repo: oci://docker.io/envoyproxy
     includeCRDs: true
