@@ -6,11 +6,13 @@ ports:
     containerPort: 80
 service:
   type: ClusterIP
-# Exposure: Tier 3 (Cloudflare Tunnel)
+# Exposure: Public via netcup VPS edge proxy (no cloudflared tunnel).
+# DNS lizard.techgarden.gg is a manual A record to the VPS IP; the
+# tunnelTarget annotation is omitted so external-dns doesn't try to
+# overwrite that record with a cfargotunnel CNAME.
 httpRoute:
   enabled: true
   hostname: lizard.techgarden.gg
 gateway:
   public:
     enabled: true
-    tunnelTarget: 9221faf4-41f8-4aa6-9cbc-1b757c2a2c07.cfargotunnel.com
