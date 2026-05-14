@@ -16,6 +16,11 @@ spec:
         principal:
           clientCIDRs:
             - "10.244.0.0/16"
+      - name: allow-vps-wireguard
+        action: Allow
+        principal:
+          clientCIDRs:
+            - "10.99.0.0/24"
       - name: allow-cloudflare-ipv4
         action: Allow
         principal:
