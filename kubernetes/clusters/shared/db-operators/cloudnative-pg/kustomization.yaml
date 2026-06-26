@@ -4,7 +4,7 @@ kind: Kustomization
 helmCharts:
   - repo: https://cloudnative-pg.github.io/charts
     name: cloudnative-pg
-    version: 0.28.2
+    version: 0.28.3
     includeCRDs: true
     releaseName: cnpg
     namespace: db-operators
