@@ -1,0 +1,33 @@
+---
+# ArgoCD repository credentials for the (private) TechGarden app repos.
+# `repo-creds` is a URL-prefix template: it applies to every repo under the org
+# prefix below, so techgarden (and future product repos) are all covered by one
+# entry. The PAT (read-only Contents) is pulled from Bitwarden Secrets Manager.
+# The label is set on both the ExternalSecret (house style, propagated by ESO)
+# and the generated Secret's template so ArgoCD reliably recognises it.
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: techgardencode-repo-creds
+  labels:
+    argocd.argoproj.io/secret-type: repo-creds
+spec:
+  refreshInterval: 1h
+  secretStoreRef:
+    name: bitwarden-secretsmanager
+    kind: ClusterSecretStore
+  target:
+    name: techgardencode-repo-creds
+    template:
+      metadata:
+        labels:
+          argocd.argoproj.io/secret-type: repo-creds
+      data:
+        type: git
+        url: https://github.com/TechGardenCode
+        username: x-access-token
+        password: "{{ .password }}"
+  data:
+    - secretKey: password
+      remoteRef:
+        key: "46d0db72-9f10-4571-bdd6-b47500219d1e"
