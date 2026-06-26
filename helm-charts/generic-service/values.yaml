@@ -150,7 +150,7 @@ database:
   mariadb:
     image:
       repository: mariadb
-      tag: "12.2.2@sha256:350261292d0129fd4b24f537dcf05ecd3ebe34d39d5b592af551f38310e7a167"
+      tag: "12.2.2@sha256:6a4c4bbf0447c2247801309513fcc0dd17c3f35390368139ce419387fdd1144d"
     backup:
       schedule: "0 4 * * *"
       image:
@@ -159,7 +159,7 @@ database:
   postgresql:
     image:
       repository: postgres
-      tag: "18.3@sha256:7e32e9833a6fb1c92c32552794cb6ed569d51b445a54907d35fc112ef39684db"
+      tag: "18.4@sha256:1a5b3e745bbd82d6deb146505e504da3c2f248cac15e431951b148fbe4f8613a"
     backup:
       schedule: "0 4 * * *"
       image:
@@ -169,7 +169,7 @@ database:
 helper:
   image:
     repository: busybox
-    tag: "1.37.0@sha256:9532d8c39891ca2ecde4d30d7710e01fb739c87a8b9299685c63704296b16028"
+    tag: "1.38.0@sha256:fd8d9aa63ba2f0982b5304e1ee8d3b90a210bc1ffb5314d980eb6962f1a9715d"
 
 wait4x:
   image:

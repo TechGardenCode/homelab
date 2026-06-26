@@ -3,6 +3,7 @@ kind: Kustomization
 
 resources:
   - base/externalsecret.yaml
+  - base/repo-creds.yaml
   - base/configmap.yaml
   - base/pdb.yaml
   - base/step-ca-configmap.yaml

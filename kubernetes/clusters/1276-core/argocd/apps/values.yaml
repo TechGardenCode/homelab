@@ -3,6 +3,8 @@ projects:
     namespace: argocd
     sourceRepos:
       - https://github.com/techgardencode/homelab.git
+      # TechGarden app repo owns its own deploy manifests (web + iris).
+      - https://github.com/TechGardenCode/techgarden.git
     destinations:
       - name: 1276-dev
         namespace: "*"
@@ -58,6 +60,42 @@ applicationsets:
         destination:
           name: "1276-dev"
           namespace: "{{path[3]}}"
+        syncPolicy:
+          automated:
+            selfHeal: true
+            prune: true
+          syncOptions:
+            - ApplyOutOfSyncOnly=true
+            - ServerSideApply=true
+  # TechGarden monorepo deploy: this ApplicationSet points ArgoCD at the *app
+  # repo's* own Kustomize overlays (web + iris), one Application per product.
+  # Native kustomize (no kustomize-helm plugin) — the overlays are plain
+  # kustomize, and the plugin's NAMESPACE param would clobber the per-product
+  # namespaces each product ships in its own namespace.yaml.
+  # NOTE: the techgarden repo must be reachable by ArgoCD (add repo creds if private).
+  techgarden-dev:
+    name: techgarden-dev
+    namespace: argocd
+    generators:
+      - git:
+          repoURL: https://github.com/TechGardenCode/techgarden.git
+          revision: main
+          directories:
+            - path: "projects/*/deploy/overlays/dev"
+    template:
+      metadata:
+        name: "1276-dev.techgarden-{{path[1]}}"
+      spec:
+        project: "1276-dev"
+        source:
+          repoURL: https://github.com/TechGardenCode/techgarden.git
+          targetRevision: main
+          path: "{{path}}"
+        destination:
+          name: "1276-dev"
+          # Each product ships its own namespace (techgarden-web, iris) via a
+          # namespace.yaml; this default only covers unnamespaced resources.
+          namespace: "{{path[1]}}"
         syncPolicy:
           automated:
             selfHeal: true
