@@ -29,27 +29,6 @@
   },
   "clients": [
     {
-      "clientId": "broker-techgarden",
-      "enabled": true,
-      "clientAuthenticatorType": "client-secret",
-      "secret": "${KC_BROKER_TECHGARDEN_SECRET}",
-      "protocol": "openid-connect",
-      "publicClient": false,
-      "standardFlowEnabled": true,
-      "directAccessGrantsEnabled": false,
-      "serviceAccountsEnabled": false,
-      "redirectUris": [
-        "https://sso.dev.techgarden.gg/realms/techgarden/broker/accounts/endpoint"
-      ],
-      "webOrigins": [],
-      "defaultClientScopes": [
-        "openid",
-        "basic",
-        "profile",
-        "email"
-      ]
-    },
-    {
       "clientId": "broker-hausparty",
       "enabled": true,
       "clientAuthenticatorType": "client-secret",
