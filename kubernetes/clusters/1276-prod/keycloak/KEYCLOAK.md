@@ -11,18 +11,18 @@
 `accounts` OIDC identity provider; users never live in the product (spoke) realms.
 
 ```
-                 accounts  (users + broker-<spoke> clients)   ← the hub
-                /     |        \              \
-   IdP "accounts"  IdP "accounts"  IdP "accounts"   (master: broker client exists,
-   techgarden     hausparty       kian-coffee        IdP not wired → unused)
-   bff,svc.profile  hausparty     api.blog,kian-coffee-web
+              accounts  (users + broker-<spoke> clients)   ← the hub
+                   |              \
+         IdP "accounts"      IdP "accounts"   (master: broker client exists,
+         hausparty          kian-coffee        IdP not wired → unused)
+         hausparty          api.blog, kian-coffee-web
 ```
 
 - **accounts** (hub) — users (`kian`, `techgardencode`), cross-realm roles (`infra-admin`,
   `app-admin`), one confidential `broker-<spoke>` client per spoke. Hardened: 14-char
   password policy, TOTP required, brute-force protection.
-- **spokes** (`techgarden`, `hausparty`, `kian-coffee`) — each has an `accounts` IdP
-  (syncMode FORCE) + a hardcoded-role IdP mapper, plus its app clients. No local users.
+- **spokes** (`hausparty`, `kian-coffee`) — each has an `accounts` IdP (syncMode FORCE) + a
+  hardcoded-role IdP mapper, plus its app clients. No local users.
 - **master** — admin-console realm. A `broker-master` client exists in `accounts` but master
   has **no** `accounts` IdP, so `broker-master` is currently unused cruft; admin login uses
   the local bootstrap admin.
@@ -35,8 +35,7 @@
 
 | Realm | Client | Type | Notes |
 |---|---|---|---|
-| accounts | `broker-{techgarden,hausparty,kian-coffee,master}` | confidential | broker-in clients |
-| techgarden | `bff`, `svc.profile` | std-flow / service-account | **decommissioning (Stage 1)** |
+| accounts | `broker-{hausparty,kian-coffee,master}` | confidential | broker-in clients |
 | hausparty | `hausparty` | confidential, std flow | NextAuth; redirect `hausparty.techgarden.gg/*` |
 | kian-coffee | `kian-coffee-web` | public + PKCE | Angular SPA; redirect `kian.coffee/admin/blog` |
 | kian-coffee | `api.blog` | confidential / bearer | resource server; tokens carry `aud=api.blog` |
@@ -72,10 +71,18 @@ default scopes. This is the template the onboarding generator emits (Stage 3).
 
 ## Known cleanups (tracked)
 
+- **Leftover techgarden plumbing** (Stage 1 deferred → remove in Stage 2): unused keys
+  `bff-client-secret` / `profile-client-secret` / `broker-techgarden-secret` in
+  `externalsecret-realm.yaml` + matching `KC_CLIENT_BFF_SECRET` / `KC_CLIENT_PROFILE_SECRET`
+  / `KC_BROKER_TECHGARDEN_SECRET` env in `values.yaml`. Harmless (inject into nothing); left
+  in place to avoid a restart, swept with the config-cli change.
 - `kian-coffee` prod seed has duplicate redirect URIs (cosmetic — dedupe under config-cli).
 - `broker-master` client in `accounts` is unused (master has no `accounts` IdP) — remove or wire.
 - `kian-coffee` seeds are bloated full-realm exports — slim to managed fields under config-cli.
-- `techgarden` realm + `bff`/`svc.profile` + `broker-techgarden` decommissioning (Stage 1).
+
+> **Stage 1 done (2026-06-26):** `techgarden` realm + `broker-techgarden` client deleted live
+> (dev + prod) and from git; dead techgarden app tree removed across 1276-prod / 1501-prod /
+> 1276-dev + the ApplicationSet exclude. The never-running Bitnami keycloak went with it.
 
 _See the upgrade/management plan: `.ai/plans/tool-currency-upgrade/` and the Keycloak
 tame-and-consolidate plan. config-cli reconcile = Stage 2; onboarding generator = Stage 3;
