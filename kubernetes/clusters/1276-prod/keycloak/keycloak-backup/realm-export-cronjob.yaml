@@ -31,7 +31,7 @@ spec:
                   apk add --no-cache -q curl jq > /dev/null 2>&1
 
                   TIMESTAMP=$(date +%Y%m%d-%H%M%S)
-                  KC_URL="http://keycloak-http.keycloak.svc:80"
+                  KC_URL="http://keycloak-service.keycloak.svc:8080"
                   mkdir -p /backups/realm-exports
 
                   echo "[$(date)] Authenticating with Keycloak..."

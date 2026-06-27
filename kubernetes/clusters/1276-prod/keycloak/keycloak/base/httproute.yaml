@@ -16,5 +16,5 @@ spec:
     - sso.techgarden.gg
   rules:
     - backendRefs:
-        - name: keycloak-http
-          port: 80
+        - name: keycloak-service
+          port: 8080

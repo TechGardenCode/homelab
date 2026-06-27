@@ -1,15 +1,17 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-helmCharts:
-  - name: keycloakx
-    version: 7.1.11
-    releaseName: keycloak
-    repo: https://codecentric.github.io/helm-charts
-    namespace: keycloak
-    valuesFile: values.yaml
+namespace: keycloak
 
 resources:
+  # Official Keycloak Operator @ 26.6.3 (CRDs + operator Deployment/RBAC),
+  # vendored from keycloak/keycloak-k8s-resources. CRDs apply under the
+  # ApplicationSet's ServerSideApply=true (the Keycloak CRD exceeds the
+  # client-side annotation limit).
+  - base/operator/crd-keycloaks.yaml
+  - base/operator/crd-keycloakrealmimports.yaml
+  - base/operator/operator.yaml
+  - base/keycloak-cr.yaml
   - base/externalsecret.yaml
   - base/externalsecret-realm.yaml
   - base/httproute.yaml
