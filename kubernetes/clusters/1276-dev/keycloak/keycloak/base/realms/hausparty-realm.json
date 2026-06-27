@@ -30,11 +30,11 @@
         "http://localhost:3000"
       ],
       "defaultClientScopes": [
-        "openid",
         "basic",
         "profile",
         "email"
-      ]
+      ],
+      "optionalClientScopes": null
     }
   ],
   "identityProviders": [

@@ -43,11 +43,11 @@
       ],
       "webOrigins": [],
       "defaultClientScopes": [
-        "openid",
         "basic",
         "profile",
         "email"
-      ]
+      ],
+      "optionalClientScopes": null
     },
     {
       "clientId": "broker-kian-coffee",
@@ -64,11 +64,11 @@
       ],
       "webOrigins": [],
       "defaultClientScopes": [
-        "openid",
         "basic",
         "profile",
         "email"
-      ]
+      ],
+      "optionalClientScopes": null
     },
     {
       "clientId": "broker-master",
@@ -85,11 +85,11 @@
       ],
       "webOrigins": [],
       "defaultClientScopes": [
-        "openid",
         "basic",
         "profile",
         "email"
-      ]
+      ],
+      "optionalClientScopes": null
     }
   ]
 }
