@@ -32,7 +32,7 @@ spec:
               drop: ["ALL"]
           env:
             - name: KEYCLOAK_URL
-              value: "http://keycloak-http.keycloak.svc:80"
+              value: "http://keycloak-service.keycloak.svc:8080"
             - name: KEYCLOAK_USER
               valueFrom:
                 secretKeyRef: { name: keycloak-admin, key: username }
