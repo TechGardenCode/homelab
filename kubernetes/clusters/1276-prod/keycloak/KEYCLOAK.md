@@ -53,15 +53,20 @@ default scopes. This is the template the onboarding generator emits (Stage 3).
 ## Config management
 
 - **Source of truth:** realm-JSON seeds in `keycloak/base/realms/*.json`, **per cluster** —
-  dev seeds carry dev hostnames + `localhost`; prod seeds carry prod hostnames. Secrets are
-  `${ENV}` placeholders injected from the `keycloak-realm-secrets` ExternalSecret (BWS).
-- **Apply mechanism (current):** `kc.sh start --import-realm` — ⚠️ **import-once**: imports
-  only realms absent from the DB. After first boot the seeds are inert and git is never
-  reconciled against the DB. (Replaced by keycloak-config-cli in Stage 2.)
+  dev seeds carry dev hostnames + `localhost`; prod seeds carry prod hostnames. Secrets use
+  config-cli `$(env:NAME)` placeholders injected from the `keycloak-realm-secrets` ExternalSecret (BWS).
+- **Apply mechanism:** **keycloak-config-cli** (`base/config-cli-job.yaml`, ArgoCD **PostSync
+  hook**) reconciles the seeds into the running Keycloak via the Admin API on every sync — git
+  is the *enforced* source of truth. All managed policies = `no-delete` (purely additive/update,
+  never prunes — so minimal seeds can't drop Keycloak defaults). **Users are NOT managed**
+  (stripped from seeds; they live in the DB + backups). Pinned
+  `adorsys/keycloak-config-cli:6.5.1-26.1.0` (bump alongside the server in Stage 4).
+- **Gotcha removed:** invalid `"openid"` entries in client `defaultClientScopes` were stripped —
+  `--import-realm` silently ignored them, but config-cli does a strict client-scope lookup and
+  NPEs on them.
 - **Audit 2026-06-26:** a redacted live `partial-export` of all realms (dev **and** prod) was
-  diffed against the git seeds → **no meaningful drift.** Every custom client, redirect URI,
-  role, IdP, scope, and audience mapper matches git. The realm config was faithfully
-  maintained as code; what was missing was a reconcile loop to guarantee it.
+  diffed against the git seeds → **no meaningful drift.** The realm config was faithfully
+  maintained as code; what was missing was the reconcile loop — now provided by config-cli.
 
 ## Backups
 
@@ -71,18 +76,18 @@ default scopes. This is the template the onboarding generator emits (Stage 3).
 
 ## Known cleanups (tracked)
 
-- **Leftover techgarden plumbing** (Stage 1 deferred → remove in Stage 2): unused keys
-  `bff-client-secret` / `profile-client-secret` / `broker-techgarden-secret` in
-  `externalsecret-realm.yaml` + matching `KC_CLIENT_BFF_SECRET` / `KC_CLIENT_PROFILE_SECRET`
-  / `KC_BROKER_TECHGARDEN_SECRET` env in `values.yaml`. Harmless (inject into nothing); left
-  in place to avoid a restart, swept with the config-cli change.
-- `kian-coffee` prod seed has duplicate redirect URIs (cosmetic — dedupe under config-cli).
+- `kian-coffee` prod seed has duplicate redirect URIs (cosmetic — dedupe; config-cli will apply).
 - `broker-master` client in `accounts` is unused (master has no `accounts` IdP) — remove or wire.
-- `kian-coffee` seeds are bloated full-realm exports — slim to managed fields under config-cli.
+- `kian-coffee` seeds are bloated full-realm exports — slim to managed fields.
+- broker/hausparty clients carry a cosmetic `"optionalClientScopes": null` (config-cli-safe).
 
 > **Stage 1 done (2026-06-26):** `techgarden` realm + `broker-techgarden` client deleted live
 > (dev + prod) and from git; dead techgarden app tree removed across 1276-prod / 1501-prod /
 > 1276-dev + the ApplicationSet exclude. The never-running Bitnami keycloak went with it.
+>
+> **Stage 2 done (2026-06-26):** config-cli reconcile live on dev + prod; `--import-realm`
+> dropped; users stripped from seeds (preserved in DB — verified); techgarden secret plumbing
+> swept; OIDC healthy. Found & fixed the `openid` strict-lookup gotcha on dev before prod.
 
 _See the upgrade/management plan: `.ai/plans/tool-currency-upgrade/` and the Keycloak
 tame-and-consolidate plan. config-cli reconcile = Stage 2; onboarding generator = Stage 3;
