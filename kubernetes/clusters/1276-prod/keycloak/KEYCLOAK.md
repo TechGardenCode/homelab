@@ -1,9 +1,11 @@
 # Keycloak — Topology & Operations
 
-**Live:** `keycloak` namespace · codecentric/keycloakx chart · `quay.io/keycloak/keycloak:26.2`
+**Live:** `keycloak` namespace · **official Keycloak Operator @ 26.6.3** · `quay.io/keycloak/keycloak:26.6.3`
 · 2 replicas (prod) / 1 (dev) · serves `sso.techgarden.gg` (prod), `sso.dev.techgarden.gg` (dev)
-· external CNPG DB `keycloak-db`. The Bitnami deployment under `*/techgarden/keycloak/` is
-**not running** and is being removed — this codecentric deployment is the only live one.
+· external CNPG DB `keycloak-db`. Operator + CRDs are vendored per-cluster under
+`keycloak/keycloak/base/operator/` (pinned 26.6.3) and bundled into the `keycloak` app — sync-waves
+order CRD/operator (wave 0) → `Keycloak` CR (wave 5); CRDs apply under the ApplicationSet's
+ServerSideApply. In-cluster service is now `keycloak-service:8080` (was `keycloak-http:80`).
 
 ## Identity model — hub & spoke
 
@@ -62,7 +64,9 @@ default scopes. The `add-keycloak-client` skill emits this template (see §Audie
   is the *enforced* source of truth. All managed policies = `no-delete` (purely additive/update,
   never prunes — so minimal seeds can't drop Keycloak defaults). **Users are NOT managed**
   (stripped from seeds; they live in the DB + backups). Pinned
-  `adorsys/keycloak-config-cli:6.5.1-26.1.0` (bump alongside the server in Stage 4).
+  `adorsys/keycloak-config-cli:6.5.1-26.1.0` — newest adorsys tag (no 26.6-matched tag exists);
+  6.5.1 reconciles cleanly against the 26.6.3 server (verified Stage 4). Stays as the drift
+  reconciler — the operator's `KeycloakRealmImport` is create-only and never re-applies.
 - **Gotcha removed:** invalid `"openid"` entries in client `defaultClientScopes` were stripped —
   `--import-realm` silently ignored them, but config-cli does a strict client-scope lookup and
   NPEs on them.
@@ -95,7 +99,16 @@ default scopes. The `add-keycloak-client` skill emits this template (see §Audie
 > — one-shot onboarding for spa / confidential / resource-server / m2m clients and new product
 > realms. Templates derived from the live seeds; validated by jq-splice + `kustomize build`.
 > Onboard friction is now ~5 min: edit seed(s) + wire one secret + dev dry-run + push.
+>
+> **Stage 4 done (2026-06-27):** migrated codecentric/keycloakx 26.2 → **official Keycloak
+> Operator @ 26.6.3** on dev then prod. `Keycloak` CR → existing external `keycloak-db`
+> (compute-layer swap, DB untouched); service renamed `keycloak-http:80` → `keycloak-service:8080`
+> across both HTTPRoutes + config-cli + the realm-export cronjob. Pinned **26.6.3 not 26.6.4**
+> (26.6.4 was day-1). One-way 26.2→26.6.3 Liquibase migration ran cleanly behind a fresh DB
+> backup. config-cli (6.5.1-26.1.0) verified compatible with 26.6.3. Op note: the chart/operator
+> StatefulSet name clash self-resolves — ArgoCD prunes the old SS before the CR applies, so **no
+> manual `kubectl delete statefulset` was needed**.
 
-_See the upgrade/management plan: `.ai/plans/tool-currency-upgrade/` and the Keycloak
-tame-and-consolidate plan. config-cli reconcile = Stage 2 ✅; onboarding skill = Stage 3 ✅
-(`add-keycloak-client`); official-Operator + 26.6.4 upgrade = Stage 4 (pending)._
+_See the upgrade/management plan: `.ai/plans/keycloak-operator-cutover/` (Stage 4) and
+`.ai/plans/tool-currency-upgrade/`. config-cli reconcile = Stage 2 ✅; onboarding skill = Stage 3 ✅
+(`add-keycloak-client`); official-Operator + 26.6.3 upgrade = Stage 4 ✅._
