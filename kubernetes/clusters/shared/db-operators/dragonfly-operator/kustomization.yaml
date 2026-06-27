@@ -4,7 +4,7 @@ kind: Kustomization
 helmCharts:
   - repo: oci://ghcr.io/dragonflydb/dragonfly-operator/helm
     name: dragonfly-operator
-    version: v1.5.0
+    version: v1.6.1
     includeCRDs: true
     releaseName: dragonfly-operator
     namespace: db-operators
