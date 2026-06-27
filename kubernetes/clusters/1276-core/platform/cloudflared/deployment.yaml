@@ -17,9 +17,14 @@ spec:
       automountServiceAccountToken: false
       containers:
         - name: cloudflared
-          image: cloudflare/cloudflared:2026.3.0
+          image: cloudflare/cloudflared:2026.6.1
           args:
             - tunnel
+            # ponytail: cluster is IPv4-only; pin edge to v4. cloudflared 2026.4.0
+            # flipped the --edge-ip-version default 4->auto, which would attempt
+            # IPv6 egress to the Cloudflare edge that this network can't route.
+            - --edge-ip-version
+            - "4"
             - --config
             - /etc/cloudflared/config.yaml
             - --metrics
