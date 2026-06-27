@@ -32,7 +32,7 @@
       "clientId": "broker-hausparty",
       "enabled": true,
       "clientAuthenticatorType": "client-secret",
-      "secret": "${KC_BROKER_HAUSPARTY_SECRET}",
+      "secret": "$(env:KC_BROKER_HAUSPARTY_SECRET)",
       "protocol": "openid-connect",
       "publicClient": false,
       "standardFlowEnabled": true,
@@ -43,17 +43,17 @@
       ],
       "webOrigins": [],
       "defaultClientScopes": [
-        "openid",
         "basic",
         "profile",
         "email"
-      ]
+      ],
+      "optionalClientScopes": null
     },
     {
       "clientId": "broker-kian-coffee",
       "enabled": true,
       "clientAuthenticatorType": "client-secret",
-      "secret": "${KC_BROKER_KIAN_COFFEE_SECRET}",
+      "secret": "$(env:KC_BROKER_KIAN_COFFEE_SECRET)",
       "protocol": "openid-connect",
       "publicClient": false,
       "standardFlowEnabled": true,
@@ -64,17 +64,17 @@
       ],
       "webOrigins": [],
       "defaultClientScopes": [
-        "openid",
         "basic",
         "profile",
         "email"
-      ]
+      ],
+      "optionalClientScopes": null
     },
     {
       "clientId": "broker-master",
       "enabled": true,
       "clientAuthenticatorType": "client-secret",
-      "secret": "${KC_BROKER_MASTER_SECRET}",
+      "secret": "$(env:KC_BROKER_MASTER_SECRET)",
       "protocol": "openid-connect",
       "publicClient": false,
       "standardFlowEnabled": true,
@@ -85,58 +85,11 @@
       ],
       "webOrigins": [],
       "defaultClientScopes": [
-        "openid",
         "basic",
         "profile",
         "email"
-      ]
-    }
-  ],
-  "users": [
-    {
-      "username": "kian",
-      "email": "kian@kian.sh",
-      "firstName": "Kian",
-      "lastName": "Alikhani",
-      "enabled": true,
-      "emailVerified": true,
-      "credentials": [
-        {
-          "type": "password",
-          "value": "${KC_USER_KIAN_PASSWORD}",
-          "temporary": false
-        }
       ],
-      "requiredActions": [
-        "CONFIGURE_TOTP"
-      ],
-      "realmRoles": [
-        "default-roles-accounts",
-        "infra-admin",
-        "app-admin"
-      ]
-    },
-    {
-      "username": "techgardencode",
-      "email": "techgardencode@techgarden.gg",
-      "firstName": "TechGarden",
-      "lastName": "Code",
-      "enabled": true,
-      "emailVerified": true,
-      "credentials": [
-        {
-          "type": "password",
-          "value": "${KC_USER_TECHGARDENCODE_PASSWORD}",
-          "temporary": false
-        }
-      ],
-      "requiredActions": [
-        "CONFIGURE_TOTP"
-      ],
-      "realmRoles": [
-        "default-roles-accounts",
-        "app-admin"
-      ]
+      "optionalClientScopes": null
     }
   ]
 }

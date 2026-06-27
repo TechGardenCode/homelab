@@ -1527,7 +1527,7 @@
         "useJwksUrl": "true",
         "validateSignature": "true",
         "clientId": "broker-kian-coffee",
-        "clientSecret": "${KC_BROKER_KIAN_COFFEE_SECRET}",
+        "clientSecret": "$(env:KC_BROKER_KIAN_COFFEE_SECRET)",
         "syncMode": "FORCE",
         "defaultScope": "openid profile email"
       }

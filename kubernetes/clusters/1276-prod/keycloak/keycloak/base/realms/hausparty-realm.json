@@ -21,7 +21,7 @@
       "clientId": "hausparty",
       "enabled": true,
       "clientAuthenticatorType": "client-secret",
-      "secret": "${KC_CLIENT_HAUSPARTY_SECRET}",
+      "secret": "$(env:KC_CLIENT_HAUSPARTY_SECRET)",
       "protocol": "openid-connect",
       "publicClient": false,
       "standardFlowEnabled": true,
@@ -34,11 +34,11 @@
         "https://hausparty.techgarden.gg"
       ],
       "defaultClientScopes": [
-        "openid",
         "basic",
         "profile",
         "email"
-      ]
+      ],
+      "optionalClientScopes": null
     }
   ],
   "identityProviders": [
@@ -61,7 +61,7 @@
         "useJwksUrl": "true",
         "validateSignature": "true",
         "clientId": "broker-hausparty",
-        "clientSecret": "${KC_BROKER_HAUSPARTY_SECRET}",
+        "clientSecret": "$(env:KC_BROKER_HAUSPARTY_SECRET)",
         "syncMode": "FORCE",
         "defaultScope": "openid profile email"
       }

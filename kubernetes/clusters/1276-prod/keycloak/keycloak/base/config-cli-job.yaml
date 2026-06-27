@@ -1,0 +1,87 @@
+---
+# Reconciles the realm seeds (configMap keycloak-realm-config) into the running
+# Keycloak via the Admin API on every ArgoCD sync. Replaces `--import-realm`
+# (which only imported realms absent from the DB). PostSync hook so it runs after
+# the keycloak StatefulSet is healthy. ALL managed policies = no-delete: purely
+# additive/update, never deletes (so minimal seeds can't prune Keycloak defaults,
+# and real users are never touched).
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: keycloak-config-cli
+  namespace: keycloak
+  annotations:
+    argocd.argoproj.io/hook: PostSync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+spec:
+  backoffLimit: 3
+  ttlSecondsAfterFinished: 1800
+  template:
+    spec:
+      restartPolicy: Never
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: config-cli
+          image: docker.io/adorsys/keycloak-config-cli:6.5.1-26.1.0
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+          env:
+            - name: KEYCLOAK_URL
+              value: "http://keycloak-http.keycloak.svc:80"
+            - name: KEYCLOAK_USER
+              valueFrom:
+                secretKeyRef: { name: keycloak-admin, key: username }
+            - name: KEYCLOAK_PASSWORD
+              valueFrom:
+                secretKeyRef: { name: keycloak-admin, key: password }
+            - name: KEYCLOAK_AVAILABILITYCHECK_ENABLED
+              value: "true"
+            - name: KEYCLOAK_AVAILABILITYCHECK_TIMEOUT
+              value: "120s"
+            - name: IMPORT_FILES_LOCATIONS
+              value: "/config/*.json"
+            - name: IMPORT_VARSUBSTITUTION_ENABLED
+              value: "true"
+            # no-delete everywhere: reconcile additively, never prune
+            - { name: IMPORT_MANAGED_USER, value: "no-delete" }
+            - { name: IMPORT_MANAGED_GROUP, value: "no-delete" }
+            - { name: IMPORT_MANAGED_CLIENT, value: "no-delete" }
+            - { name: IMPORT_MANAGED_CLIENT_SCOPE, value: "no-delete" }
+            - { name: IMPORT_MANAGED_SCOPE_MAPPING, value: "no-delete" }
+            - { name: IMPORT_MANAGED_CLIENT_SCOPE_MAPPING, value: "no-delete" }
+            - { name: IMPORT_MANAGED_ROLE, value: "no-delete" }
+            - { name: IMPORT_MANAGED_REQUIRED_ACTION, value: "no-delete" }
+            - { name: IMPORT_MANAGED_COMPONENT, value: "no-delete" }
+            - { name: IMPORT_MANAGED_SUB_COMPONENT, value: "no-delete" }
+            - { name: IMPORT_MANAGED_AUTHENTICATION_FLOW, value: "no-delete" }
+            - { name: IMPORT_MANAGED_IDENTITY_PROVIDER, value: "no-delete" }
+            - { name: IMPORT_MANAGED_IDENTITY_PROVIDER_MAPPER, value: "no-delete" }
+            - { name: IMPORT_MANAGED_CLIENT_AUTHORIZATION_RESOURCES, value: "no-delete" }
+            - { name: IMPORT_MANAGED_CLIENT_AUTHORIZATION_POLICIES, value: "no-delete" }
+            - { name: IMPORT_MANAGED_CLIENT_AUTHORIZATION_SCOPES, value: "no-delete" }
+            # secret substitution — must cover every $(env:...) placeholder in the seeds
+            - name: KC_CLIENT_HAUSPARTY_SECRET
+              valueFrom:
+                secretKeyRef: { name: keycloak-realm-secrets, key: hausparty-client-secret }
+            - name: KC_BROKER_HAUSPARTY_SECRET
+              valueFrom:
+                secretKeyRef: { name: keycloak-realm-secrets, key: broker-hausparty-secret }
+            - name: KC_BROKER_KIAN_COFFEE_SECRET
+              valueFrom:
+                secretKeyRef: { name: keycloak-realm-secrets, key: broker-kian-coffee-secret }
+            - name: KC_BROKER_MASTER_SECRET
+              valueFrom:
+                secretKeyRef: { name: keycloak-realm-secrets, key: broker-master-secret }
+          volumeMounts:
+            - name: realm-config
+              mountPath: /config
+              readOnly: true
+      volumes:
+        - name: realm-config
+          configMap:
+            name: keycloak-realm-config
