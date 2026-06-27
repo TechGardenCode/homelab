@@ -13,6 +13,7 @@ resources:
   - base/externalsecret.yaml
   - base/externalsecret-realm.yaml
   - base/httproute.yaml
+  - base/config-cli-job.yaml
 
 configMapGenerator:
   - name: keycloak-realm-config
