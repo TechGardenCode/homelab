@@ -29,7 +29,9 @@
 
 > **Realm = product/tenant boundary.** Homelab/internal apps share the hub's identity; each
 > public product gets its own spoke realm (a spoke may host several app clients). New homelab
-> app = a new client in an existing realm; new product = a new spoke realm.
+> app = a new client in an existing realm; new product = a new spoke realm. **Onboard either
+> with the `add-keycloak-client` skill** (`.claude/skills/` in kian.sh) — it emits the client/
+> realm JSON, audience scope, ExternalSecret key, config-cli env wiring, and BWS secret in one PR.
 
 ## Custom clients (Keycloak system clients omitted)
 
@@ -48,7 +50,7 @@
 2. that scope added to `kian-coffee-web`'s **defaultClientScopes**.
 
 → Onboarding a resource server = create `<app>-audience` scope + attach it to each caller's
-default scopes. This is the template the onboarding generator emits (Stage 3).
+default scopes. The `add-keycloak-client` skill emits this template (see §Audience there).
 
 ## Config management
 
@@ -88,7 +90,12 @@ default scopes. This is the template the onboarding generator emits (Stage 3).
 > **Stage 2 done (2026-06-26):** config-cli reconcile live on dev + prod; `--import-realm`
 > dropped; users stripped from seeds (preserved in DB — verified); techgarden secret plumbing
 > swept; OIDC healthy. Found & fixed the `openid` strict-lookup gotcha on dev before prod.
+>
+> **Stage 3 done (2026-06-26):** `add-keycloak-client` skill shipped (kian.sh `.claude/skills/`)
+> — one-shot onboarding for spa / confidential / resource-server / m2m clients and new product
+> realms. Templates derived from the live seeds; validated by jq-splice + `kustomize build`.
+> Onboard friction is now ~5 min: edit seed(s) + wire one secret + dev dry-run + push.
 
 _See the upgrade/management plan: `.ai/plans/tool-currency-upgrade/` and the Keycloak
-tame-and-consolidate plan. config-cli reconcile = Stage 2; onboarding generator = Stage 3;
-official-Operator + 26.6.4 upgrade = Stage 4._
+tame-and-consolidate plan. config-cli reconcile = Stage 2 ✅; onboarding skill = Stage 3 ✅
+(`add-keycloak-client`); official-Operator + 26.6.4 upgrade = Stage 4 (pending)._
