@@ -6,7 +6,7 @@ resources:
 
 helmCharts:
   - name: redis
-    version: 0.30.5
+    version: 0.30.6
     releaseName: redis
     repo: oci://registry-1.docker.io/cloudpirates
     valuesFile: values.yaml
