@@ -8,7 +8,7 @@ resources:
 helmCharts:
   - repo: https://smallstep.github.io/helm-charts
     name: step-issuer
-    version: 1.10.2
+    version: 1.11.0
     releaseName: step-issuer
     valuesFile: values.yaml
     namespace: pki
