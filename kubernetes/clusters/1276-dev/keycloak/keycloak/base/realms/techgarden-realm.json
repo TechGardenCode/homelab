@@ -30,13 +30,11 @@
   ],
   "users": [
     {
-      "id": "b065869d-fe19-3630-8e05-e91a94f33f08",
       "username": "kian",
       "enabled": true,
       "emailVerified": true
     },
     {
-      "id": "d4f74a72-9f77-39c5-ab23-dd59e5021516",
       "username": "dev",
       "enabled": true,
       "emailVerified": true
