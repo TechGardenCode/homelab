@@ -5,6 +5,11 @@ metadata:
   namespace: platform
 spec:
   secretName: bitwarden-tls-certs
+  # 1y leaf against the decade-stable bootstrap CA (see bitwarden-issuer.yaml):
+  # yearly renewals can no longer interleave with a CA rotation. Note:
+  # cert-manager does NOT re-issue on duration changes — the 2026-07-02 outage
+  # remediation deleted bitwarden-bootstrap-certs + this secret to force both.
+  duration: 8760h # 1y
   dnsNames:
     - bitwarden-sdk-server.platform.svc.cluster.local
     - external-secrets-bitwarden-sdk-server.platform.svc.cluster.local
