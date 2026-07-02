@@ -24,6 +24,7 @@ configMapGenerator:
       - base/realms/accounts-realm.json
       - base/realms/hausparty-realm.json
       - base/realms/kian-coffee-realm.json
+      - base/realms/techgarden-realm.json
 
 generatorOptions:
   disableNameSuffixHash: true
