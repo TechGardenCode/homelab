@@ -12,6 +12,12 @@ metadata:
   namespace: cert-manager
 spec:
   isCA: true
+  # Long-lived CA: cert-manager does NOT re-issue leaf certs when their CA
+  # rotates, so a 90d default CA + rotationPolicy Always left the sdk-server
+  # leaf chained to an expired CA (2026-07-02 outage: every ExternalSecret
+  # failed x509 verification). A decade-stable CA removes the rotation
+  # interleave; the leaf below it renews yearly against the same CA.
+  duration: 87600h # 10y
   secretName: bitwarden-bootstrap-certs
   subject:
     organizations:
