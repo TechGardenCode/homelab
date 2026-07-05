@@ -7,6 +7,14 @@ metadata:
 spec:
   instances: 1
 
+  # NOTE (ADR-0018): no `imageName` is pinned here — this shared cluster runs the
+  # cnpg operator default operand image. iris needs pgvector (migration V6
+  # `CREATE EXTENSION vector`), which is NOT a core extension. Before the iris
+  # cutover, verify the operand image bundles pgvector and, if absent, pin
+  # `imageName` to a pgvector-bearing tag MATCHING the current PG major (a major
+  # downgrade is impossible). Changing the image rolls this live instance (it also
+  # hosts the `techgarden` DB), so treat it as a deliberate maintenance step.
+  # See techgarden docs/processes/shared-db-consolidation-runbook.md §2.
   enableSuperuserAccess: true
   superuserSecret:
     name: postgresql-superuser
@@ -45,3 +53,32 @@ spec:
       memory: 256Mi
     limits:
       memory: 512Mi
+
+  # iris + dopamenu app roles (ADR-0018 consolidation). LOGIN NOSUPERUSER
+  # NOBYPASSRLS is the RLS invariant — the services connect as these roles; the
+  # Flyway migrator connects as the cluster superuser `postgres`. Passwords come
+  # from ESO-materialised secrets (app-externalsecrets.yaml) in this namespace.
+  managed:
+    roles:
+      - name: iris_app
+        ensure: present
+        login: true
+        superuser: false
+        createdb: false
+        createrole: false
+        bypassrls: false
+        inherit: true
+        connectionLimit: -1
+        passwordSecret:
+          name: iris-db-app-credentials
+      - name: dopamenu_app
+        ensure: present
+        login: true
+        superuser: false
+        createdb: false
+        createrole: false
+        bypassrls: false
+        inherit: true
+        connectionLimit: -1
+        passwordSecret:
+          name: dopamenu-db-app-credentials

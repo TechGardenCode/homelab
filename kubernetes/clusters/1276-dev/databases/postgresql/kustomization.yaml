@@ -3,5 +3,7 @@ kind: Kustomization
 
 resources:
   - externalsecret.yaml
+  - app-externalsecrets.yaml
   - cluster.yaml
+  - databases.yaml
   - init-sql.yaml
