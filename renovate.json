@@ -3,6 +3,7 @@
   "extends": ["config:recommended"],
   "platformAutomerge": false,
   "schedule": ["before 6am every weekday"],
+  "minimumReleaseAge": "3 days",
 
   "packageRules": [
     {
