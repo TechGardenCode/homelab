@@ -2,10 +2,12 @@
   "realm": "techgarden",
   "enabled": true,
   "accessTokenLifespan": 600,
-  "revokeRefreshToken": true,
+  "revokeRefreshToken": false,
   "refreshTokenMaxReuse": 2,
   "ssoSessionIdleTimeout": 1209600,
   "ssoSessionMaxLifespan": 2592000,
+  "offlineSessionMaxLifespanEnabled": true,
+  "offlineSessionMaxLifespan": 5184000,
   "clients": [
     {
       "clientId": "iris-web",
