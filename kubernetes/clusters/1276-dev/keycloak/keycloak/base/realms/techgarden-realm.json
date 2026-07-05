@@ -6,6 +6,9 @@
   "refreshTokenMaxReuse": 2,
   "ssoSessionIdleTimeout": 1209600,
   "ssoSessionMaxLifespan": 2592000,
+  "rememberMe": true,
+  "ssoSessionIdleTimeoutRememberMe": 2592000,
+  "ssoSessionMaxLifespanRememberMe": 5184000,
   "offlineSessionMaxLifespanEnabled": true,
   "offlineSessionMaxLifespan": 5184000,
   "clients": [
