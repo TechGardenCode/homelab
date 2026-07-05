@@ -12,7 +12,7 @@ metadata:
   labels:
     argocd.argoproj.io/secret-type: repo-creds
 spec:
-  refreshInterval: 1h
+  refreshInterval: 24h
   secretStoreRef:
     name: bitwarden-secretsmanager
     kind: ClusterSecretStore
