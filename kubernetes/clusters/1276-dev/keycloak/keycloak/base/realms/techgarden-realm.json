@@ -3,7 +3,7 @@
   "enabled": true,
   "accessTokenLifespan": 600,
   "revokeRefreshToken": true,
-  "refreshTokenMaxReuse": 0,
+  "refreshTokenMaxReuse": 2,
   "ssoSessionIdleTimeout": 1209600,
   "ssoSessionMaxLifespan": 2592000,
   "clients": [
