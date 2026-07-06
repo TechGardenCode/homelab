@@ -3,7 +3,7 @@ kind: Kustomization
 
 helmCharts:
   - name: glitchtip
-    version: 8.2.0
+    version: 9.0.0
     releaseName: glitchtip
     repo: https://gitlab.com/api/v4/projects/glitchtip%2Fglitchtip-helm-chart/packages/helm/stable
     namespace: observability
