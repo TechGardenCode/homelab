@@ -29,8 +29,6 @@ apps:
         env: dev
       - path: kubernetes/clusters/1276-prod/kian-coffee/kian-coffee/values.yaml
         env: prod
-      - path: kubernetes/clusters/1501-prod/kian-coffee/kian-coffee/values.yaml
-        env: prod
 
   kian-coffee-blog:
     type: values
@@ -44,8 +42,6 @@ apps:
       - path: kubernetes/clusters/1276-dev/techgarden/www/values.yaml
         env: dev
       - path: kubernetes/clusters/1276-prod/techgarden/www/values.yaml
-        env: prod
-      - path: kubernetes/clusters/1501-prod/techgarden/www/values.yaml
         env: prod
 
   techgarden-bff:

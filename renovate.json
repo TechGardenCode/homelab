@@ -58,11 +58,6 @@
       "groupName": "external-secrets"
     },
     {
-      "description": "Pin keycloak below v25 (major bump deferred)",
-      "matchPackageNames": ["keycloak"],
-      "allowedVersions": "<25.0.0"
-    },
-    {
       "description": "Pin redis below 1.0 (major bump deferred)",
       "matchPackageNames": ["redis"],
       "matchDatasources": ["helm"],

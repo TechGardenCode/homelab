@@ -17,7 +17,6 @@ labels: enhancement
 - [ ] `1276-core`
 - [ ] `1276-dev`
 - [ ] `1276-prod`
-- [ ] `1501-prod`
 - [ ] `shared`
 
 ## Design considerations
