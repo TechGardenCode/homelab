@@ -54,7 +54,7 @@ spec:
     limits:
       memory: 512Mi
 
-  # iris + dopamenu app roles (ADR-0018 consolidation). LOGIN NOSUPERUSER
+  # iris + dopamenu + plates app roles (ADR-0018 consolidation). LOGIN NOSUPERUSER
   # NOBYPASSRLS is the RLS invariant — the services connect as these roles; the
   # Flyway migrator connects as the cluster superuser `postgres`. Passwords come
   # from ESO-materialised secrets (app-externalsecrets.yaml) in this namespace.
@@ -82,3 +82,14 @@ spec:
         connectionLimit: -1
         passwordSecret:
           name: dopamenu-db-app-credentials
+      - name: plates_app
+        ensure: present
+        login: true
+        superuser: false
+        createdb: false
+        createrole: false
+        bypassrls: false
+        inherit: true
+        connectionLimit: -1
+        passwordSecret:
+          name: plates-db-app-credentials
