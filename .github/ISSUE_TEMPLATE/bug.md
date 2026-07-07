@@ -14,7 +14,7 @@ labels: bug
 
 ## Where
 
-- Cluster: <!-- 1276-core / 1276-dev / 1276-prod / 1501-prod -->
+- Cluster: <!-- 1276-core / 1276-dev / 1276-prod -->
 - Application / namespace: <!-- e.g. 1276-dev.hausparty.hausparty -->
 - Commit / image tag: <!-- sha -->
 

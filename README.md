@@ -30,15 +30,12 @@ flowchart LR
     PROD_NS["keycloak · hausparty<br/>kian-coffee · techgarden<br/>wiki · lizard · pelican"]
   end
 
-  prod2["1501-prod<br/>(staged, disabled)"]:::staged
-
   GH -->|webhook| ARGO
   GHCR -.->|image pull| dev
   GHCR -.->|image pull| prod
   ARGO -->|manages| core
   ARGO -->|manages| dev
   ARGO -->|manages| prod
-  ARGO -.->|ApplicationSet<br/>commented out| prod2
   CF -.->|cloudflared tunnel| core
 
   classDef staged stroke-dasharray: 5 5,color:#888
@@ -51,9 +48,8 @@ flowchart LR
 | `1276-core`  | Hub. Runs ArgoCD + all shared-infra Applications.                     |
 | `1276-dev`   | Dev workloads. First stop for every app change.                       |
 | `1276-prod`  | Primary production. Receives image tags via promotion PR after dev verifies. |
-| `1501-prod`  | Secondary-AZ prod, **staged**. ApplicationSet intentionally commented out in [`argocd/apps/values.yaml`](kubernetes/clusters/1276-core/argocd/apps/values.yaml) pending cluster reactivation. Manifests remain in tree for validation. |
 
-All four clusters are Talos. The `shared/` tree is applied to dev + prod via each ApplicationSet's git generator — cross-cutting operators (cert-manager, external-secrets, CNPG, Dragonfly, kube-state-metrics, Alloy, democratic-csi) live there once, not per-cluster.
+All three clusters are Talos. The `shared/` tree is applied to dev + prod via each ApplicationSet's git generator — cross-cutting operators (cert-manager, external-secrets, CNPG, Dragonfly, kube-state-metrics, Alloy, democratic-csi) live there once, not per-cluster.
 
 ---
 
@@ -174,8 +170,7 @@ kubernetes/
     ├── shared/             # Cross-cluster operators (cert-manager, CNPG, Dragonfly, etc.)
     ├── 1276-core/          # Hub cluster — ArgoCD + platform + observability
     ├── 1276-dev/           # Dev workloads
-    ├── 1276-prod/          # Primary prod workloads
-    └── 1501-prod/          # Staged secondary prod (ApplicationSet disabled)
+    └── 1276-prod/          # Primary prod workloads
 
 helm-charts/
 ├── generic-service/        # Standard app chart — deployment, service, HTTPRoute, HPA, ExternalSecret
@@ -223,7 +218,7 @@ scripts/                    # Manual utilities (sealed-secret creation, etc.)
 
 Every PR runs:
 
-- `kustomize build --enable-helm` for every Application dir in every cluster (matrix over `1276-core`, `1276-dev`, `1276-prod`, `1501-prod`, `shared`)
+- `kustomize build --enable-helm` for every Application dir in every cluster (matrix over `1276-core`, `1276-dev`, `1276-prod`, `shared`)
 - `helm template` for both local charts
 
 If main breaks post-merge (e.g. Renovate auto-merge introduces an incompatibility), a GitHub issue is auto-created.

@@ -19,7 +19,6 @@ jobs:
           - 1276-core
           - 1276-dev
           - 1276-prod
-          - 1501-prod
       fail-fast: false
     steps:
       - uses: actions/checkout@v7

@@ -18,29 +18,26 @@ flowchart TB
     direction LR
     DEV["1276-dev"]
     PR1["1276-prod"]
-    PR2["1501-prod<br/>(staged)"]:::staged
   end
 
   ARGO -.->|ApplicationSet<br/>git generator| DEV
   ARGO -.->|ApplicationSet<br/>git generator| PR1
-  ARGO -.->|commented out| PR2
   ARGO -.->|ApplicationSet<br/>git generator| hub
 
   classDef staged stroke-dasharray: 5 5,color:#888
 ```
 
-All four clusters are Talos. ArgoCD runs only on `1276-core`, targeting the other clusters via registered cluster credentials. Workload clusters never host GitOps tooling — a blast-radius decision (see [ADR-0006](adr/0006-separate-core-hub-cluster.md)).
+All three clusters are Talos. ArgoCD runs only on `1276-core`, targeting the other clusters via registered cluster credentials. Workload clusters never host GitOps tooling — a blast-radius decision (see [ADR-0006](adr/0006-separate-core-hub-cluster.md)).
 
 ## ApplicationSet wiring
 
-The root `argocd-apps` chart ([`kubernetes/clusters/1276-core/argocd/apps/`](../kubernetes/clusters/1276-core/argocd/apps/)) defines three active ApplicationSets (and one commented-out `1501-prod`):
+The root `argocd-apps` chart ([`kubernetes/clusters/1276-core/argocd/apps/`](../kubernetes/clusters/1276-core/argocd/apps/)) defines three active ApplicationSets:
 
 | ApplicationSet | Target              | Generator paths                                                                 |
 | -------------- | ------------------- | ------------------------------------------------------------------------------- |
 | `1276-core`    | `in-cluster`        | `shared/**/*` + explicit `1276-core/{argocd,metallb,envoy-gateway,storage,pki,cluster-ops,platform,observability}/*` |
 | `1276-dev`     | remote `1276-dev`   | `shared/**/*` + `1276-dev/**/*`                                                 |
 | `1276-prod`    | remote `1276-prod`  | `shared/**/*` + `1276-prod/**/*` (excluding `1276-prod/techgarden/*`)          |
-| `1501-prod`    | —                   | Commented out                                                                   |
 
 The generator derives Application names as `{cluster}.{namespace}.{basenameNormalized}` where `{namespace}` is the 4th path segment (`kubernetes/clusters/<cluster>/<namespace>/<app>`). Namespace is passed to the `kustomize-helm` plugin so all resources land in the right namespace even without an explicit `namespace:` in `kustomization.yaml`.
 
@@ -147,7 +144,7 @@ LGTM stack runs on a separate VM (outside K8s) to keep monitoring independent of
 
 ## Identity
 
-Keycloak runs per workload cluster (dev + prod). A separate branded Keycloak lives in `techgarden/` namespace for `techgarden.gg` SSO. All realms and clients are managed declaratively via Keycloak Config CLI in initContainers.
+Keycloak runs per workload cluster (dev + prod) via the official Keycloak operator. All realms and clients are managed declaratively via Keycloak Config CLI.
 
 ## Bootstrap order
 
