@@ -100,6 +100,15 @@ configs:
 
 redis-ha:
   enabled: true
+  haproxy:
+    # Chart default `hardAntiAffinity: true` forces one haproxy pod per node.
+    # With 3 replicas on core's 3 nodes, a RollingUpdate can't place its surge
+    # pod anywhere (every node already has one) and deadlocks in Pending on
+    # every haproxy image bump — hit during the argo-cd chart v9->v10 upgrade,
+    # which had to be unstuck by manually deleting old pods. Preferred
+    # anti-affinity lets the surge pod co-locate briefly so the roll completes,
+    # while the scheduler still spreads the 3 pods across nodes at steady state.
+    hardAntiAffinity: false
 
 repoServer:
   replicas: 2
