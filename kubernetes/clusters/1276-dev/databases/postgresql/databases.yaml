@@ -1,5 +1,5 @@
 ---
-# iris + dopamenu databases on the shared `postgresql` cluster (ADR-0018).
+# iris + dopamenu + plates databases on the shared `postgresql` cluster (ADR-0018).
 # databaseReclaimPolicy: retain => deleting the CR never drops the live database.
 apiVersion: postgresql.cnpg.io/v1
 kind: Database
@@ -21,6 +21,18 @@ metadata:
 spec:
   name: dopamenu
   owner: dopamenu_app
+  cluster:
+    name: postgresql
+  databaseReclaimPolicy: retain
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: plates-database
+  namespace: databases
+spec:
+  name: plates
+  owner: plates_app
   cluster:
     name: postgresql
   databaseReclaimPolicy: retain
