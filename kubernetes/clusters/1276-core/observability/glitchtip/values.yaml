@@ -50,25 +50,23 @@ valkey:
       cpu: 500m
       memory: 256Mi
 
-# Web deployment (also runs embedded worker; see chart default `web.embedWorker: true`)
-web:
-  embedWorker: true
-  replicaCount: 2
-  resources:
-    requests:
-      cpu: 500m
-      memory: 512Mi
-    limits:
-      cpu: 1500m
-      memory: 1Gi
-  service:
-    type: ClusterIP
-    port: 80
-  ingress:
-    enabled: false
-
-# Dedicated worker disabled — embedWorker handles background tasks in web pods.
-worker:
+# Web deployment. Chart v9 flattened the old `web.*` section to the chart root
+# and always embeds the worker inside the web ASGI process — `web.embedWorker`
+# and the separate `worker:` section were both removed. These top-level keys
+# size that single combined deployable (which still runs the embedded worker,
+# exactly as `web.embedWorker: true` did on v8).
+replicaCount: 2
+resources:
+  requests:
+    cpu: 500m
+    memory: 512Mi
+  limits:
+    cpu: 1500m
+    memory: 1Gi
+service:
+  type: ClusterIP
+  port: 80
+ingress:
   enabled: false
 
 # Migration job runs on every helm upgrade to apply schema changes.
