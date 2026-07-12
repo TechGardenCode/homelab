@@ -1,6 +1,6 @@
 image:
   repository: ghcr.io/pelican-dev/panel
-  tag: "latest"
+  tag: "v1.0.0-beta35"          # PIN — external image, not bot-managed; bump via Renovate. Never :latest.
 
 ports:
   - name: main
@@ -35,22 +35,22 @@ database:
 
 envs:
   pelican:
-    DB_CONNECTION: "mysql"
-    DB_HOST: "mariadb"
-    DB_PORT: "3306"
-    DB_DATABASE: "pelican"
+    DB_CONNECTION: "pgsql"
+    DB_HOST: "pelican-db-rw"
+    DB_PORT: "5432"
+    DB_DATABASE: "panel"
     DB_USERNAME: "pelican"
     CACHE_DRIVER: "redis"
     SESSION_DRIVER: "redis"
     QUEUE_CONNECTION: "redis"
-    REDIS_HOST: "redis"
+    REDIS_HOST: "pelican-redis"
     REDIS_PORT: "6379"
     APP_URL: "https://pelican.techgarden.gg"
     APP_TIMEZONE: "America/New_York"
     TRUSTED_PROXIES: "10.0.0.0/8"
     BEHIND_PROXY: "true"
     APP_ENV: "production"
-    APP_INSTALLED: "true"
+    APP_INSTALLED: "true"         # keep true — migrate via CLI (Task 1.6); false exposes the public web installer
 
 secretEnvs:
   pelican:
