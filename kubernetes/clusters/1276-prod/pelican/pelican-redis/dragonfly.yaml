@@ -1,0 +1,29 @@
+apiVersion: dragonflydb.io/v1alpha1
+kind: Dragonfly
+metadata:
+  name: pelican-redis
+  namespace: pelican
+  labels:
+    app.kubernetes.io/name: pelican-redis
+    app.kubernetes.io/part-of: pelican
+spec:
+  image: docker.dragonflydb.io/dragonflydb/dragonfly:v1.39.0
+  replicas: 1
+  # Pin to 1 IO thread — Dragonfly auto-scales threads to host CPU and needs
+  # ~256Mi per thread; without this it overruns the 512Mi limit. A single
+  # panel's cache/session/queue traffic needs no concurrency.
+  args:
+    - "--proactor_threads=1"
+  authentication:
+    passwordFromSecret:
+      name: pelican
+      key: redis-password
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      memory: 512Mi
+  # Disabled so Alloy (monitoring ns) can scrape the admin port; operator's
+  # default policy only allows controller-manager + peer Dragonfly pods.
+  networkPolicyEnabled: false
