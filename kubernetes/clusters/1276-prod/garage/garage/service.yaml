@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: garage-s3
+  namespace: garage
+spec:
+  selector: { app.kubernetes.io/name: garage }
+  ports:
+    - { name: s3-api, port: 3900, targetPort: 3900 }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: garage-admin
+  namespace: garage
+spec:
+  selector: { app.kubernetes.io/name: garage }
+  ports:
+    - { name: admin, port: 3903, targetPort: 3903 }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: garage
+  namespace: garage
+spec:
+  clusterIP: None            # headless for RPC/stable pod DNS
+  selector: { app.kubernetes.io/name: garage }
+  ports:
+    - { name: rpc, port: 3901, targetPort: 3901 }
