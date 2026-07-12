@@ -1,0 +1,39 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: pelican-db
+  namespace: pelican
+spec:
+  instances: 2
+  enableSuperuserAccess: true
+  superuserSecret:
+    name: pelican-db-superuser
+  postgresql:
+    pg_hba:
+      - host all postgres all scram-sha-256
+      - host all all all scram-sha-256
+    parameters:
+      max_connections: "100"
+      shared_buffers: "256MB"
+      effective_cache_size: "768MB"
+      work_mem: "8MB"
+      random_page_cost: "1.1"
+      log_min_duration_statement: "1000"
+  storage:
+    size: 5Gi
+    storageClass: freenas-iscsi-ssd-csi
+  bootstrap:
+    initdb:
+      database: panel
+      owner: pelican
+      secret:
+        name: pelican-db-app-credentials
+  monitoring:
+    enablePodMonitor: true
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      memory: 1Gi
