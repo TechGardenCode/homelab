@@ -51,9 +51,17 @@ envs:
     BEHIND_PROXY: "true"
     APP_ENV: "production"
     APP_INSTALLED: "true"         # keep true — migrate via CLI (Task 1.6); false exposes the public web installer
+    # Native backups -> in-cluster Garage S3 (var names verified against beta35 config/backups.php).
+    APP_BACKUP_DRIVER: "s3"
+    AWS_DEFAULT_REGION: "garage"
+    AWS_BACKUPS_BUCKET: "pelican-backups"
+    AWS_ENDPOINT: "http://garage.kian.sh:3900"
+    AWS_USE_PATH_STYLE_ENDPOINT: "true"   # Garage is non-AWS -> path-style addressing
 
 secretEnvs:
   pelican:
     DB_PASSWORD: db-password
     APP_KEY: app-key
     REDIS_PASSWORD: redis-password
+    AWS_ACCESS_KEY_ID: backup-s3-access-key-id
+    AWS_SECRET_ACCESS_KEY: backup-s3-secret-access-key
