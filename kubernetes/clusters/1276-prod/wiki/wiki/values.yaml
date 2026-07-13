@@ -1,6 +1,6 @@
 image:
   repository: "ghcr.io/techgardencode/wiki"
-  tag: "e7a89540f9cf3f473d4a6a3fa824dbfe2dec91cc"
+  tag: "9afadb3d6dbba1e63a97200d9f2a012c9ed95fdc"
 imagePullSecrets:
   - name: ghcr-credentials
 ports:
