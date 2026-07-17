@@ -1,6 +1,7 @@
 ---
 # iris + dopamenu + plates + notifications databases on the shared `postgresql`
-# cluster (ADR-0018).
+# cluster (ADR-0018), plus the consolidated `techgarden` database (ADR-0031,
+# schema-per-module) — the per-service DBs stay as the PR1 rollback.
 # databaseReclaimPolicy: retain => deleting the CR never drops the live database.
 apiVersion: postgresql.cnpg.io/v1
 kind: Database
@@ -46,6 +47,21 @@ metadata:
 spec:
   name: notifications
   owner: notifications_app
+  cluster:
+    name: postgresql
+  databaseReclaimPolicy: retain
+---
+# Consolidated database (ADR-0030/0031). Adopts the existing `techgarden` DB
+# created by the cluster bootstrap (initdb), reassigning its owner from the
+# bootstrap `techgardencode` to the managed `techgarden_app` role.
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: techgarden-database
+  namespace: databases
+spec:
+  name: techgarden
+  owner: techgarden_app
   cluster:
     name: postgresql
   databaseReclaimPolicy: retain
