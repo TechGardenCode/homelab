@@ -104,3 +104,17 @@ spec:
         connectionLimit: -1
         passwordSecret:
           name: notifications-db-app-credentials
+      # Consolidated app role (ADR-0031). The five services connect as this one
+      # role against the `techgarden` DB (schema per module); the per-service
+      # roles above stay until PR2 so their DBs remain the rollback.
+      - name: techgarden_app
+        ensure: present
+        login: true
+        superuser: false
+        createdb: false
+        createrole: false
+        bypassrls: false
+        inherit: true
+        connectionLimit: -1
+        passwordSecret:
+          name: techgarden-db-app-credentials
