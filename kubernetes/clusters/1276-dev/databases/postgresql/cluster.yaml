@@ -54,59 +54,18 @@ spec:
     limits:
       memory: 512Mi
 
-  # iris + dopamenu + plates + notifications app roles (ADR-0018 consolidation). LOGIN NOSUPERUSER
-  # NOBYPASSRLS is the RLS invariant — the services connect as these roles; the
-  # Flyway migrator connects as the cluster superuser `postgres`. Passwords come
-  # from ESO-materialised secrets (app-externalsecrets.yaml) in this namespace.
+  # The consolidated `techgarden_app` role (ADR-0030/0031). The five modules
+  # connect as this one role against the `techgarden` DB (schema per module); the
+  # Flyway migrator connects as the cluster superuser `postgres`. LOGIN NOSUPERUSER
+  # NOBYPASSRLS is the RLS invariant. Password comes from an ESO-materialised
+  # secret (app-externalsecrets.yaml) in this namespace.
+  #
+  # The four former per-service roles (iris_app/dopamenu_app/plates_app/
+  # notifications_app) were unmanaged here in PR2 Phase 4 once the monolith went
+  # live, then dropped manually (cnpg does not drop a role it stops managing; and
+  # DROP ROLE only succeeds after each role's own DB is dropped).
   managed:
     roles:
-      - name: iris_app
-        ensure: present
-        login: true
-        superuser: false
-        createdb: false
-        createrole: false
-        bypassrls: false
-        inherit: true
-        connectionLimit: -1
-        passwordSecret:
-          name: iris-db-app-credentials
-      - name: dopamenu_app
-        ensure: present
-        login: true
-        superuser: false
-        createdb: false
-        createrole: false
-        bypassrls: false
-        inherit: true
-        connectionLimit: -1
-        passwordSecret:
-          name: dopamenu-db-app-credentials
-      - name: plates_app
-        ensure: present
-        login: true
-        superuser: false
-        createdb: false
-        createrole: false
-        bypassrls: false
-        inherit: true
-        connectionLimit: -1
-        passwordSecret:
-          name: plates-db-app-credentials
-      - name: notifications_app
-        ensure: present
-        login: true
-        superuser: false
-        createdb: false
-        createrole: false
-        bypassrls: false
-        inherit: true
-        connectionLimit: -1
-        passwordSecret:
-          name: notifications-db-app-credentials
-      # Consolidated app role (ADR-0031). The five services connect as this one
-      # role against the `techgarden` DB (schema per module); the per-service
-      # roles above stay until PR2 so their DBs remain the rollback.
       - name: techgarden_app
         ensure: present
         login: true

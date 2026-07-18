@@ -1,59 +1,13 @@
 ---
-# iris + dopamenu + plates + notifications databases on the shared `postgresql`
-# cluster (ADR-0018), plus the consolidated `techgarden` database (ADR-0031,
-# schema-per-module) — the per-service DBs stay as the PR1 rollback.
+# Consolidated `techgarden` database on the shared `postgresql` cluster
+# (ADR-0030/0031, schema-per-module). The four former per-service databases
+# (iris/dopamenu/plates/notifications) were the PR1 rollback and were retired in
+# PR2's Phase 4 once the monolith went live — `techgarden` is the single backend
+# DB now.
 # databaseReclaimPolicy: retain => deleting the CR never drops the live database.
-apiVersion: postgresql.cnpg.io/v1
-kind: Database
-metadata:
-  name: iris-database
-  namespace: databases
-spec:
-  name: iris
-  owner: iris_app
-  cluster:
-    name: postgresql
-  databaseReclaimPolicy: retain
----
-apiVersion: postgresql.cnpg.io/v1
-kind: Database
-metadata:
-  name: dopamenu-database
-  namespace: databases
-spec:
-  name: dopamenu
-  owner: dopamenu_app
-  cluster:
-    name: postgresql
-  databaseReclaimPolicy: retain
----
-apiVersion: postgresql.cnpg.io/v1
-kind: Database
-metadata:
-  name: plates-database
-  namespace: databases
-spec:
-  name: plates
-  owner: plates_app
-  cluster:
-    name: postgresql
-  databaseReclaimPolicy: retain
----
-apiVersion: postgresql.cnpg.io/v1
-kind: Database
-metadata:
-  name: notifications-database
-  namespace: databases
-spec:
-  name: notifications
-  owner: notifications_app
-  cluster:
-    name: postgresql
-  databaseReclaimPolicy: retain
----
-# Consolidated database (ADR-0030/0031). Adopts the existing `techgarden` DB
-# created by the cluster bootstrap (initdb), reassigning its owner from the
-# bootstrap `techgardencode` to the managed `techgarden_app` role.
+# Adopts the existing `techgarden` DB created by the cluster bootstrap (initdb),
+# reassigning its owner from the bootstrap `techgardencode` to the managed
+# `techgarden_app` role.
 apiVersion: postgresql.cnpg.io/v1
 kind: Database
 metadata:
