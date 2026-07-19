@@ -11,6 +11,14 @@
   "ssoSessionMaxLifespanRememberMe": 5184000,
   "offlineSessionMaxLifespanEnabled": true,
   "offlineSessionMaxLifespan": 5184000,
+  "roles": {
+    "realm": [
+      {
+        "name": "admin",
+        "description": "TechGarden administrator"
+      }
+    ]
+  },
   "clients": [
     {
       "clientId": "iris-web",
@@ -30,14 +38,25 @@
       "attributes": {
         "pkce.code.challenge.method": "S256",
         "post.logout.redirect.uris": "https://dev.techgarden.gg/*"
-      }
+      },
+      "defaultClientScopes": [
+        "web-origins",
+        "acr",
+        "roles",
+        "profile",
+        "basic",
+        "email"
+      ]
     }
   ],
   "users": [
     {
       "username": "kian",
       "enabled": true,
-      "emailVerified": true
+      "emailVerified": true,
+      "realmRoles": [
+        "admin"
+      ]
     },
     {
       "username": "dev",
