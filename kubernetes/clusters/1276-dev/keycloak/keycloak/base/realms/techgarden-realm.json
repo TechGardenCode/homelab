@@ -2,10 +2,10 @@
   "realm": "techgarden",
   "enabled": true,
   "accessTokenLifespan": 600,
-  "revokeRefreshToken": false,
+  "revokeRefreshToken": true,
   "refreshTokenMaxReuse": 2,
-  "ssoSessionIdleTimeout": 1209600,
-  "ssoSessionMaxLifespan": 2592000,
+  "ssoSessionIdleTimeout": 2592000,
+  "ssoSessionMaxLifespan": 5184000,
   "rememberMe": true,
   "ssoSessionIdleTimeoutRememberMe": 2592000,
   "ssoSessionMaxLifespanRememberMe": 5184000,
@@ -37,6 +37,35 @@
       ],
       "attributes": {
         "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "https://dev.techgarden.gg/*"
+      },
+      "defaultClientScopes": [
+        "web-origins",
+        "acr",
+        "roles",
+        "profile",
+        "basic",
+        "email"
+      ]
+    },
+    {
+      "clientId": "techgarden-gateway",
+      "enabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "$(env:KC_CLIENT_TECHGARDEN_GATEWAY_SECRET)",
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "implicitFlowEnabled": false,
+      "serviceAccountsEnabled": false,
+      "redirectUris": [
+        "https://dev.techgarden.gg/oauth2/callback"
+      ],
+      "webOrigins": [
+        "https://dev.techgarden.gg"
+      ],
+      "attributes": {
         "post.logout.redirect.uris": "https://dev.techgarden.gg/*"
       },
       "defaultClientScopes": [

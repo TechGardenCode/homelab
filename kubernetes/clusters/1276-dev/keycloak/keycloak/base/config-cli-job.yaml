@@ -68,6 +68,9 @@ spec:
             - name: KC_CLIENT_HAUSPARTY_SECRET
               valueFrom:
                 secretKeyRef: { name: keycloak-realm-secrets, key: hausparty-client-secret }
+            - name: KC_CLIENT_TECHGARDEN_GATEWAY_SECRET
+              valueFrom:
+                secretKeyRef: { name: keycloak-realm-secrets, key: techgarden-gateway-client-secret }
             - name: KC_BROKER_HAUSPARTY_SECRET
               valueFrom:
                 secretKeyRef: { name: keycloak-realm-secrets, key: broker-hausparty-secret }
