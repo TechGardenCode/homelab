@@ -1,0 +1,66 @@
+---
+# WS-03 — Auth session successor (dev). Envoy Gateway OIDC session edge for the
+# dev TechGarden web app + /api, against the dev `techgarden` realm.
+#
+# ONE SecurityPolicy covers BOTH the protected web route and the /api route on
+# purpose: EG auto-generates a per-SecurityPolicy OAuth2 HMAC/token secret, so a
+# separate policy on /api could not decrypt the session cookie the web filter
+# set — authed /api would 401 forever. A single filter shares the cookie across
+# both routes. denyRedirect (matched on :path ^/api) makes an unauthenticated
+# /api return 401 (XHR-detectable) while a top-level HTML nav still gets the 302
+# to Keycloak. Public paths (/, assets, ngsw-worker.js, manifest, auth-config,
+# favicon) live on a SEPARATE HTTPRoute WITHOUT this policy — attaching a policy
+# is what makes a route protected; denyRedirect only turns 302 into 401.
+#
+# targetRefs name HTTPRoutes owned by the techgarden app repo (Model A): the app
+# half carves the routes, this policy attaches auth. Both routes must live in
+# THIS namespace (SecurityPolicy targets same-namespace routes only).
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: techgarden-oidc
+  namespace: techgarden-web
+spec:
+  targetRefs:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      name: techgarden-web-app
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      name: techgarden-api
+  oidc:
+    provider:
+      # dev techgarden realm; LE-trusted public cert so EG dials it directly
+      # (no backendRefs/BackendTLSPolicy). end_session + endpoints auto-discovered.
+      issuer: "https://sso.dev.techgarden.gg/realms/techgarden"
+    clientID: "techgarden-gateway"
+    clientSecret:
+      name: techgarden-gateway-oidc # Opaque secret, key "client-secret"
+    redirectURL: "https://dev.techgarden.gg/oauth2/callback"
+    logoutPath: "/logout"
+    # authed /api → Authorization: Bearer <access_token> upstream to iris.
+    forwardAccessToken: true
+    # server-side refresh; safe with realm revokeRefreshToken:true (EG persists
+    # each rotated refresh token — no racing browser).
+    refreshToken: true
+    scopes:
+      - openid
+      - profile
+      - email
+    # Lax (not Strict): keeps external-link-into-a-protected-page working with a
+    # live session (Strict would re-prompt), which the long-session UX requires.
+    # CSRF on mutating /api is already covered — mutations are POST and Lax
+    # withholds cookies on cross-site POST.
+    cookieConfig:
+      sameSite: Lax
+    # HttpOnly+Secure are always set by the EG OAuth2 filter (not disableable).
+    cookieNames:
+      accessToken: "TG_AT"
+      idToken: "TG_IT"
+    # /api is XHR-only: never redirect it to Keycloak — return 401 so the SPA can
+    # detect the expired/absent session. HTML navs (no /api path) still 302.
+    denyRedirect:
+      headers:
+        - name: ":path"
+          type: RegularExpression
+          value: "^/api([/?].*)?$"
