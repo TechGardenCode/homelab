@@ -106,6 +106,30 @@
       "username": "dev",
       "enabled": true,
       "emailVerified": true
+    },
+    {
+      "username": "power",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Pat",
+      "lastName": "Power",
+      "email": "power@dev.techgarden.gg"
+    },
+    {
+      "username": "casual",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Cass",
+      "lastName": "Casual",
+      "email": "casual@dev.techgarden.gg"
+    },
+    {
+      "username": "fresh",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Newt",
+      "lastName": "Fresh",
+      "email": "fresh@dev.techgarden.gg"
     }
   ]
 }
