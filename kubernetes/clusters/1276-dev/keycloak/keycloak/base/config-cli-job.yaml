@@ -71,6 +71,9 @@ spec:
             - name: KC_CLIENT_TECHGARDEN_GATEWAY_SECRET
               valueFrom:
                 secretKeyRef: { name: keycloak-realm-secrets, key: techgarden-gateway-client-secret }
+            - name: KC_SMTP_PASSWORD
+              valueFrom:
+                secretKeyRef: { name: keycloak-realm-secrets, key: smtp-password }
             - name: KC_BROKER_HAUSPARTY_SECRET
               valueFrom:
                 secretKeyRef: { name: keycloak-realm-secrets, key: broker-hausparty-secret }

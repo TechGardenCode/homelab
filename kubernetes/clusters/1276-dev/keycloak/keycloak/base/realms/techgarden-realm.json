@@ -11,6 +11,21 @@
   "ssoSessionMaxLifespanRememberMe": 5184000,
   "offlineSessionMaxLifespanEnabled": true,
   "offlineSessionMaxLifespan": 5184000,
+  "registrationAllowed": false,
+  "resetPasswordAllowed": true,
+  "verifyEmail": true,
+  "actionTokenGeneratedByAdminLifespan": 259200,
+  "smtpServer": {
+    "host": "smtp.resend.com",
+    "port": "587",
+    "starttls": "true",
+    "ssl": "false",
+    "auth": "true",
+    "user": "resend",
+    "password": "$(env:KC_SMTP_PASSWORD)",
+    "from": "no-reply@mail.techgarden.gg",
+    "fromDisplayName": "TechGarden (dev)"
+  },
   "roles": {
     "realm": [
       {
