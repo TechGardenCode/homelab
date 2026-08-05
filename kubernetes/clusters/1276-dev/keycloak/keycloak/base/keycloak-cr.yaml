@@ -70,7 +70,8 @@ spec:
           # theme bytes are NOT served until the pod restarts. The ConfigMaps have
           # stable names (no hash suffix), so nothing else forces that restart.
           # BUMP THIS on any change under base/themes/ — it is the pod roll.
-          techgarden.gg/theme-revision: "1"
+          # 2: login emailSentMessage (WS-05 stage-3 finding).
+          techgarden.gg/theme-revision: "2"
       spec:
         containers:
           - name: keycloak
