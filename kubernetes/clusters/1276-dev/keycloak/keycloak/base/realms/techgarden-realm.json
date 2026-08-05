@@ -17,7 +17,8 @@
   "actionTokenGeneratedByAdminLifespan": 259200,
   "actionTokenGeneratedByUserLifespan": 300,
   "attributes": {
-    "actionTokenGeneratedByUserLifespan.verify-email": "43200"
+    "actionTokenGeneratedByUserLifespan.verify-email": "43200",
+    "actionTokenGeneratedByUserLifespan.reset-credentials": "1800"
   },
   "loginTheme": "techgarden",
   "emailTheme": "techgarden",
