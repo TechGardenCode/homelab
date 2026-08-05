@@ -26,5 +26,44 @@ configMapGenerator:
       - base/realms/kian-coffee-realm.json
       - base/realms/techgarden-realm.json
 
+  # WS-05 TechGarden theme (base/themes/techgarden/), mounted into the Keycloak
+  # pod by spec.unsupported.podTemplate in base/keycloak-cr.yaml.
+  #
+  # SPLIT login/email deliberately: configMapGenerator keys off the file's BASE
+  # name and ConfigMap keys cannot contain "/", so a single ConfigMap collides —
+  # `theme.properties` and `messages_en.properties` each exist under both login/
+  # and email/. One ConfigMap per theme type removes the collision without
+  # renaming keys; the volume's items[].path then rebuilds the subdirectories.
+  #
+  # woff2/ico/png land in binaryData automatically. Serialized payload is ~333 KB
+  # (265 KB raw; the 203 KB of binaries base64 to 271 KB) against the 1 MiB cap.
+  - name: keycloak-theme-techgarden-login
+    namespace: keycloak
+    files:
+      - base/themes/techgarden/login/theme.properties
+      - base/themes/techgarden/login/messages/messages_en.properties
+      - base/themes/techgarden/login/resources/css/login.css
+      - base/themes/techgarden/login/resources/fonts/OFL-bricolage-grotesque.txt
+      - base/themes/techgarden/login/resources/fonts/OFL-hanken-grotesk.txt
+      - base/themes/techgarden/login/resources/fonts/bricolage-grotesque-latin-ext.woff2
+      - base/themes/techgarden/login/resources/fonts/bricolage-grotesque-latin.woff2
+      - base/themes/techgarden/login/resources/fonts/hanken-grotesk-latin-ext.woff2
+      - base/themes/techgarden/login/resources/fonts/hanken-grotesk-latin.woff2
+      - base/themes/techgarden/login/resources/img/favicon.ico
+      - base/themes/techgarden/login/resources/img/logo.png
+
+  - name: keycloak-theme-techgarden-email
+    namespace: keycloak
+    files:
+      - base/themes/techgarden/email/theme.properties
+      - base/themes/techgarden/email/messages/messages_en.properties
+      - base/themes/techgarden/email/html/email-verification.ftl
+      - base/themes/techgarden/email/html/executeActions.ftl
+      - base/themes/techgarden/email/html/password-reset.ftl
+      - base/themes/techgarden/email/html/template.ftl
+
 generatorOptions:
+  # Stable names: keycloak-config-cli mounts keycloak-realm-config by fixed name.
+  # The theme ConfigMaps inherit this, so a theme edit does NOT roll the pod on
+  # its own — bump theme-revision in base/keycloak-cr.yaml. See the note there.
   disableNameSuffixHash: true
