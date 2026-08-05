@@ -15,6 +15,12 @@
   "resetPasswordAllowed": true,
   "verifyEmail": true,
   "actionTokenGeneratedByAdminLifespan": 259200,
+  "actionTokenGeneratedByUserLifespan": 300,
+  "attributes": {
+    "actionTokenGeneratedByUserLifespan.verify-email": "43200"
+  },
+  "loginTheme": "techgarden",
+  "emailTheme": "techgarden",
   "smtpServer": {
     "host": "smtp.resend.com",
     "port": "587",
