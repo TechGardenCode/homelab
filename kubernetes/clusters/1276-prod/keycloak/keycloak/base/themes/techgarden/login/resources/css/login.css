@@ -1,0 +1,828 @@
+/* ============================================================================
+   TechGarden — Keycloak login theme (WS-05)
+
+   THIS FILE IS A COPY. Every token value and every .tg-* rule below is copied
+   from the TechGarden design system in the APP repo (TechGardenCode/techgarden):
+
+     tokens      design-system/tokens/{colors,typography,spacing,effects,motion}.css
+     @font-face  design-system/tokens/fonts.css
+     .tg-input   design-system/components/forms/forms.css
+     .tg-field   design-system/components/forms/forms.css
+     .tg-btn     design-system/components/buttons/buttons.css
+     .tg-card    design-system/components/data-display/data-display.css
+
+   It is a copy because Keycloak runs in a different repo and a different origin
+   and cannot import across either. The app repo carries a "Downstream consumers"
+   callback in design-system/README.md naming this file: change a semantic color,
+   the type scale, or a font file there, and this needs checking.
+
+   Only the subset a login page uses is copied. This is not a mirror of the
+   design system and must not grow into one.
+
+   ZERO OUTBOUND REQUESTS is a hard requirement of this theme (WS-05). No Google
+   Fonts, no CDN, no icon font. Fonts are self-hosted beside this file and the
+   two icons are inline SVG data URIs.
+   ============================================================================ */
+
+/* ── Webfonts ────────────────────────────────────────────────────────────────
+   Copied from design-system/tokens/fonts.css, restricted to the latin and
+   latin-ext subsets. The vietnamese/cyrillic/greek subsets and all of JetBrains
+   Mono are deliberately NOT shipped: nothing on a login page sets --font-mono,
+   and carrying the rest would triple the payload for glyphs no surface renders.
+   Vendored from Google Fonts on 2026-07-31 by WS-10; see fonts.css for the exact
+   request and the refresh procedure. Do not re-vendor here.
+   Both faces are SIL Open Font License 1.1 — the licence text ships beside the
+   binaries (OFL-bricolage-grotesque.txt, OFL-hanken-grotesk.txt) because OFL 1.1
+   requires the notice accompany every redistributed copy.
+   ──────────────────────────────────────────────────────────────────────────── */
+
+@font-face {
+  font-family: 'Bricolage Grotesque';
+  font-style: normal;
+  font-weight: 400 800;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url('../fonts/bricolage-grotesque-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Bricolage Grotesque';
+  font-style: normal;
+  font-weight: 400 800;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url('../fonts/bricolage-grotesque-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Hanken Grotesk';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url('../fonts/hanken-grotesk-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Hanken Grotesk';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url('../fonts/hanken-grotesk-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* ── Tokens (light) ──────────────────────────────────────────────────────────
+   Semantic aliases only, resolved to their literal values. The design system's
+   base scales (--forest-*, --stone-*, --poppy-*) are NOT copied: nothing here
+   references them directly, and carrying them would double what can drift.
+   ──────────────────────────────────────────────────────────────────────────── */
+
+:root {
+  /* colors.css — surfaces */
+  --bg-page: #faf8f4;
+  --surface-card: #ffffff;
+  --surface-sunken: #f2efe8;
+
+  /* colors.css — text */
+  --text-primary: #262219;
+  --text-secondary: #6e6557;
+  --text-muted: #786e5e;
+  --text-disabled: #b3a994;
+  --text-link: #196a51;
+
+  /* colors.css — borders */
+  --border-subtle: #e6e1d6;
+  --border-default: #d4cdbe;
+  --border-strong: #8f8473;
+
+  /* colors.css — accent (forest) */
+  --accent: #1e8263;
+  --accent-hover: #196a51;
+  --accent-active: #165441;
+  --accent-fg: #ffffff;
+
+  /* colors.css — semantic. Border/icon tone, its tint, and the tint's TEXT rung.
+     The -subtle-fg rungs are not an embellishment: colors.css documents that --warning
+     (marigold-600) reads 3.35:1 on --surface-card, which clears WCAG 1.4.11's 3:1 for a
+     non-text UI element but FAILS AA 4.5:1 as text. Alerts here use the base tone for the
+     border and the -subtle-fg rung for the words. */
+  --ring: rgba(67, 161, 126, 0.45);
+  --danger: #b8432a;
+  --danger-subtle: #fae3db;
+  --danger-subtle-fg: #8f3220;
+  --success: #1e8263;
+  --success-subtle: #ecf6f1;
+  --success-subtle-fg: #196a51;
+  --warning: #bd8019;
+  --warning-subtle: #fbeecb;
+  --warning-subtle-fg: #946112;
+  --info: #3f7cae;
+  --info-subtle: #e1eef8;
+  --info-subtle-fg: #2f6088;
+  --shadow-ink: 38, 34, 25;
+
+  /* typography.css */
+  --font-display: 'Bricolage Grotesque', 'Hanken Grotesk', system-ui, sans-serif;
+  --font-sans: 'Hanken Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --text-sm: 0.8125rem;
+  --text-base: 0.9375rem;
+  --text-md: 1rem;
+  --text-xl: 1.375rem;
+  --text-2xl: 1.75rem;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+  --lh-tight: 1.12;
+  --lh-snug: 1.28;
+  --lh-normal: 1.5;
+  --ls-tight: -0.015em;
+
+  /* spacing.css */
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --control-height-md: 2.5rem;
+  --control-height-lg: 3rem;
+  --control-min-target: 44px;
+
+  /* effects.css */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --border-width: 1px;
+  --shadow-xs: 0 1px 2px rgba(var(--shadow-ink), 0.06);
+  --shadow-sm: 0 1px 2px rgba(var(--shadow-ink), 0.06), 0 1px 3px rgba(var(--shadow-ink), 0.08);
+  --shadow-focus: 0 0 0 3px var(--ring);
+
+  /* motion.css */
+  --duration-fast: 140ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+}
+
+/* ── Tokens (dark) ───────────────────────────────────────────────────────────
+   The design system switches on [data-theme="dark"], set by app JS. Keycloak is
+   a DIFFERENT ORIGIN, so this page can read the OS preference but never the app's
+   stored override. prefers-color-scheme matches the app's own resolution order
+   (projects/web/src/app/theme.ts: stored -> prefers-color-scheme -> light) for
+   everyone who has not manually overridden it.
+
+   Accepted limitation: someone who forced light in the app while their OS is dark
+   sees a dark login page. Cross-origin — not fixable without leaking state between
+   hosts, and not worth JS on a page whose whole job is a <form> POST.
+   ──────────────────────────────────────────────────────────────────────────── */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-page: #14160f;
+    --surface-card: #1f221a;
+    --surface-sunken: #181b13;
+
+    --text-primary: #f0ede4;
+    --text-secondary: #b9b3a4;
+    --text-muted: #948e7d;
+    --text-disabled: #5d5848;
+    --text-link: #cfe6ad;
+
+    --border-subtle: #2c3025;
+    --border-default: #3a3f30;
+    --border-strong: #6b7359;
+
+    --accent: #2a9779;
+    --accent-hover: #43a17e;
+    --accent-active: #71bd9f;
+    --accent-fg: #0b1410;
+
+    --ring: rgba(113, 189, 159, 0.5);
+    --danger: #e57a5e;
+    --danger-subtle: rgba(217, 88, 60, 0.2);
+    --danger-subtle-fg: #f0a58e;
+    --success: #43a17e;
+    --success-subtle: rgba(42, 151, 121, 0.18);
+    --success-subtle-fg: #71bd9f;
+    --warning: #eab94f;
+    --warning-subtle: rgba(224, 160, 46, 0.18);
+    --warning-subtle-fg: #f0cd7a;
+    --info: #82b6dd;
+    --info-subtle: rgba(91, 155, 207, 0.18);
+    --info-subtle-fg: #accfe9;
+    --shadow-ink: 0, 0, 0;
+  }
+}
+
+/* ── Reset + page shell ──────────────────────────────────────────────────────
+   Condensed from design-system/tokens/base.css. Only what a login page needs.
+   ──────────────────────────────────────────────────────────────────────────── */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html.tg-login-html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body.tg-login-body {
+  margin: 0;
+  min-height: 100vh;
+  padding: var(--space-8) var(--space-4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-page);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: var(--lh-normal);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* base.css: `background: var(--leaf-200); color: var(--stone-900)`.
+   The foreground is a LITERAL stone-900 in the design system, not var(--text-primary), and
+   that is deliberate: the leaf-200 background does not flip in dark, so a foreground that
+   does would put near-white text on pale green (~1.05:1) and make selected text vanish.
+   Copied literally for the same reason. Do not "simplify" this to --text-primary. */
+::selection {
+  background: #cfe6ad;
+  color: #262219;
+}
+
+/* Focus is never removed — design-system/README.md, Visual Foundations > States. */
+:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+a {
+  color: var(--text-link);
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+  transition: color var(--duration-fast) var(--ease-standard);
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.tg-login {
+  width: 100%;
+  max-width: 25rem; /* 400px — a single comfortable form measure */
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+/* ── Brand lockup ────────────────────────────────────────────────────────────
+   base/login/template.ftl renders msg("loginTitleHtml", realm.displayNameHtml)
+   inside #kc-header-wrapper. We override that message (see messages_en.properties)
+   to emit the mark + wordmark, so this theme overrides no .ftl at all.
+   ──────────────────────────────────────────────────────────────────────────── */
+
+.tg-login__header {
+  text-align: center;
+}
+
+.tg-login__brand {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+}
+
+/* The mark is drawn here rather than in the markup because a message string cannot
+   interpolate ${url.resourcesPath}, and this stylesheet IS served from
+   resources/css/ — so '../img/logo.png' resolves against the versioned resource
+   path for free. That is what keeps this theme at zero .ftl overrides.
+   Decorative: the wordmark beside it carries the name. */
+.tg-login__brand::before {
+  content: '';
+  width: 2.25rem;
+  height: 2.25rem;
+  flex: none;
+  background-image: url('../img/logo.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+
+.tg-brand__name {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: var(--fw-bold);
+  letter-spacing: var(--ls-tight);
+  line-height: var(--lh-tight);
+  color: var(--accent-hover);
+}
+
+@media (prefers-color-scheme: dark) {
+  .tg-brand__name {
+    color: var(--text-primary);
+  }
+}
+
+/* ── Card ───────────────────────────────────────────────────────────────────
+   From design-system/components/data-display/data-display.css (.tg-card).
+   ──────────────────────────────────────────────────────────────────────────── */
+
+.tg-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-card);
+  border: var(--border-width) solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.tg-login__card {
+  padding: var(--space-8) var(--space-6);
+  gap: var(--space-6);
+}
+
+#kc-page-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: var(--fw-semibold);
+  letter-spacing: var(--ls-tight);
+  line-height: var(--lh-snug);
+  color: var(--text-primary);
+  text-align: center;
+}
+
+#kc-content,
+#kc-content-wrapper,
+#kc-form,
+#kc-form-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  margin: 0;
+}
+
+/* The attempted-username row Keycloak shows on reset/second-factor screens. */
+#kc-username {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+
+#kc-username label {
+  margin: 0;
+}
+
+/* ── Fields ──────────────────────────────────────────────────────────────────
+   From design-system/components/forms/forms.css (.tg-field, .tg-input).
+   ──────────────────────────────────────────────────────────────────────────── */
+
+.tg-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+/* Literal copy of design-system/components/forms/forms.css. It was briefly 13px /
+   --text-secondary, which made every label on this page smaller and lighter than the
+   same label in the app — on the one screen whose whole job is to read as the same
+   product. The bare `label` co-selector is an addition, not a divergence: Keycloak
+   emits unclassed <label> in #kc-username and inside .checkbox. */
+.tg-field__label,
+label {
+  font-size: var(--text-base);
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+}
+
+.tg-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.tg-input,
+input[type='text'],
+input[type='password'],
+input[type='email'] {
+  width: 100%;
+  height: var(--control-height-md);
+  padding: 0 var(--space-3);
+  font-family: var(--font-sans);
+  /* 16px, NOT --text-base (15px). iOS Safari zooms the viewport on focus of any input
+     whose font-size is below 16px, and this is the first screen a friend ever sees.
+     A deliberate divergence from forms.css, which is free to use --text-base because
+     the app controls its own viewport meta. */
+  font-size: 1rem;
+  color: var(--text-primary);
+  background: var(--surface-card);
+  border: var(--border-width) solid var(--border-default);
+  border-radius: var(--radius-md);
+  transition:
+    border-color var(--duration-fast) var(--ease-standard),
+    box-shadow var(--duration-fast) var(--ease-standard);
+}
+
+.tg-input::placeholder {
+  color: var(--text-muted);
+}
+
+.tg-input:hover:not(:disabled):not(:focus) {
+  border-color: var(--border-strong);
+}
+
+.tg-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: var(--shadow-focus);
+}
+
+.tg-input:disabled {
+  background: var(--surface-sunken);
+  color: var(--text-disabled);
+  cursor: not-allowed;
+}
+
+/* MUST stay declared AFTER .tg-input:focus. Both selectors have identical specificity
+   (0,2,0), so source order is the only thing keeping an errored input red while it is
+   focused -- hoist this up next to the other state rules and a wrong-password field
+   repaints green the moment the user clicks back into it, i.e. it looks valid while
+   they retype. forms.css carries the same warning at the same rule. */
+.tg-input[aria-invalid='true'] {
+  border-color: var(--danger);
+}
+
+.tg-input[aria-invalid='true']:focus {
+  border-color: var(--danger);
+  box-shadow: 0 0 0 3px var(--danger-subtle);
+}
+
+.tg-field__error {
+  display: block;
+  font-size: var(--text-sm);
+  color: var(--danger);
+}
+
+/* Password field + its visibility toggle. The toggle sits inside the input, so the
+   input needs room for it — base/login/login.ftl wraps both in kcInputGroup. */
+.tg-input-wrap .tg-input {
+  padding-right: var(--control-height-md);
+}
+
+.tg-password-toggle {
+  position: absolute;
+  right: 0;
+  width: var(--control-height-md);
+  height: var(--control-height-md);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  color: var(--text-muted);
+}
+
+.tg-password-toggle:hover {
+  color: var(--text-secondary);
+}
+
+.tg-password-toggle:focus-visible {
+  box-shadow: var(--shadow-focus);
+}
+
+/* passwordVisibility.js swaps between these two classes on the inner <i>.
+   Inline SVG data URIs — currentColor cannot cross into a background image, so the
+   stroke is the design system's --text-muted resolved literally. */
+.tg-icon-eye,
+.tg-icon-eye-off {
+  width: 1.125rem;
+  height: 1.125rem;
+  display: block;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+
+.tg-icon-eye {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23786e5e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/svg%3E");
+}
+
+.tg-icon-eye-off {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23786e5e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M10.7 5.1A10.9 10.9 0 0 1 12 5c6.4 0 10 7 10 7a18.5 18.5 0 0 1-2.2 3.2M6.6 6.6A18.6 18.6 0 0 0 2 12s3.6 7 10 7a10.8 10.8 0 0 0 5.4-1.4'/%3E%3Cpath d='M9.9 9.9a3 3 0 0 0 4.2 4.2'/%3E%3Cpath d='m2 2 20 20'/%3E%3C/svg%3E");
+}
+
+@media (prefers-color-scheme: dark) {
+  .tg-icon-eye {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23948e7d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/svg%3E");
+  }
+
+  .tg-icon-eye-off {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23948e7d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M10.7 5.1A10.9 10.9 0 0 1 12 5c6.4 0 10 7 10 7a18.5 18.5 0 0 1-2.2 3.2M6.6 6.6A18.6 18.6 0 0 0 2 12s3.6 7 10 7a10.8 10.8 0 0 0 5.4-1.4'/%3E%3Cpath d='M9.9 9.9a3 3 0 0 0 4.2 4.2'/%3E%3Cpath d='m2 2 20 20'/%3E%3C/svg%3E");
+  }
+}
+
+/* ── Options row (remember me / forgot password) ────────────────────────────── */
+
+/* kcFormSettingClass is a SHARED binding, and the two templates that use it wrap
+   different children — so this row must be scoped to the page that wants it.
+
+   login.ftl:                 [remember-me] [forgot-password]   -> a row is right
+   login-reset-password.ftl:  [back-link]   [submit button]     -> a row is WRONG:
+     space-between strands the primary CTA beside a secondary link, and tg-btn--full's
+     width:100% resolves against a shrink-to-fit flex item, so it renders small and
+     pinned right instead of full-width. (On login.ftl #kc-form-buttons is a SIBLING of
+     this element, not a child, which is why the row is safe there.)
+
+   This is the same failure mode as the doSubmit copy bug, one level down in CSS: a
+   binding reused by a template other than the one it was written for.
+
+   pageId is the template filename minus `.ftl`, and template.ftl emits
+   data-page-id="login-${pageId}" — so login.ftl is `login-login`. */
+.tg-login__settings {
+  gap: var(--space-4);
+}
+
+body[data-page-id='login-login'] .tg-login__settings {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+#kc-form-options .checkbox label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  cursor: pointer;
+  /* Coarse-pointer target floor — spacing.css --control-min-target. */
+  min-height: var(--control-min-target);
+}
+
+#kc-form-options input[type='checkbox'] {
+  width: 1rem;
+  height: 1rem;
+  accent-color: var(--accent);
+  margin: 0;
+}
+
+.tg-login__options {
+  font-size: var(--text-sm);
+}
+
+.tg-login__options a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--control-min-target);
+}
+
+/* ── Buttons ─────────────────────────────────────────────────────────────────
+   From design-system/components/buttons/buttons.css (.tg-btn).
+   ──────────────────────────────────────────────────────────────────────────── */
+
+.tg-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  font-weight: var(--fw-semibold);
+  line-height: 1;
+  height: var(--control-height-md);
+  padding: 0 var(--space-4);
+  border: var(--border-width) solid transparent;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  white-space: nowrap;
+  user-select: none;
+  text-decoration: none;
+  transition:
+    background-color var(--duration-fast) var(--ease-standard),
+    border-color var(--duration-fast) var(--ease-standard),
+    color var(--duration-fast) var(--ease-standard),
+    transform var(--duration-fast) var(--ease-standard),
+    box-shadow var(--duration-fast) var(--ease-standard);
+}
+
+.tg-btn:focus-visible {
+  outline: none;
+  box-shadow: var(--shadow-focus);
+}
+
+.tg-btn:active {
+  transform: translateY(1px);
+}
+
+.tg-btn[disabled],
+.tg-btn[aria-disabled='true'] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.tg-btn--lg {
+  height: var(--control-height-lg);
+  padding: 0 var(--space-6);
+  font-size: var(--text-md);
+}
+
+.tg-btn--full {
+  width: 100%;
+}
+
+.tg-btn--primary {
+  background: var(--accent);
+  color: var(--accent-fg);
+}
+
+.tg-btn--primary:hover:not([disabled]) {
+  background: var(--accent-hover);
+}
+
+.tg-btn--primary:active:not([disabled]) {
+  background: var(--accent-active);
+}
+
+.tg-btn--secondary {
+  background: var(--surface-card);
+  color: var(--text-primary);
+  border-color: var(--border-default);
+  box-shadow: var(--shadow-xs);
+}
+
+.tg-btn--secondary:hover:not([disabled]) {
+  border-color: var(--border-strong);
+  background: var(--surface-sunken);
+}
+
+/* ── Alerts ──────────────────────────────────────────────────────────────────
+   The design system has no static alert component (only .tg-toast, which is a
+   transient CDK overlay). This is the nearest thing built from the same tokens —
+   the one genuinely new component in this theme. If a static alert is ever added
+   to the design system, this should be replaced by it rather than kept in sync.
+   ──────────────────────────────────────────────────────────────────────────── */
+
+.tg-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border: var(--border-width) solid transparent;
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  line-height: var(--lh-normal);
+}
+
+.tg-alert__title {
+  color: inherit;
+}
+
+.tg-alert__icon {
+  flex: none;
+  width: 0.5rem;
+  height: 0.5rem;
+  margin-top: 0.45rem;
+  border-radius: var(--radius-sm);
+  background: currentColor;
+}
+
+/* Each alert takes the base tone for its 1px border and the dot, and the -subtle-fg rung
+   for its words. Every one of these pairs clears AA 4.5:1 in both palettes by the design
+   system's own measurements -- which the base tones do NOT as text (marigold-600 is
+   3.35:1). Applying one rule to all four also keeps the error alert from being the odd
+   one out, which it was when only the other three got a readable override. */
+.alert-error {
+  background: var(--danger-subtle);
+  border-color: var(--danger);
+  color: var(--danger-subtle-fg);
+}
+
+.alert-warning {
+  background: var(--warning-subtle);
+  border-color: var(--warning);
+  color: var(--warning-subtle-fg);
+}
+
+.alert-success {
+  background: var(--success-subtle);
+  border-color: var(--success);
+  color: var(--success-subtle-fg);
+}
+
+.alert-info {
+  background: var(--info-subtle);
+  border-color: var(--info);
+  color: var(--info-subtle-fg);
+}
+
+/* The dot keeps the saturated border tone rather than the text tone -- it is a non-text
+   UI element, so WCAG 1.4.11's 3:1 applies and the base tone clears it. */
+.alert-error .tg-alert__icon {
+  background: var(--danger);
+}
+
+.alert-warning .tg-alert__icon {
+  background: var(--warning);
+}
+
+.alert-success .tg-alert__icon {
+  background: var(--success);
+}
+
+.alert-info .tg-alert__icon {
+  background: var(--info);
+}
+
+/* ── Info / footer links ─────────────────────────────────────────────────────
+   Where "Back to sign in" and the verify-email re-send link land.
+   ──────────────────────────────────────────────────────────────────────────── */
+
+.tg-login__info,
+#kc-info-wrapper {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+/* On the reset-password page Keycloak renders the "enter your username and I'll
+   send you a link" instruction into #kc-info, which base/login/template.ftl emits
+   AFTER the form — so the explanation lands below the button that acts on it.
+   #kc-content-wrapper is a flex column, so one `order` rule moves it above the
+   field without overriding login-reset-password.ftl.
+
+   Scoped by page deliberately: on login-verify-email #kc-info holds the "send it
+   again" link, which belongs BELOW the message it re-sends. A global rule would
+   hoist that too. The substring match covers the data-page-id shape
+   (`login-${pageId}`) without depending on how it composes. */
+body[data-page-id*='reset-password'] #kc-info {
+  order: -1;
+}
+
+/* base/login/template.ftl emits the reset-flow link with an icon span; without an
+   icon font it would collapse to nothing, so it is hidden rather than left as a
+   stray empty box. */
+.tg-icon-back {
+  display: none;
+}
+
+#kc-form-buttons {
+  margin: 0;
+}
+
+/* error.ftl and info.ftl render <p class="instruction"> with displayMessage=false, so
+   they never pass through .tg-alert and were the only two live surfaces with no rule
+   of their own. Colour and size inherit correctly; only the UA's `margin: 1em 0`
+   needed removing, since it stacks on top of #kc-content-wrapper's gap. */
+#kc-error-message p,
+#kc-info-message p,
+p.instruction {
+  margin: 0;
+}
+
+/* ── Small screens ──────────────────────────────────────────────────────────── */
+
+@media (max-width: 30rem) {
+  body.tg-login-body {
+    padding: var(--space-6) var(--space-4);
+    align-items: flex-start;
+  }
+
+  .tg-login__card {
+    padding: var(--space-6) var(--space-5);
+  }
+
+  #kc-page-title {
+    font-size: var(--text-xl);
+  }
+}
+
+/* ── Motion ─────────────────────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
