@@ -38,6 +38,10 @@
       {
         "name": "admin",
         "description": "TechGarden administrator"
+      },
+      {
+        "name": "ai",
+        "description": "AI feature entitlement (WS-27) — flat realm role, owner only. iris maps realm_access.roles to ROLE_AI; keep it non-composite and lowercase or the authority never appears."
       }
     ]
   },
@@ -106,7 +110,8 @@
       "enabled": true,
       "emailVerified": true,
       "realmRoles": [
-        "admin"
+        "admin",
+        "ai"
       ]
     },
     {
