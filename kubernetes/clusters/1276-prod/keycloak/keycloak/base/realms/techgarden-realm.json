@@ -1,0 +1,118 @@
+{
+  "realm": "techgarden",
+  "enabled": true,
+  "accessTokenLifespan": 600,
+  "revokeRefreshToken": true,
+  "refreshTokenMaxReuse": 2,
+  "ssoSessionIdleTimeout": 2592000,
+  "ssoSessionMaxLifespan": 5184000,
+  "rememberMe": true,
+  "ssoSessionIdleTimeoutRememberMe": 2592000,
+  "ssoSessionMaxLifespanRememberMe": 5184000,
+  "offlineSessionMaxLifespanEnabled": true,
+  "offlineSessionMaxLifespan": 5184000,
+  "registrationAllowed": false,
+  "resetPasswordAllowed": true,
+  "verifyEmail": true,
+  "actionTokenGeneratedByAdminLifespan": 259200,
+  "actionTokenGeneratedByUserLifespan": 300,
+  "attributes": {
+    "actionTokenGeneratedByUserLifespan.verify-email": "43200",
+    "actionTokenGeneratedByUserLifespan.reset-credentials": "1800"
+  },
+  "loginTheme": "techgarden",
+  "emailTheme": "techgarden",
+  "smtpServer": {
+    "host": "smtp.resend.com",
+    "port": "587",
+    "starttls": "true",
+    "ssl": "false",
+    "auth": "true",
+    "user": "resend",
+    "password": "$(env:KC_SMTP_PASSWORD)",
+    "from": "no-reply@mail.techgarden.gg",
+    "fromDisplayName": "TechGarden"
+  },
+  "roles": {
+    "realm": [
+      {
+        "name": "admin",
+        "description": "TechGarden administrator"
+      },
+      {
+        "name": "ai",
+        "description": "AI feature entitlement (WS-27) — flat realm role, owner only. iris maps realm_access.roles to ROLE_AI; keep it non-composite and lowercase or the authority never appears."
+      }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "iris-web",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "implicitFlowEnabled": false,
+      "serviceAccountsEnabled": false,
+      "redirectUris": [
+        "https://techgarden.gg/*"
+      ],
+      "webOrigins": [
+        "https://techgarden.gg"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "https://techgarden.gg/*"
+      },
+      "defaultClientScopes": [
+        "web-origins",
+        "acr",
+        "roles",
+        "profile",
+        "basic",
+        "email"
+      ]
+    },
+    {
+      "clientId": "techgarden-gateway",
+      "enabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "$(env:KC_CLIENT_TECHGARDEN_GATEWAY_SECRET)",
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "implicitFlowEnabled": false,
+      "serviceAccountsEnabled": false,
+      "redirectUris": [
+        "https://techgarden.gg/oauth2/callback"
+      ],
+      "webOrigins": [
+        "https://techgarden.gg"
+      ],
+      "attributes": {
+        "post.logout.redirect.uris": "https://techgarden.gg/*"
+      },
+      "defaultClientScopes": [
+        "web-origins",
+        "acr",
+        "roles",
+        "profile",
+        "basic",
+        "email"
+      ]
+    }
+  ],
+  "users": [
+    {
+      "username": "kian",
+      "enabled": true,
+      "emailVerified": true,
+      "realmRoles": [
+        "admin",
+        "ai"
+      ]
+    }
+  ]
+}

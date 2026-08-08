@@ -42,3 +42,77 @@ spec:
       memory: 1Gi
     limits:
       memory: 2Gi
+
+  # ── WS-05: TechGarden login + email theme ───────────────────────────────────
+  # KeycloakSpec @26.6.3 exposes no supported volume field, so podTemplate is the
+  # only way to get a ConfigMap into the pod. It is Tech Preview ("unsupported"),
+  # accepted here because the operator is version-pinned and vendored in-repo
+  # (base/operator/), so the merge semantics cannot shift under an unplanned
+  # upgrade. The named alternative — spec.image with a pre-augmented custom image
+  # — is rejected: spec.image without startOptimized makes the operator append
+  # --optimized, which forces db/health/metrics build options into a Containerfile
+  # and a Keycloak publish pipeline homelab does not have.
+  #
+  # Mounting at /opt/keycloak/themes/techgarden/ shadows nothing: the 26.6.3 image
+  # ships only a README.md there, and the built-in base/keycloak/keycloak.v2
+  # themes live inside
+  # /opt/keycloak/lib/lib/main/org.keycloak.keycloak-themes-26.6.3.jar — so the
+  # theme's parent=base keeps resolving.
+  #
+  # NOTHING REFERENCES THIS THEME YET. The prod techgarden realm is withheld from
+  # configMapGenerator.files (see ../kustomization.yaml), so the theme is mounted
+  # but unused until the flip. The three live realms are unaffected.
+  #
+  # Two mounts, not one: see the collision note in ../kustomization.yaml. items[]
+  # rebuilds the subdirectory layout that configMapGenerator flattened away.
+  unsupported:
+    podTemplate:
+      metadata:
+        annotations:
+          # Keycloak caches themes and templates in production mode (staticMaxAge
+          # 30 days) and the operator does not watch these ConfigMaps, so new
+          # theme bytes are NOT served until the pod restarts. The ConfigMaps have
+          # stable names (no hash suffix), so nothing else forces that restart.
+          # BUMP THIS on any change under base/themes/ — it is the pod roll.
+          #
+          # PROD'S COUNTER IS INDEPENDENT AND STARTS AT 1. Dev is on 2 (it absorbed
+          # the WS-05 stage-3 emailSentMessage fix). The two clusters' revisions do
+          # not relate and must never be "synced up" — each only has to CHANGE to
+          # roll its own pods.
+          techgarden.gg/theme-revision: "1"
+      spec:
+        containers:
+          - name: keycloak
+            volumeMounts:
+              - name: theme-techgarden-login
+                mountPath: /opt/keycloak/themes/techgarden/login
+                readOnly: true
+              - name: theme-techgarden-email
+                mountPath: /opt/keycloak/themes/techgarden/email
+                readOnly: true
+        volumes:
+          - name: theme-techgarden-login
+            configMap:
+              name: keycloak-theme-techgarden-login
+              items:
+                - { key: theme.properties, path: theme.properties }
+                - { key: messages_en.properties, path: messages/messages_en.properties }
+                - { key: login.css, path: resources/css/login.css }
+                - { key: OFL-bricolage-grotesque.txt, path: resources/fonts/OFL-bricolage-grotesque.txt }
+                - { key: OFL-hanken-grotesk.txt, path: resources/fonts/OFL-hanken-grotesk.txt }
+                - { key: bricolage-grotesque-latin-ext.woff2, path: resources/fonts/bricolage-grotesque-latin-ext.woff2 }
+                - { key: bricolage-grotesque-latin.woff2, path: resources/fonts/bricolage-grotesque-latin.woff2 }
+                - { key: hanken-grotesk-latin-ext.woff2, path: resources/fonts/hanken-grotesk-latin-ext.woff2 }
+                - { key: hanken-grotesk-latin.woff2, path: resources/fonts/hanken-grotesk-latin.woff2 }
+                - { key: favicon.ico, path: resources/img/favicon.ico }
+                - { key: logo.png, path: resources/img/logo.png }
+          - name: theme-techgarden-email
+            configMap:
+              name: keycloak-theme-techgarden-email
+              items:
+                - { key: theme.properties, path: theme.properties }
+                - { key: messages_en.properties, path: messages/messages_en.properties }
+                - { key: email-verification.ftl, path: html/email-verification.ftl }
+                - { key: executeActions.ftl, path: html/executeActions.ftl }
+                - { key: password-reset.ftl, path: html/password-reset.ftl }
+                - { key: template.ftl, path: html/template.ftl }
