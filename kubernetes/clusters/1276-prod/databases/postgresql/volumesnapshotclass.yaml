@@ -1,0 +1,21 @@
+---
+# H2: prod had ZERO VolumeSnapshotClasses before this PR (all three clusters did),
+# so cnpg's backup.volumeSnapshot had nothing to bind to — the step that silently
+# makes a ScheduledBackup a no-op.
+#
+# Declared here as a plain object rather than via the democratic-csi chart's
+# `volumeSnapshotClasses:` field (1276-prod/storage/democratic-csi-iscsi-ssd/
+# values.yaml, currently `[]`) deliberately: that route triggers a helm upgrade of
+# the live CSI release that every prod PVC depends on, to add one cluster-scoped
+# object. If you ever populate that chart field, DELETE THIS FILE — two sources
+# for one name will fight.
+#
+# driver must match csiDriver.name of the iscsi-ssd release exactly.
+# deletionPolicy Delete: removing the VolumeSnapshot removes the ZFS snapshot, so
+# cnpg's own backup lifecycle stays authoritative.
+apiVersion: snapshot.storage.k8s.io/v1
+kind: VolumeSnapshotClass
+metadata:
+  name: freenas-iscsi-ssd-snapshot
+driver: org.democratic-csi.iscsi-ssd
+deletionPolicy: Delete
