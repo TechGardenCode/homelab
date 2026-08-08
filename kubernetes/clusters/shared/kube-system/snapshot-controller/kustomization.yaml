@@ -1,7 +1,19 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
+# The CRDs define the snapshot API; the controller below is what ACTS on it.
+# Until this PR only the CRDs were installed, on all three clusters — so a
+# VolumeSnapshot could be created and would simply sit there unbound forever.
+# The `external-snapshotter` sidecar already present in every democratic-csi
+# controller pod is NOT a substitute: that sidecar services VolumeSnapshotCONTENT,
+# and nothing was creating the VolumeSnapshotContent in the first place.
+#
+# Blast radius note: clusters/shared/** auto-syncs to dev, core and prod together.
+# This is inert on dev and core — both have zero VolumeSnapshotClasses and zero
+# VolumeSnapshots, so the controller starts, elects a leader, and idles.
 resources:
   - https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/v8.2.0/client/config/crd/snapshot.storage.k8s.io_volumesnapshotclasses.yaml
   - https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/v8.2.0/client/config/crd/snapshot.storage.k8s.io_volumesnapshotcontents.yaml
   - https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/v8.2.0/client/config/crd/snapshot.storage.k8s.io_volumesnapshots.yaml
+  - https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/v8.2.0/deploy/kubernetes/snapshot-controller/rbac-snapshot-controller.yaml
+  - https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/v8.2.0/deploy/kubernetes/snapshot-controller/setup-snapshot-controller.yaml

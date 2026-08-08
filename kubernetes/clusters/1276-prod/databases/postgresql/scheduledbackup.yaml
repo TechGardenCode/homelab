@@ -1,0 +1,26 @@
+---
+# Daily volume-snapshot backup of the shared prod cluster.
+#
+# GOTCHA: cnpg's schedule is a SIX-FIELD cron (leading seconds field), unlike the
+# five-field CronJob syntax used by postgresql-backup.yaml next door. "0 30 2 * * *"
+# is 02:30:00 — read as five fields it would mean something else entirely.
+# There is no timeZone field on ScheduledBackup: this is UTC, whereas the pg_dump
+# CronJob is Europe/Berlin. They are staggered wide enough (02:30 UTC vs 03:00
+# Berlin) that the offset never collides them.
+#
+# online (hot) backup by default — no downtime, no exclusive lock on the primary.
+# immediate: true takes one at creation so the path is proven on first sync rather
+# than at 02:30 tomorrow.
+apiVersion: postgresql.cnpg.io/v1
+kind: ScheduledBackup
+metadata:
+  name: postgresql-daily-snapshot
+  namespace: databases
+spec:
+  schedule: "0 30 2 * * *"
+  immediate: true
+  suspend: false
+  backupOwnerReference: self
+  method: volumeSnapshot
+  cluster:
+    name: postgresql

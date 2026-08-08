@@ -1,0 +1,69 @@
+---
+# Logical export — DELIBERATELY REDUNDANT with the cnpg volume snapshot next door.
+# A snapshot and a dump fail differently: a snapshot captures the block device
+# (fast, restores whole, and inherits any on-disk corruption verbatim), a pg_dump
+# captures logical rows (slow, restores selectively, and FAILS LOUDLY on the
+# corruption a snapshot would have preserved). Keeping both is the point — this is
+# not duplication to tidy away.
+#
+# Failure signalling: a failed Job here is already covered estate-wide by the
+# existing `k8s-job-failed` Grafana rule (kubernetes-pod-health group), so no
+# second alert is defined for this path. The cnpg snapshot path is NOT covered by
+# that rule — snapshots are not Jobs — and is handled by `cnpg-backup-stale`.
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: postgresql-backup
+  namespace: databases
+  labels:
+    app.kubernetes.io/name: postgresql-backup
+spec:
+  schedule: "0 3 * * *"
+  timeZone: Europe/Berlin
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 2
+  jobTemplate:
+    spec:
+      completions: 1
+      parallelism: 1
+      template:
+        spec:
+          restartPolicy: OnFailure
+          terminationGracePeriodSeconds: 30
+          containers:
+            - name: pg-backup
+              image: postgres:18
+              command:
+                - /bin/bash
+                - -c
+                - |
+                  set -euo pipefail
+                  TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+                  HOST="postgresql-rw.databases.svc"
+                  mkdir -p /backups/postgresql
+                  echo "[$(date)] Starting per-database PostgreSQL backup..."
+                  DATABASES=$(psql -h "$HOST" -U postgres -t -A -c \
+                    "SELECT datname FROM pg_database WHERE datistemplate = false AND datname != 'postgres';")
+                  for DB in $DATABASES; do
+                    echo "[$(date)] Backing up database: $DB"
+                    pg_dump -h "$HOST" -U postgres -Fc "$DB" \
+                      > /backups/postgresql/${DB}-${TIMESTAMP}.dump
+                    echo "[$(date)] Done: ${DB}-${TIMESTAMP}.dump"
+                  done
+                  echo "[$(date)] Cleaning up backups older than 7 days..."
+                  find /backups/postgresql -name "*.dump" -mtime +7 -delete
+                  echo "[$(date)] Done."
+              env:
+                - name: PGPASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: postgresql-superuser
+                      key: password
+              volumeMounts:
+                - name: backups
+                  mountPath: /backups
+          volumes:
+            - name: backups
+              persistentVolumeClaim:
+                claimName: db-backups

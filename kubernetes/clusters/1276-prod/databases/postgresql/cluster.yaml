@@ -1,0 +1,116 @@
+---
+# Shared prod PostgreSQL cluster (ADR-0030/0031, schema-per-module).
+#
+# The name/namespace pair is LOAD-BEARING: `postgresql` in `databases` is what
+# produces postgresql-rw.databases.svc.cluster.local:5432, which the app repo
+# hardcodes in projects/api/deploy/base/api-deployment.yaml. Renaming either the
+# cluster or the namespace silently breaks the API at the flip.
+#
+# ONE `techgarden` database, ONE `techgarden_app` role — not per-service
+# databases. The four per-service DBs/roles were retired in ADR-0030 Phase 4.
+#
+# NOTE (ADR-0018): no `imageName` is pinned — this cluster runs the cnpg operator
+# default operand image. iris needs pgvector (migration V6 `CREATE EXTENSION
+# vector`), which is NOT a core extension. Before the iris cutover, verify the
+# operand image bundles pgvector and, if absent, pin `imageName` to a
+# pgvector-bearing tag MATCHING the current PG major (a major downgrade is
+# impossible). Changing the image rolls this cluster — a deliberate maintenance
+# step, not a drive-by.
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: postgresql
+  namespace: databases
+spec:
+  # 2 in prod (dev runs 1): one synchronous-capable replica so a single node
+  # loss is a failover rather than an outage. 3 prod nodes, so both land apart.
+  instances: 2
+
+  enableSuperuserAccess: true
+  superuserSecret:
+    name: postgresql-superuser
+
+  postgresql:
+    pg_hba:
+      - host all postgres all scram-sha-256
+      - host all all all scram-sha-256
+    # Explicit tuning — don't rely on CNPG/postgres defaults (repo convention,
+    # see 1276-prod/hausparty/hausparty-db/cluster.yaml).
+    # Memory: shared_buffers = 25% of the 1Gi limit, effective_cache_size ~75%.
+    parameters:
+      max_connections: "100"
+      shared_buffers: "256MB"
+      effective_cache_size: "768MB"
+      work_mem: "8MB"
+      maintenance_work_mem: "128MB"
+      random_page_cost: "1.1" # SSD
+      log_min_duration_statement: "1000" # log queries slower than 1s
+      max_wal_size: "2GB"
+      min_wal_size: "512MB"
+      checkpoint_completion_target: "0.9"
+
+  storage:
+    size: 20Gi
+    storageClass: freenas-iscsi-ssd-csi
+
+  # initdb creates `techgarden` owned by the bootstrap role `techgardencode`;
+  # databases.yaml then reassigns the owner to the managed `techgarden_app`.
+  #
+  # Dev's postInitApplicationSQLRefs / postInitSQLRefs are DELIBERATELY ABSENT:
+  # they referenced the postgresql-init-sql ConfigMap (readonly_role + ALTER ROLE
+  # techgardencode), legacy from the retired per-service-database era. Nothing in
+  # the monolith uses it, so neither the ConfigMap nor its refs are carried over.
+  bootstrap:
+    initdb:
+      database: techgarden
+      owner: techgardencode
+      secret:
+        name: postgresql-app-credentials
+
+  # Backups: VolumeSnapshot method (H2). Requires BOTH the VolumeSnapshotClass in
+  # volumesnapshotclass.yaml AND the cluster-level snapshot-controller added to
+  # shared/kube-system/snapshot-controller/ in this PR — without the controller a
+  # VolumeSnapshot is created but never bound, and the backup hangs forever.
+  #
+  # ponytail: snapshot-only, no barmanObjectStore — so this is restore-to-snapshot,
+  # NOT point-in-time recovery between snapshots (WAL archiving would need an S3
+  # bucket + credentials that are out of this workstream's contract). Add a
+  # barmanObjectStore stanza against Garage if PITR granularity is ever required.
+  #
+  # ponytail: cnpg does not enforce `retentionPolicy` for the volumeSnapshot
+  # method (object-store only), so snapshots accumulate. ZFS snapshots are
+  # copy-on-write so growth is delta-sized, not 20Gi/day — revisit with a pruning
+  # CronJob if NAS capacity becomes the binding constraint.
+  backup:
+    volumeSnapshot:
+      className: freenas-iscsi-ssd-snapshot
+      snapshotOwnerReference: backup
+
+  monitoring:
+    enablePodMonitor: true
+    disableDefaultQueries: false
+
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      memory: 1Gi
+
+  # The consolidated `techgarden_app` role (ADR-0030/0031). The five modules
+  # connect as this one role against the `techgarden` DB (schema per module); the
+  # Flyway migrator connects as the cluster superuser `postgres` (accepted
+  # blast-radius tradeoff). LOGIN NOSUPERUSER NOBYPASSRLS is the RLS invariant.
+  managed:
+    roles:
+      - name: techgarden_app
+        ensure: present
+        login: true
+        superuser: false
+        createdb: false
+        createrole: false
+        bypassrls: false
+        inherit: true
+        connectionLimit: -1
+        passwordSecret:
+          name: techgarden-db-app-credentials
