@@ -79,6 +79,19 @@ backendTrafficPolicy:
   routingMode: single  # single | active-active | sticky
   healthCheckPath: /healthz
   stickyTTL: "3600s"
+  compression:
+    # Gateway-owned response compression. Enabling this makes Envoy strip
+    # Accept-Encoding from the upstream request, so the app's own
+    # compression goes inert — the two layers are mutually exclusive, not
+    # layered. Set enabled=false to hand control back to the app (it then
+    # receives Accept-Encoding untouched and is fully responsible).
+    #
+    # Default flips to true once dev has soaked — see
+    # kian.sh/.ai/plans/response-compression/.
+    enabled: false
+    # Below ~1KB gzip/brotli framing can exceed the savings. Envoy's own
+    # floor is 30 bytes; 1024 is the useful one.
+    minContentLength: 1024
 
 replicas: 1
 # HPA: opt-in per-app via autoscaling.enabled. When enabled, the

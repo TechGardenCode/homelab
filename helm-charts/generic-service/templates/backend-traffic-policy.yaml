@@ -26,6 +26,19 @@ spec:
                 value: 0.0.0.0/0
                 type: Distinct
   {{- end }}
+  {{- if .Values.backendTrafficPolicy.compression.enabled }}
+  # Brotli first: it wins q-value ties and is ~6% better than gzip on
+  # text. Gzip stays for clients that don't offer brotli. Enabling this
+  # strips Accept-Encoding upstream, so the app stops compressing —
+  # set compression.enabled=false to give the app control back.
+  compressor:
+    - type: Brotli
+      brotli: {}
+      minContentLength: {{ .Values.backendTrafficPolicy.compression.minContentLength }}
+    - type: Gzip
+      gzip: {}
+      minContentLength: {{ .Values.backendTrafficPolicy.compression.minContentLength }}
+  {{- end }}
   {{- if eq .Values.backendTrafficPolicy.routingMode "sticky" }}
   loadBalancer:
     type: ConsistentHash
