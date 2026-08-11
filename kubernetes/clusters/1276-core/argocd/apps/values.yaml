@@ -15,6 +15,12 @@ projects:
     namespace: argocd
     sourceRepos:
       - https://github.com/techgardencode/homelab.git
+      # TechGarden app repo owns its own deploy manifests (api + web). Prod's copy
+      # of the dev entry above — WS-02's internal flip (ADR-0060). Load-bearing with
+      # the techgarden-prod ApplicationSet below: that set templates
+      # `project: 1276-prod`, so without this repo listed here every generated
+      # Application is rejected as an out-of-project source.
+      - https://github.com/TechGardenCode/techgarden.git
     destinations:
       - name: 1276-prod
         namespace: "*"
@@ -120,6 +126,46 @@ applicationsets:
         destination:
           name: "1276-prod"
           namespace: "{{path[3]}}"
+        syncPolicy:
+          automated:
+            selfHeal: true
+            prune: true
+          syncOptions:
+            - ApplyOutOfSyncOnly=true
+            - ServerSideApply=true
+  # Prod twin of techgarden-dev above — WS-02's internal flip (ADR-0060). Deliberately
+  # byte-identical to it with dev -> prod, so the two stay diffable by eye.
+  #
+  # This makes prod RUN AND SERVE, IN-CLUSTER ONLY. It reaches nothing publicly: the web
+  # prod overlay keeps base's `eg-internal` parentRef and adds no `dns.kian.sh/provider`
+  # annotation, so no route lands on eg-public and no record is created. The public flip
+  # is a separate, additive act — a second HTTPRoute — never a retarget of this one.
+  #
+  # `project: 1276-prod` is load-bearing: with `default` the AppProject sourceRepos entry
+  # above is inert and the Applications would sync anyway, silently ungated.
+  techgarden-prod:
+    name: techgarden-prod
+    namespace: argocd
+    generators:
+      - git:
+          repoURL: https://github.com/TechGardenCode/techgarden.git
+          revision: main
+          directories:
+            - path: "projects/*/deploy/overlays/prod"
+    template:
+      metadata:
+        name: "1276-prod.techgarden-{{path[1]}}"
+      spec:
+        project: "1276-prod"
+        source:
+          repoURL: https://github.com/TechGardenCode/techgarden.git
+          targetRevision: main
+          path: "{{path}}"
+        destination:
+          name: "1276-prod"
+          # Each product ships its own namespace (api, techgarden-web) via a
+          # namespace.yaml; this default only covers unnamespaced resources.
+          namespace: "{{path[1]}}"
         syncPolicy:
           automated:
             selfHeal: true
