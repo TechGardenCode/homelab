@@ -53,4 +53,9 @@ spec:
               route_name: "%ROUTE_NAME%"
               x-forwarded-for: "%REQ(X-FORWARDED-FOR)%"
               content_encoding: "%RESP(CONTENT-ENCODING)%"
+              # Needed to tell a real coverage gap from a client that asked
+              # for no compression. Without it, any Accept-Encoding: identity
+              # request (probes, curl, monitoring) looks like an uncompressed
+              # route and the alert fires on healthy traffic.
+              accept_encoding: "%REQ(ACCEPT-ENCODING)%"
               content_type: "%RESP(CONTENT-TYPE)%"
