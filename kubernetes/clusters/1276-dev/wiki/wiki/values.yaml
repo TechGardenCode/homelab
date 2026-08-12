@@ -23,9 +23,3 @@ resources:
 httpRoute:
   enabled: true
   hostname: wiki.dev.kian.sh
-
-# Dev-first gateway compression. Removed in phase 03 once the
-# generic-service chart default flips to enabled: true.
-backendTrafficPolicy:
-  compression:
-    enabled: true

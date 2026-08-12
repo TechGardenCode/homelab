@@ -12,3 +12,50 @@ spec:
         annotations:
           metallb.io/address-pool: system-pool
           metallb.io/loadBalancerIPs: 10.0.61.2
+  telemetry:
+    accessLog:
+      settings:
+        # Restates Envoy Gateway's default JSON fields — defining
+        # accessLog replaces the default format wholesale rather than
+        # extending it. content_encoding / content_type are the additions,
+        # and they are what the compression-coverage alert keys on.
+        - sinks:
+            # stdout, so Alloy's pod-log collector keeps picking these
+            # up into Loki exactly as before.
+            - type: File
+              file:
+                path: /dev/stdout
+          format:
+            type: JSON
+            json:
+              start_time: "%START_TIME%"
+              method: "%REQ(:METHOD)%"
+              x-envoy-origin-path: "%REQ(X-ENVOY-ORIGINAL-PATH?:PATH)%"
+              protocol: "%PROTOCOL%"
+              response_code: "%RESPONSE_CODE%"
+              response_flags: "%RESPONSE_FLAGS%"
+              response_code_details: "%RESPONSE_CODE_DETAILS%"
+              connection_termination_details: "%CONNECTION_TERMINATION_DETAILS%"
+              upstream_transport_failure_reason: "%UPSTREAM_TRANSPORT_FAILURE_REASON%"
+              bytes_received: "%BYTES_RECEIVED%"
+              bytes_sent: "%BYTES_SENT%"
+              duration: "%DURATION%"
+              x-envoy-upstream-service-time: "%REQ(X-ENVOY-UPSTREAM-SERVICE-TIME)%"
+              user-agent: "%REQ(USER-AGENT)%"
+              x-request-id: "%REQ(X-REQUEST-ID)%"
+              ":authority": "%REQ(:AUTHORITY)%"
+              upstream_host: "%UPSTREAM_HOST%"
+              upstream_cluster: "%UPSTREAM_CLUSTER%"
+              upstream_local_address: "%UPSTREAM_LOCAL_ADDRESS%"
+              downstream_local_address: "%DOWNSTREAM_LOCAL_ADDRESS%"
+              downstream_remote_address: "%DOWNSTREAM_REMOTE_ADDRESS%"
+              requested_server_name: "%REQUESTED_SERVER_NAME%"
+              route_name: "%ROUTE_NAME%"
+              x-forwarded-for: "%REQ(X-FORWARDED-FOR)%"
+              content_encoding: "%RESP(CONTENT-ENCODING)%"
+              # Needed to tell a real coverage gap from a client that asked
+              # for no compression. Without it, any Accept-Encoding: identity
+              # request (probes, curl, monitoring) looks like an uncompressed
+              # route and the alert fires on healthy traffic.
+              accept_encoding: "%REQ(ACCEPT-ENCODING)%"
+              content_type: "%RESP(CONTENT-TYPE)%"
