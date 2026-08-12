@@ -19,24 +19,25 @@ resources:
   - base/config-cli-job.yaml
 
 configMapGenerator:
-  # ── THE GO SWITCH ───────────────────────────────────────────────────────────
-  # base/realms/techgarden-realm.json EXISTS IN THIS REPO BUT IS DELIBERATELY NOT
-  # LISTED HERE (WS-02, techgarden ADR-0060). This list is the only thing that
-  # decides whether the prod techgarden realm exists at all: config-cli imports
-  # /config/*.json from this ConfigMap, so an unlisted file is never seen by
-  # Keycloak. While it stays unlisted, https://sso.techgarden.gg/realms/techgarden
-  # returns 404 — and that 404 is the PASS CONDITION for this phase, not a bug.
+  # ── GO SWITCH: THROWN (WS-02 Cycle 3, techgarden ADR-0060) ──────────────────
+  # This list is the only thing that decides whether a realm exists at all:
+  # config-cli imports /config/*.json from this ConfigMap, so an unlisted file is
+  # never seen by Keycloak. techgarden-realm.json was withheld here through
+  # Cycles 1–2 — https://sso.techgarden.gg/realms/techgarden 404'd by design.
+  # It is listed now, so that endpoint serves. Its two substitution vars
+  # (KC_CLIENT_TECHGARDEN_GATEWAY_SECRET, KC_SMTP_PASSWORD) were wired ahead of
+  # time on the Job and the ExternalSecret, which is why the flip is one line.
   #
-  # THE FLIP IS EXACTLY ONE LINE: add `- base/realms/techgarden-realm.json` below.
-  # Everything it depends on is already wired by this PR — both KC_* substitution
-  # vars are on the Job and both secret keys are on the ExternalSecret — so the
-  # flip needs no other change in this directory.
+  # Substitution runs across the WHOLE BATCH, so adding a seed that references an
+  # unwired $(env:...) fails the import for EVERY realm, not just its own. Wire
+  # the var before you list the file.
   - name: keycloak-realm-config
     namespace: keycloak
     files:
       - base/realms/accounts-realm.json
       - base/realms/hausparty-realm.json
       - base/realms/kian-coffee-realm.json
+      - base/realms/techgarden-realm.json
 
   # WS-05 TechGarden theme (base/themes/techgarden/), mounted into the Keycloak
   # pod by spec.unsupported.podTemplate in base/keycloak-cr.yaml. Mounted now,

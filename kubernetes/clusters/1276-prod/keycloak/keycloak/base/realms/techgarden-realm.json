@@ -14,6 +14,10 @@
   "registrationAllowed": false,
   "resetPasswordAllowed": true,
   "verifyEmail": true,
+  "bruteForceProtected": true,
+  "failureFactor": 5,
+  "maxFailureWaitSeconds": 900,
+  "waitIncrementSeconds": 60,
   "actionTokenGeneratedByAdminLifespan": 259200,
   "actionTokenGeneratedByUserLifespan": 300,
   "attributes": {
@@ -46,34 +50,6 @@
     ]
   },
   "clients": [
-    {
-      "clientId": "iris-web",
-      "enabled": true,
-      "protocol": "openid-connect",
-      "publicClient": true,
-      "standardFlowEnabled": true,
-      "directAccessGrantsEnabled": false,
-      "implicitFlowEnabled": false,
-      "serviceAccountsEnabled": false,
-      "redirectUris": [
-        "https://techgarden.gg/*"
-      ],
-      "webOrigins": [
-        "https://techgarden.gg"
-      ],
-      "attributes": {
-        "pkce.code.challenge.method": "S256",
-        "post.logout.redirect.uris": "https://techgarden.gg/*"
-      },
-      "defaultClientScopes": [
-        "web-origins",
-        "acr",
-        "roles",
-        "profile",
-        "basic",
-        "email"
-      ]
-    },
     {
       "clientId": "techgarden-gateway",
       "enabled": true,
