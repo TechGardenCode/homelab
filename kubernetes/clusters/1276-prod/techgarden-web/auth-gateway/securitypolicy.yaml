@@ -1,0 +1,95 @@
+---
+# WS-03 — Auth session edge (prod). Envoy Gateway OIDC session for the prod
+# TechGarden web app + /api, against the prod `techgarden` realm. Prod twin of
+# 1276-dev/techgarden-web/auth-gateway/securitypolicy.yaml.
+#
+# ONE SecurityPolicy covers BOTH the protected web route and the /api route on
+# purpose: EG auto-generates a per-SecurityPolicy OAuth2 HMAC/token secret, so a
+# separate policy on /api could not decrypt the session cookie the web filter
+# set — authed /api would 401 forever. A single filter shares the cookie across
+# both routes. denyRedirect (matched on :path ^/api) makes an unauthenticated
+# /api return 401 (XHR-detectable) while a top-level HTML nav still gets the 302
+# to Keycloak. Public paths live on the SEPARATE techgarden-web-public HTTPRoute
+# WITHOUT this policy — attaching a policy is what makes a route protected;
+# denyRedirect only turns 302 into 401.
+#
+# targetRefs name HTTPRoutes owned by the techgarden app repo (Model A): the app
+# half carves the routes, this policy attaches auth. Both routes live in THIS
+# namespace (SecurityPolicy targets same-namespace routes only).
+#
+# ---------------------------------------------------------------------------
+# mergeType IS LOAD-BEARING — DO NOT DROP IT.
+#
+# Unlike dev, these two routes carry TWO parentRefs (eg-internal + eg-public).
+# Each gateway has its own Gateway-level SecurityPolicy:
+#   eg-internal → internal-security-policy   (cors)
+#   eg-public   → public-security-policy     (authorization: defaultAction Deny,
+#                                             allow cloudflared/VPS/Cloudflare)
+# EG does not merge policies by default: with mergeType unset the most specific
+# policy wins outright, so attaching this one would strip the Deny-by-default
+# allowlist from techgarden-web-app and techgarden-api while the unprotected
+# techgarden-web-public catch-all kept it — an inverted posture.
+#
+# StrategicMerge merges this config into the parent policy PER ANCESTOR, which is
+# the only option that gets both edges right at once. Restating the allowlist
+# inline here would NOT work: this is a single policy spanning both gateways, so
+# a copied clientCIDRs block would also apply on eg-internal and deny every LAN
+# client (the allowlist permits only pod, VPS-wireguard and Cloudflare ranges).
+# It would look healthy from an in-cluster probe — pod IPs are inside
+# 10.244.0.0/16 — and break internal access silently. The merge also restores
+# CORS on these routes from internal-security-policy, which the dev twin
+# currently loses by replacing it.
+# ---------------------------------------------------------------------------
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: techgarden-oidc
+  namespace: techgarden-web
+spec:
+  # Merge into the Gateway-level parent policy instead of replacing it. See the
+  # block above — without this, the public allowlist is lost on exactly the two
+  # routes that most need it.
+  mergeType: StrategicMerge
+  targetRefs:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      name: techgarden-web-app
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      name: techgarden-api
+  oidc:
+    provider:
+      # prod techgarden realm; LE-trusted public cert so EG dials it directly
+      # (no backendRefs/BackendTLSPolicy). end_session + endpoints auto-discovered.
+      issuer: "https://sso.techgarden.gg/realms/techgarden"
+    clientID: "techgarden-gateway"
+    clientSecret:
+      name: techgarden-gateway-oidc # Opaque secret, key "client-secret"
+    redirectURL: "https://techgarden.gg/oauth2/callback"
+    logoutPath: "/logout"
+    # authed /api → Authorization: Bearer <access_token> upstream to iris.
+    forwardAccessToken: true
+    # server-side refresh; safe with realm revokeRefreshToken:true (EG persists
+    # each rotated refresh token — no racing browser).
+    refreshToken: true
+    scopes:
+      - openid
+      - profile
+      - email
+    # Lax (not Strict): keeps external-link-into-a-protected-page working with a
+    # live session (Strict would re-prompt), which the long-session UX requires.
+    # CSRF on mutating /api is already covered — mutations are POST and Lax
+    # withholds cookies on cross-site POST.
+    cookieConfig:
+      sameSite: Lax
+    # HttpOnly+Secure are always set by the EG OAuth2 filter (not disableable).
+    cookieNames:
+      accessToken: "TG_AT"
+      idToken: "TG_IT"
+    # /api is XHR-only: never redirect it to Keycloak — return 401 so the SPA can
+    # detect the expired/absent session. HTML navs (no /api path) still 302.
+    denyRedirect:
+      headers:
+        - name: ":path"
+          type: RegularExpression
+          value: "^/api([/?].*)?$"
