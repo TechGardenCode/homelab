@@ -15,3 +15,19 @@ spec:
         - limit:
             requests: 1000
             unit: Minute
+  # Gateway-level compression safety net. Only applies to routes that do
+  # NOT have their own BackendTrafficPolicy — a route-level policy
+  # replaces this one wholesale rather than merging with it. Chart apps
+  # carry their own policy and get compression from the generic-service
+  # chart instead; this covers everything else (keycloak, argocd, etc).
+  #
+  # Merged into the rate-limit policy deliberately: Envoy Gateway allows
+  # only ONE BackendTrafficPolicy per Gateway, a second is rejected
+  # Conflicted.
+  compressor:
+    - type: Brotli
+      brotli: {}
+      minContentLength: 1024
+    - type: Gzip
+      gzip: {}
+      minContentLength: 1024

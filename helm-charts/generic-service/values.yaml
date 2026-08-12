@@ -86,9 +86,9 @@ backendTrafficPolicy:
     # layered. Set enabled=false to hand control back to the app (it then
     # receives Accept-Encoding untouched and is fully responsible).
     #
-    # Default flips to true once dev has soaked — see
-    # kian.sh/.ai/plans/response-compression/.
-    enabled: false
+    # Default-on so a new app cannot ship uncompressed by forgetting —
+    # see kian.sh/.ai/plans/response-compression/.
+    enabled: true
     # Below ~1KB gzip/brotli framing can exceed the savings. Envoy's own
     # floor is 30 bytes; 1024 is the useful one.
     minContentLength: 1024
