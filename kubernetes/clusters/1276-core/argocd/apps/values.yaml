@@ -136,10 +136,26 @@ applicationsets:
   # Prod twin of techgarden-dev above — WS-02's internal flip (ADR-0060). Deliberately
   # byte-identical to it with dev -> prod, so the two stay diffable by eye.
   #
-  # This makes prod RUN AND SERVE, IN-CLUSTER ONLY. It reaches nothing publicly: the web
-  # prod overlay keeps base's `eg-internal` parentRef and adds no `dns.kian.sh/provider`
-  # annotation, so no route lands on eg-public and no record is created. The public flip
-  # is a separate, additive act — a second HTTPRoute — never a retarget of this one.
+  # This made prod RUN AND SERVE, IN-CLUSTER ONLY: the web prod overlay kept base's
+  # `eg-internal` parentRef and added no `dns.kian.sh/provider` annotation, so no route
+  # landed on eg-public and no record was created.
+  #
+  # THE PUBLIC FLIP IS ADDITIVE, BUT AS A SECOND parentRef — NOT A SECOND ROUTE.
+  # The original contract said "a NEW route, never a retarget". Cycle 3 renegotiated the
+  # letter and kept the intent: the three routes gain `eg-public` alongside `eg-internal`,
+  # nothing is removed and the internal validation path still works. A duplicate public
+  # route set would mean mirroring eleven protected path prefixes by hand, and forgetting
+  # the twelfth would drop a new product surface into the public catch-all, served and
+  # ungated — a failure on the ROUTINE act, versus dual-parent's failure on the RARE one.
+  #
+  # CONSEQUENCE, LOAD-BEARING. A route-level policy now spans TWO gateways with different
+  # threat models, so a per-edge difference can no longer be expressed by attaching a
+  # policy to the public route alone — it exists ONLY via `mergeType` on the route-level
+  # policy. See 1276-prod/techgarden-web/auth-gateway/securitypolicy.yaml: with mergeType
+  # unset the most specific policy wins outright, and the protected routes silently lose
+  # eg-public's Deny-by-default allowlist while the unprotected catch-all keeps it.
+  # Restating the allowlist inline is NOT an equivalent fix — one policy, two gateways, so
+  # it would also apply on eg-internal and deny every LAN client.
   #
   # `project: 1276-prod` is load-bearing: with `default` the AppProject sourceRepos entry
   # above is inert and the Applications would sync anyway, silently ungated.
