@@ -1,5 +1,5 @@
 image:
-  repository: ghcr.io/pelican-dev/panel
+  repository: ghcr.io/pelican/panel
   tag: "v1.0.0-beta38"          # PIN — external image, not bot-managed; bump via Renovate. Never :latest.
 
 ports:
