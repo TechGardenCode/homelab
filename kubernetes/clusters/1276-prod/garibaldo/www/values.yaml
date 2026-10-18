@@ -1,0 +1,23 @@
+image:
+  repository: "ghcr.io/techgardencode/garibaldo"
+  # ponytail: bootstrap tag; first CI dispatch pins it to a commit SHA.
+  tag: "latest"
+ports:
+  - name: main
+    containerPort: 80
+service:
+  type: ClusterIP
+resources:
+  requests:
+    cpu: 10m
+    memory: 32Mi
+  limits:
+    memory: 64Mi
+# Exposure: Public via netcup VPS edge proxy, same as lizard. DNS
+# garibaldo.techgarden.gg is a manual A record to the VPS IP.
+httpRoute:
+  enabled: true
+  hostname: garibaldo.techgarden.gg
+gateway:
+  public:
+    enabled: true

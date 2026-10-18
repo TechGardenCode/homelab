@@ -49,3 +49,9 @@ apps:
     paths:
       - path: kubernetes/clusters/1276-prod/lizard/www/values.yaml
         env: prod
+
+  garibaldo-www:
+    type: values
+    paths:
+      - path: kubernetes/clusters/1276-prod/garibaldo/www/values.yaml
+        env: prod
