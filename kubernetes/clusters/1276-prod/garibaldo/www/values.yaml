@@ -1,7 +1,7 @@
 image:
   repository: "ghcr.io/techgardencode/garibaldo"
   # ponytail: bootstrap tag; first CI dispatch pins it to a commit SHA.
-  tag: "e6c5a22ffa677d0569a5fcc6d7647418c3be8d1b"
+  tag: "dcee71ce8a0f0a1d4293968e15d7e885d37ad3f8"
 ports:
   - name: main
     containerPort: 80
