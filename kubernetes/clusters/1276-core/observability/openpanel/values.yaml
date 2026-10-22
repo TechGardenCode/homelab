@@ -58,7 +58,7 @@ dashboard:
 worker:
   image:
     repository: lindesvard/openpanel-worker
-    tag: "2.2.1"
+    tag: "2.3.0"
   replicas: 2
   resources:
     requests:
