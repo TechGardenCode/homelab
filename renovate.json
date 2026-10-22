@@ -5,6 +5,20 @@
   "schedule": ["before 6am every weekday"],
   "minimumReleaseAge": "3 days",
 
+  "kubernetes": {
+    "managerFilePatterns": ["/^kubernetes/.+\\.ya?ml$/"]
+  },
+  "customManagers": [
+    {
+      "description": "Pins annotated with `# renovate: datasource=… depName=…` on the line above; tracks the first semver on that next line",
+      "customType": "regex",
+      "managerFilePatterns": ["/^kubernetes/.+\\.ya?ml$/"],
+      "matchStrings": [
+        "#\\s*renovate:\\s*datasource=(?<datasource>\\S+)\\s+depName=(?<depName>\\S+)(?:\\s+versioning=(?<versioning>\\S+))?\\s*\\n[^\\n]*?(?<currentValue>v?\\d+\\.\\d+\\.\\d+[^\\s\"'/@]*)"
+      ]
+    }
+  ],
+
   "packageRules": [
     {
       "description": "Auto-merge custom app images from GHCR",
