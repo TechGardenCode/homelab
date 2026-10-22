@@ -7,6 +7,20 @@
   "prConcurrentLimit": 20,
   "prHourlyLimit": 0,
 
+  "kubernetes": {
+    "managerFilePatterns": ["/^kubernetes/.+\\.ya?ml$/"]
+  },
+  "customManagers": [
+    {
+      "description": "Pins annotated with `# renovate: datasource=… depName=…` on the line above; tracks the first semver on that next line",
+      "customType": "regex",
+      "managerFilePatterns": ["/^kubernetes/.+\\.ya?ml$/"],
+      "matchStrings": [
+        "#\\s*renovate:\\s*datasource=(?<datasource>\\S+)\\s+depName=(?<depName>\\S+)(?:\\s+versioning=(?<versioning>\\S+))?\\s*\\n[^\\n]*?(?<currentValue>v?\\d+\\.\\d+\\.\\d+[^\\s\"'/@]*)"
+      ]
+    }
+  ],
+
   "packageRules": [
     {
       "description": "Custom app images are bot-managed by update-image-tag.yml (ci/app-registry.yaml) and promoted by PR — Renovate must never touch them, on any path",
@@ -74,6 +88,12 @@
       "matchPackageNames": ["redis"],
       "matchDatasources": ["helm"],
       "allowedVersions": "<1.0.0"
+    },
+    {
+      "description": "talosctl (etcd-snapshot cronjob) must match the clusters' Talos version — cross-minor client/server hits a gRPC keepalive bug. Bump only alongside the kian.sh talos installer upgrade, never ahead of it",
+      "matchPackageNames": ["siderolabs/talos"],
+      "labels": ["manual-review"],
+      "automerge": false
     }
   ]
 }
