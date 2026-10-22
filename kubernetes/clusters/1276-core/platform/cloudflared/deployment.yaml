@@ -17,7 +17,7 @@ spec:
       automountServiceAccountToken: false
       containers:
         - name: cloudflared
-          image: cloudflare/cloudflared:2026.6.1
+          image: cloudflare/cloudflared:2026.10.1
           args:
             - tunnel
             # ponytail: cluster is IPv4-only; pin edge to v4. cloudflared 2026.4.0
