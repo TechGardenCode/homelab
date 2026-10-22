@@ -9,10 +9,9 @@
 
   "packageRules": [
     {
-      "description": "Auto-merge custom app images from GHCR — dev/core only; prod and shared/** need owner review",
-      "matchPackageNames": ["ghcr.io/techgardencode/*"],
-      "matchFileNames": ["kubernetes/clusters/1276-dev/**", "kubernetes/clusters/1276-core/**"],
-      "automerge": true
+      "description": "Custom app images are bot-managed by update-image-tag.yml (ci/app-registry.yaml) and promoted by PR — Renovate must never touch them, on any path",
+      "matchPackageNames": ["ghcr.io/techgardencode/**"],
+      "enabled": false
     },
     {
       "description": "Auto-merge patch updates for helm charts — dev/core only; prod and shared/** need owner review",
