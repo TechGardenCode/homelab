@@ -187,7 +187,7 @@ helper:
 wait4x:
   image:
     repository: wait4x/wait4x
-    tag: "3.6.0@sha256:bec7ac18547781d854562c3729d3195c3880116d6758c49fdf4573ad58805f14"
+    tag: "3.7.2@sha256:2337e64637e1aa9d5d638de6d877914806be6c5156a7221ea40f11911ea4071a"
 
 homepage:
   name: ""
