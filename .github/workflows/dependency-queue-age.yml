@@ -1,0 +1,49 @@
+---
+name: Dependency queue age
+
+"on":
+  schedule:
+    - cron: "0 14 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Fail if the dependency queue has stalled or saturated
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          MAX_AGE_DAYS: "14"
+        run: |
+          set -euo pipefail
+          # Renovate's limit (config:recommended default is 10 when unset).
+          limit=$(jq '.prConcurrentLimit // 10' renovate.json)
+          prs=$(gh pr list --repo "$REPO" --state open --limit 200 \
+                  --json number,title,createdAt,author)
+          # Only dependency PRs count: Renovate's own and promotion PRs.
+          deps=$(jq '[.[] | select(.author.login == "app/renovate" or (.title | startswith("promote:")))]' <<<"$prs")
+          renovate_open=$(jq '[.[] | select(.author.login == "app/renovate")] | length' <<<"$deps")
+          cutoff=$(( $(date -u +%s) - MAX_AGE_DAYS * 86400 ))
+          stale=$(jq -r --argjson cutoff "$cutoff" \
+            '.[] | select((.createdAt | fromdateiso8601) < $cutoff)
+                 | "#\(.number) \(.createdAt[0:10]) \(.title)"' <<<"$deps")
+
+          fail=0
+          if [ -n "$stale" ]; then
+            while IFS= read -r line; do echo "::warning::stale: $line"; done <<<"$stale"
+            echo "::error::$(wc -l <<<"$stale" | tr -d ' ') dependency PR(s) older than ${MAX_AGE_DAYS} days: the queue has stalled"
+            fail=1
+          fi
+          if [ "$limit" -gt 0 ] && [ "$renovate_open" -ge "$limit" ]; then
+            echo "::error::${renovate_open} open Renovate PRs >= prConcurrentLimit ${limit}: Renovate has stopped opening new PRs"
+            fail=1
+          fi
+          echo "renovate open: ${renovate_open}/${limit}, stale: $(grep -c . <<<"$stale" || true)"
+          exit "$fail"
