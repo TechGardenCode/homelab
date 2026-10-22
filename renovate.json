@@ -4,23 +4,36 @@
   "platformAutomerge": false,
   "schedule": ["before 6am every weekday"],
   "minimumReleaseAge": "3 days",
+  "prConcurrentLimit": 20,
+  "prHourlyLimit": 0,
 
   "packageRules": [
     {
-      "description": "Auto-merge custom app images from GHCR",
+      "description": "Auto-merge custom app images from GHCR — dev/core only; prod and shared/** need owner review",
       "matchPackageNames": ["ghcr.io/techgardencode/*"],
+      "matchFileNames": ["kubernetes/clusters/1276-dev/**", "kubernetes/clusters/1276-core/**"],
       "automerge": true
     },
     {
-      "description": "Auto-merge patch updates for helm charts",
+      "description": "Auto-merge patch updates for helm charts — dev/core only; prod and shared/** need owner review",
       "matchDatasources": ["helm"],
       "matchUpdateTypes": ["patch"],
+      "matchFileNames": ["kubernetes/clusters/1276-dev/**", "kubernetes/clusters/1276-core/**"],
       "automerge": true,
       "automergeType": "pr"
     },
     {
-      "description": "Auto-merge digest updates for base images",
+      "description": "Auto-merge patch updates for docker tags — dev/core only; prod and shared/** need owner review",
+      "matchDatasources": ["docker"],
+      "matchUpdateTypes": ["patch"],
+      "matchFileNames": ["kubernetes/clusters/1276-dev/**", "kubernetes/clusters/1276-core/**"],
+      "automerge": true,
+      "automergeType": "pr"
+    },
+    {
+      "description": "Auto-merge digest updates for base images — dev/core only; prod and shared/** need owner review",
       "matchUpdateTypes": ["digest", "pin"],
+      "matchFileNames": ["kubernetes/clusters/1276-dev/**", "kubernetes/clusters/1276-core/**"],
       "automerge": true,
       "automergeType": "pr",
       "groupName": "base-image-digests"
