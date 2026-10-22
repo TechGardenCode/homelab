@@ -15,7 +15,7 @@ spec:
       restartPolicy: Never
       containers:
         - name: verify
-          image: curlimages/curl:8.12.1
+          image: curlimages/curl:8.22.0
           env:
             - name: GITHUB_TOKEN
               valueFrom:
