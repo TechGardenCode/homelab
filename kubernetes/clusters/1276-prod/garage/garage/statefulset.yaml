@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: garage
-          image: dxflrs/garage:v1.0.1     # external image; pin manually / via Renovate (not bot-managed)
+          image: dxflrs/garage:v2.4.1     # external image; pin manually / via Renovate (not bot-managed)
           command: ["/garage", "server"]
           env:
             - name: GARAGE_RPC_SECRET
