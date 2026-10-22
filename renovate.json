@@ -76,6 +76,12 @@
       "matchPackageNames": ["redis"],
       "matchDatasources": ["helm"],
       "allowedVersions": "<1.0.0"
+    },
+    {
+      "description": "talosctl (etcd-snapshot cronjob) must match the clusters' Talos version — cross-minor client/server hits a gRPC keepalive bug. Bump only alongside the kian.sh talos installer upgrade, never ahead of it",
+      "matchPackageNames": ["siderolabs/talos"],
+      "labels": ["manual-review"],
+      "automerge": false
     }
   ]
 }
