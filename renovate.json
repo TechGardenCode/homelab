@@ -16,7 +16,7 @@
       "customType": "regex",
       "managerFilePatterns": ["/^kubernetes/.+\\.ya?ml$/"],
       "matchStrings": [
-        "#\\s*renovate:\\s*datasource=(?<datasource>\\S+)\\s+depName=(?<depName>\\S+)(?:\\s+versioning=(?<versioning>\\S+))?\\s*\\n[^\\n]*?(?<currentValue>v?\\d+\\.\\d+\\.\\d+[^\\s\"'/@]*)"
+        "#\\s*renovate:\\s*datasource=(?<datasource>\\S+)\\s+depName=(?<depName>\\S+)(?:\\s+versioning=(?<versioning>\\S+))?[ \\t]*\\n[ \\t]*(?:[^#\\s][^\\n]*?)?(?<currentValue>v?\\d+\\.\\d+\\.\\d+[^\\s\"'/@]*)"
       ]
     }
   ],
@@ -42,6 +42,12 @@
       "matchFileNames": ["kubernetes/clusters/1276-dev/**", "kubernetes/clusters/1276-core/**"],
       "automerge": true,
       "automergeType": "pr"
+    },
+    {
+      "description": "Docker digest updates carry no release timestamp, so timestamp-required parks them forever (renovate/stability-days stays pending, e.g. #301). Same tag, rebuilt image: let them through; tag updates keep the 3-day bake",
+      "matchDatasources": ["docker"],
+      "matchUpdateTypes": ["digest"],
+      "minimumReleaseAgeBehaviour": "timestamp-optional"
     },
     {
       "description": "Auto-merge digest updates for base images — dev/core only; prod and shared/** need owner review",
