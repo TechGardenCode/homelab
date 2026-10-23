@@ -26,7 +26,8 @@ envs:
   - SPRING_DATASOURCE_USERNAME: "overwatch"
   - OVERWATCH_CLICKHOUSE_URL: "http://10.0.60.162:8123"
   - OVERWATCH_CLICKHOUSE_USER: "overwatch_dev_ro"
-  - OVERWATCH_CLICKHOUSE_DATABASE: "otel_dev"
+  # The whole estate, same as prod: dev is a separate app instance, not separate data.
+  - OVERWATCH_CLICKHOUSE_DATABASE: "otel"
 secretEnvs:
   - SPRING_DATASOURCE_PASSWORD: "pg-password"
   - OVERWATCH_CLICKHOUSE_PASSWORD: "clickhouse-password"
