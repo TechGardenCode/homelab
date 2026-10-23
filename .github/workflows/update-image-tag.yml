@@ -82,7 +82,13 @@ jobs:
             exit 0
           fi
           git commit -m "chore: update ${APP_NAME} image to ${NEW_TAG}"
-          git push
+          for attempt in 1 2 3 4 5; do
+            git push && exit 0
+            echo "push rejected (attempt ${attempt}); rebasing on origin/main"
+            sleep $((attempt * 2))
+            git pull --rebase origin main
+          done
+          echo "::error::push failed after 5 attempts"; exit 1
 
   promote-to-prod:
     needs: update-tag
