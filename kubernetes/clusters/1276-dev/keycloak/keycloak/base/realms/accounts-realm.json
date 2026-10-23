@@ -15,6 +15,9 @@
   "permanentLockout": false,
   "failureFactor": 5,
   "sslRequired": "external",
+  "rememberMe": true,
+  "ssoSessionIdleTimeoutRememberMe": 86400,
+  "ssoSessionMaxLifespanRememberMe": 604800,
   "roles": {
     "realm": [
       {
