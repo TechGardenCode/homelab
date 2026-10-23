@@ -1,0 +1,144 @@
+# otel-cluster: one per cluster. K8s events + the in-cluster Prometheus
+# endpoints. Scrape jobs and target labels match the Alloy config
+# (shared/monitoring/alloy) so ported alert rules keep their labels.
+mode: deployment
+replicaCount: 1
+
+# No ports are open (see values-common.yaml), so there is nothing to serve.
+service:
+  enabled: false
+
+presets:
+  kubernetesEvents:
+    enabled: true
+
+clusterRole:
+  create: true
+  rules:
+    - apiGroups: [""]
+      resources: ["pods"]
+      verbs: ["get", "list", "watch"]
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    memory: 1Gi
+
+# ponytail: emptyDir queue survives container restarts, not a reschedule.
+# Use a PVC if losing a queued backlog on reschedule ever matters.
+# 2 Gi: two 512 MiB signal queues plus bbolt overhead; over the limit the
+# kubelet evicts the pod and the backlog with it.
+extraVolumes:
+  - name: otelcol-storage
+    emptyDir:
+      sizeLimit: 2Gi
+extraVolumeMounts:
+  - name: otelcol-storage
+    mountPath: /var/lib/otelcol
+
+config:
+  receivers:
+    prometheus:
+      config:
+        scrape_configs:
+          - job_name: otelcol-k8s-cluster
+            scrape_interval: 30s
+            static_configs:
+              - targets: ["${env:MY_POD_IP}:8888"]
+
+          - job_name: kube-state-metrics
+            scrape_interval: 30s
+            static_configs:
+              - targets: ["kube-state-metrics.monitoring.svc:8080"]
+
+          # CNPG postgres_exporter
+          - job_name: cnpg
+            scrape_interval: 30s
+            scrape_timeout: 10s
+            kubernetes_sd_configs: [{ role: pod }]
+            relabel_configs:
+              - { source_labels: [__meta_kubernetes_pod_label_cnpg_io_podRole], regex: instance, action: keep }
+              - { source_labels: [__meta_kubernetes_pod_container_port_number], regex: "9187", action: keep }
+              - { source_labels: [__meta_kubernetes_namespace], target_label: namespace }
+              - { source_labels: [__meta_kubernetes_pod_name], target_label: pod }
+              - { source_labels: [__meta_kubernetes_pod_label_cnpg_io_cluster], target_label: cnpg_cluster }
+
+          # CNPG Pooler (PgBouncer) exporter
+          - job_name: pgbouncer
+            scrape_interval: 30s
+            scrape_timeout: 10s
+            kubernetes_sd_configs: [{ role: pod }]
+            relabel_configs:
+              - { source_labels: [__meta_kubernetes_pod_label_cnpg_io_poolerName], regex: ".+", action: keep }
+              - { source_labels: [__meta_kubernetes_pod_container_port_number], regex: "9127", action: keep }
+              - { source_labels: [__meta_kubernetes_namespace], target_label: namespace }
+              - { source_labels: [__meta_kubernetes_pod_name], target_label: pod }
+              - { source_labels: [__meta_kubernetes_pod_label_cnpg_io_poolerName], target_label: pooler }
+
+          # Dragonfly admin port (needs networkPolicyEnabled: false on the CR)
+          - job_name: dragonfly
+            scrape_interval: 30s
+            scrape_timeout: 10s
+            kubernetes_sd_configs: [{ role: pod }]
+            relabel_configs:
+              - { source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name], regex: dragonfly, action: keep }
+              - { source_labels: [__meta_kubernetes_pod_container_port_number], regex: "9999", action: keep }
+              - { source_labels: [__meta_kubernetes_namespace], target_label: namespace }
+              - { source_labels: [__meta_kubernetes_pod_name], target_label: pod }
+              - { source_labels: [__meta_kubernetes_pod_label_app], target_label: dragonfly_instance }
+
+          # hausparty /api/metrics, k6 loadtest pods excluded
+          - job_name: hausparty
+            scrape_interval: 30s
+            scrape_timeout: 10s
+            metrics_path: /api/metrics
+            kubernetes_sd_configs: [{ role: pod }]
+            relabel_configs:
+              - { source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name], regex: hausparty, action: keep }
+              - { source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_component], regex: loadtest, action: drop }
+              - { source_labels: [__meta_kubernetes_pod_container_port_number], regex: "3000", action: keep }
+              - { source_labels: [__meta_kubernetes_namespace], target_label: namespace }
+              - { source_labels: [__meta_kubernetes_pod_name], target_label: pod }
+
+          # New in Overwatch (unscraped under Alloy) ─────────────────────────
+          - job_name: kian-coffee-blog
+            scrape_interval: 30s
+            scrape_timeout: 10s
+            metrics_path: /actuator/prometheus
+            kubernetes_sd_configs: [{ role: pod }]
+            relabel_configs:
+              - { source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name], regex: kian-coffee-blog, action: keep }
+              - { source_labels: [__meta_kubernetes_pod_container_port_number], regex: "8080", action: keep }
+              - { source_labels: [__meta_kubernetes_namespace], target_label: namespace }
+              - { source_labels: [__meta_kubernetes_pod_name], target_label: pod }
+
+          # Keycloak management port; needs metrics-enabled on the Keycloak CR
+          - job_name: keycloak
+            scrape_interval: 30s
+            scrape_timeout: 10s
+            metrics_path: /metrics
+            kubernetes_sd_configs: [{ role: pod }]
+            relabel_configs:
+              - { source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_managed_by], regex: keycloak-operator, action: keep }
+              - { source_labels: [__meta_kubernetes_pod_container_port_number], regex: "9000", action: keep }
+              - { source_labels: [__meta_kubernetes_namespace], target_label: namespace }
+              - { source_labels: [__meta_kubernetes_pod_name], target_label: pod }
+
+          # cloudflared --metrics 0.0.0.0:20241 declares no container port,
+          # so the pod target has no port; set it.
+          - job_name: cloudflared
+            scrape_interval: 30s
+            scrape_timeout: 10s
+            kubernetes_sd_configs: [{ role: pod }]
+            relabel_configs:
+              - { source_labels: [__meta_kubernetes_pod_label_app], regex: cloudflared, action: keep }
+              - { source_labels: [__meta_kubernetes_pod_ip], target_label: __address__, replacement: "$${1}:20241" }
+              - { source_labels: [__meta_kubernetes_namespace], target_label: namespace }
+              - { source_labels: [__meta_kubernetes_pod_name], target_label: pod }
+
+  service:
+    pipelines:
+      logs:
+        receivers: [k8sobjects]

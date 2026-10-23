@@ -1,0 +1,64 @@
+# otel-agent: one per node. Pod logs, kubeletstats, cadvisor.
+mode: daemonset
+
+presets:
+  logsCollection:
+    enabled: true
+    storeCheckpoints: true  # hostPath /var/lib/otelcol, also holds the export queue
+  kubernetesAttributes:
+    enabled: true
+  kubeletMetrics:
+    enabled: true
+
+# Root: reads /var/log/pods and writes the hostPath queue.
+securityContext:
+  runAsUser: 0
+  runAsGroup: 0
+
+tolerations:
+  - operator: Exists
+
+clusterRole:
+  create: true
+  rules:
+    - apiGroups: [""]
+      resources: ["nodes/metrics"]
+      verbs: ["get"]
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    memory: 512Mi
+
+config:
+  processors:
+    # Common identity plus the node: cadvisor and self-scrape metrics carry
+    # no node otherwise (k8s_attributes can't associate them).
+    resource:
+      attributes:
+        - { key: k8s.cluster.name, value: "${env:K8S_CLUSTER_NAME}", action: upsert }
+        - { key: deployment.environment, value: "${env:DEPLOYMENT_ENVIRONMENT}", action: upsert }
+        - { key: k8s.node.name, value: "${env:K8S_NODE_NAME}", action: upsert }
+  receivers:
+    kubeletstats:
+      insecure_skip_verify: true
+      metric_groups: [node, pod, container, volume]
+    prometheus:
+      config:
+        scrape_configs:
+          - job_name: otelcol-k8s-agent
+            scrape_interval: 30s
+            static_configs:
+              - targets: ["${env:MY_POD_IP}:8888"]
+          - job_name: cadvisor
+            scrape_interval: 30s
+            scheme: https
+            metrics_path: /metrics/cadvisor
+            authorization:
+              credentials_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+            tls_config:
+              insecure_skip_verify: true
+            static_configs:
+              - targets: ["${env:K8S_NODE_IP}:10250"]

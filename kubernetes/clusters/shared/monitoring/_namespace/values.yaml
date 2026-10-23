@@ -1,1 +1,6 @@
-
+# Privileged: the otel-agent DaemonSet reads pod logs from a hostPath, which
+# Talos's default `baseline` enforcement rejects.
+labels:
+  pod-security.kubernetes.io/enforce: privileged
+  pod-security.kubernetes.io/audit: privileged
+  pod-security.kubernetes.io/warn: privileged

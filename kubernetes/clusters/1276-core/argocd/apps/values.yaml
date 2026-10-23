@@ -43,10 +43,11 @@ applicationsets:
       metadata:
         name: "1276-dev.{{path[3]}}.{{path.basenameNormalized}}"
         annotations:
-          # Webhook refreshes only apps whose files changed. helm-charts/ is the
-          # only out-of-tree input (chartHome); add any new one here or its
-          # consumers fall back to the 3-min poll.
-          argocd.argoproj.io/manifest-generate-paths: ".;/helm-charts"
+          # Webhook refreshes only apps whose files changed. The out-of-tree
+          # inputs are helm-charts/ (chartHome) and kubernetes/bases/ (shared
+          # kustomize bases); add any new one here or its consumers fall back
+          # to the 3-min poll.
+          argocd.argoproj.io/manifest-generate-paths: ".;/helm-charts;/kubernetes/bases"
       spec:
         project: "1276-dev"
         source:
@@ -118,7 +119,7 @@ applicationsets:
       metadata:
         name: "1276-prod.{{path[3]}}.{{path.basenameNormalized}}"
         annotations:
-          argocd.argoproj.io/manifest-generate-paths: ".;/helm-charts"
+          argocd.argoproj.io/manifest-generate-paths: ".;/helm-charts;/kubernetes/bases"
       spec:
         project: "1276-prod"
         source:
@@ -202,7 +203,7 @@ applicationsets:
       metadata:
         name: "1276-core.{{path[3]}}.{{path.basenameNormalized}}"
         annotations:
-          argocd.argoproj.io/manifest-generate-paths: ".;/helm-charts"
+          argocd.argoproj.io/manifest-generate-paths: ".;/helm-charts;/kubernetes/bases"
       spec:
         project: default
         source:

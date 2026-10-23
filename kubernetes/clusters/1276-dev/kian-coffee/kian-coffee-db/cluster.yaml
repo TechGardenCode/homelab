@@ -31,7 +31,6 @@ spec:
         - CREATE EXTENSION IF NOT EXISTS pgcrypto
 
   monitoring:
-    enablePodMonitor: true
     disableDefaultQueries: false
 
   resources:
