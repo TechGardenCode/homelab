@@ -200,6 +200,7 @@ applicationsets:
             - path: "kubernetes/clusters/1276-core/platform/*"
             - path: "kubernetes/clusters/1276-core/observability/*"
             - path: "kubernetes/clusters/1276-core/monitoring/*"
+            - path: "kubernetes/clusters/1276-core/overwatch/*"
     template:
       metadata:
         name: "1276-core.{{path[3]}}.{{path.basenameNormalized}}"

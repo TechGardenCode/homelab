@@ -90,6 +90,46 @@
         "email"
       ],
       "optionalClientScopes": null
+    },
+    {
+      "clientId": "overwatch-gateway",
+      "enabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "$(env:KC_CLIENT_OVERWATCH_GATEWAY_SECRET)",
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "implicitFlowEnabled": false,
+      "serviceAccountsEnabled": false,
+      "redirectUris": [
+        "https://overwatch.kian.sh/oauth2/callback"
+      ],
+      "webOrigins": [
+        "https://overwatch.kian.sh"
+      ],
+      "attributes": {
+        "post.logout.redirect.uris": "https://overwatch.kian.sh/*"
+      },
+      "defaultClientScopes": [
+        "web-origins",
+        "acr",
+        "roles",
+        "basic",
+        "profile",
+        "email"
+      ]
+    },
+    {
+      "clientId": "overwatch-machine",
+      "enabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "$(env:KC_CLIENT_OVERWATCH_MACHINE_SECRET)",
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "standardFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": true
     }
   ]
 }

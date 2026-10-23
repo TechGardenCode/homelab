@@ -1,0 +1,45 @@
+---
+# Overwatch login at the edge (same shape as techgarden-web/auth-gateway; see its
+# comments). ONE policy for both routes, because EG mints a per-policy session
+# HMAC. Unauthenticated /api gets 401 (the SPA reloads into the login redirect);
+# HTML navigation gets a 302 to Keycloak. The API re-validates the forwarded token
+# and requires the accounts realm role infra-admin.
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+  name: overwatch-oidc
+  namespace: overwatch
+spec:
+  targetRefs:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      name: overwatch-web
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      name: overwatch-api
+  # Keep eg-internal's gateway-level CORS policy; without this the route policy replaces it.
+  mergeType: StrategicMerge
+  oidc:
+    provider:
+      issuer: "https://sso.techgarden.gg/realms/accounts"
+    clientID: "overwatch-gateway"
+    clientSecret:
+      name: overwatch-gateway-oidc
+    redirectURL: "https://overwatch.kian.sh/oauth2/callback"
+    logoutPath: "/logout"
+    forwardAccessToken: true
+    refreshToken: true
+    scopes:
+      - openid
+      - profile
+      - email
+    cookieConfig:
+      sameSite: Lax
+    cookieNames:
+      accessToken: "OW_AT"
+      idToken: "OW_IT"
+    denyRedirect:
+      headers:
+        - name: ":path"
+          type: RegularExpression
+          value: "^/api([/?].*)?$"
