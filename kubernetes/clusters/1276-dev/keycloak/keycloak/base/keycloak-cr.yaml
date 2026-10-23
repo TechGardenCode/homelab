@@ -29,6 +29,11 @@ spec:
     hostname: https://sso.dev.techgarden.gg
   http:
     httpEnabled: true            # TLS terminates upstream (cloudflared / eg-internal)
+  additionalOptions:
+    - name: metrics-enabled      # /metrics on the management port (9000), scraped by otel-cluster
+      value: "true"
+  serviceMonitor:
+    enabled: false               # no Prometheus Operator; otel-cluster scrapes :9000
   proxy:
     headers: xforwarded
   ingress:
