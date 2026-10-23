@@ -1,6 +1,6 @@
 image:
   repository: "ghcr.io/techgardencode/overwatch-api"
-  tag: "75667e5ee76ac5427d0cb9da4eef0a7193846d68"
+  tag: "c6f2614dd41d49cc3fe707beb728ee82cfb070cd"
 imagePullSecrets: # ghcr-credentials ExternalSecret lives in ../overwatch-web
   - name: ghcr-credentials
 ports:
