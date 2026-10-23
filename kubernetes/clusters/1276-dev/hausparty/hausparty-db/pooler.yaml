@@ -46,5 +46,3 @@ spec:
               memory: 32Mi
             limits:
               memory: 64Mi
-  monitoring:
-    enablePodMonitor: true
