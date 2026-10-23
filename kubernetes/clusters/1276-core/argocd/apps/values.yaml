@@ -199,6 +199,7 @@ applicationsets:
             - path: "kubernetes/clusters/1276-core/cluster-ops/*"
             - path: "kubernetes/clusters/1276-core/platform/*"
             - path: "kubernetes/clusters/1276-core/observability/*"
+            - path: "kubernetes/clusters/1276-core/monitoring/*"
     template:
       metadata:
         name: "1276-core.{{path[3]}}.{{path.basenameNormalized}}"
