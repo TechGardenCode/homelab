@@ -42,6 +42,11 @@ applicationsets:
     template:
       metadata:
         name: "1276-dev.{{path[3]}}.{{path.basenameNormalized}}"
+        annotations:
+          # Webhook refreshes only apps whose files changed. helm-charts/ is the
+          # only out-of-tree input (chartHome); add any new one here or its
+          # consumers fall back to the 3-min poll.
+          argocd.argoproj.io/manifest-generate-paths: ".;/helm-charts"
       spec:
         project: "1276-dev"
         source:
@@ -112,6 +117,8 @@ applicationsets:
     template:
       metadata:
         name: "1276-prod.{{path[3]}}.{{path.basenameNormalized}}"
+        annotations:
+          argocd.argoproj.io/manifest-generate-paths: ".;/helm-charts"
       spec:
         project: "1276-prod"
         source:
@@ -194,6 +201,8 @@ applicationsets:
     template:
       metadata:
         name: "1276-core.{{path[3]}}.{{path.basenameNormalized}}"
+        annotations:
+          argocd.argoproj.io/manifest-generate-paths: ".;/helm-charts"
       spec:
         project: default
         source:
