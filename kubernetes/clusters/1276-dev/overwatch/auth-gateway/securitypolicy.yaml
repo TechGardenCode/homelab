@@ -4,6 +4,8 @@
 # HMAC. Unauthenticated /api gets 401 (the SPA reloads into the login redirect);
 # HTML navigation gets a 302 to Keycloak. The API re-validates the forwarded token
 # and requires the accounts realm role infra-admin.
+# Machines (overwatch-machine, client_credentials) skip the OIDC login by sending
+# their own bearer (passThroughAuthHeader); the jwt provider checks it at the edge.
 apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: SecurityPolicy
 metadata:
@@ -28,6 +30,7 @@ spec:
     redirectURL: "https://overwatch.dev.kian.sh/oauth2/callback"
     logoutPath: "/logout"
     forwardAccessToken: true
+    passThroughAuthHeader: true
     refreshToken: true
     scopes:
       - openid
@@ -43,3 +46,9 @@ spec:
         - name: ":path"
           type: RegularExpression
           value: "^/api([/?].*)?$"
+  jwt:
+    providers:
+      - name: keycloak-accounts
+        issuer: "https://sso.dev.techgarden.gg/realms/accounts"
+        remoteJWKS:
+          uri: "https://sso.dev.techgarden.gg/realms/accounts/protocol/openid-connect/certs"
