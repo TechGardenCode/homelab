@@ -29,8 +29,6 @@ spec:
       owner: pelican
       secret:
         name: pelican-db-app-credentials
-  monitoring:
-    enablePodMonitor: true
   resources:
     requests:
       cpu: 100m

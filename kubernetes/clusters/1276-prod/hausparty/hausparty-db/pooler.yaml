@@ -59,5 +59,3 @@ spec:
                   matchLabels:
                     cnpg.io/poolerName: hausparty-db-pooler
                 topologyKey: kubernetes.io/hostname
-  monitoring:
-    enablePodMonitor: true

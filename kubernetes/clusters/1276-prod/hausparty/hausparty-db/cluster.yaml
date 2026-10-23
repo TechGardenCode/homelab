@@ -48,7 +48,6 @@ spec:
         - CREATE EXTENSION IF NOT EXISTS unaccent
 
   monitoring:
-    enablePodMonitor: true
     disableDefaultQueries: false
 
   resources:

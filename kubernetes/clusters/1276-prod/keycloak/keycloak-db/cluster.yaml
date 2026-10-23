@@ -28,7 +28,6 @@ spec:
         name: keycloak-db-app-credentials
 
   monitoring:
-    enablePodMonitor: true
     disableDefaultQueries: false
 
   resources:
