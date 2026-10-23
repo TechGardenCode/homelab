@@ -41,12 +41,16 @@ apps:
     paths:
       - path: kubernetes/clusters/1276-dev/overwatch/overwatch-api/values.yaml
         env: dev
+      - path: kubernetes/clusters/1276-core/overwatch/overwatch-api/values.yaml
+        env: prod
 
   overwatch-web:
     type: values
     paths:
       - path: kubernetes/clusters/1276-dev/overwatch/overwatch-web/values.yaml
         env: dev
+      - path: kubernetes/clusters/1276-core/overwatch/overwatch-web/values.yaml
+        env: prod
 
   hausparty:
     type: values
