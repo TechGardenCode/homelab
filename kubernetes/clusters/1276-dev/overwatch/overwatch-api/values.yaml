@@ -28,6 +28,8 @@ envs:
   - OVERWATCH_CLICKHOUSE_USER: "overwatch_dev_ro"
   # The whole estate, same as prod: dev is a separate app instance, not separate data.
   - OVERWATCH_CLICKHOUSE_DATABASE: "otel"
+  # Base for links in alert notifications (Discord); empty = no link.
+  - OVERWATCH_PUBLIC_URL: "https://overwatch.dev.kian.sh"
 secretEnvs:
   - SPRING_DATASOURCE_PASSWORD: "pg-password"
   - OVERWATCH_CLICKHOUSE_PASSWORD: "clickhouse-password"
