@@ -87,7 +87,6 @@ spec:
       snapshotOwnerReference: backup
 
   monitoring:
-    enablePodMonitor: true
     disableDefaultQueries: false
 
   resources:
