@@ -1,0 +1,34 @@
+image:
+  repository: "ghcr.io/techgardencode/overwatch-web"
+  tag: "31a55c2dab1c9d6c3c0522bc84bb53879475ffe8"
+imagePullSecrets:
+  - name: ghcr-credentials
+ports:
+  - name: main
+    containerPort: 8080
+service:
+  type: ClusterIP
+health:
+  enabled: true
+  startupProbeSeconds: 30
+  port: main
+  type: HTTP
+  path: /healthz
+resources:
+  requests:
+    cpu: 10m
+    memory: 32Mi
+  limits:
+    memory: 64Mi
+# Auth: ../auth-gateway.
+httpRoute:
+  enabled: true
+  hostname: overwatch.dev.kian.sh
+podSecurityContext:
+  runAsNonRoot: true
+  seccompProfile:
+    type: RuntimeDefault
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop: [ALL]

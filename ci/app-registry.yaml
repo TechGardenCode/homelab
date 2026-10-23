@@ -36,6 +36,18 @@ apps:
       - path: kubernetes/clusters/1276-dev/kian-coffee/kian-coffee-blog/values.yaml
         env: dev
 
+  overwatch-api:
+    type: values
+    paths:
+      - path: kubernetes/clusters/1276-dev/overwatch/overwatch-api/values.yaml
+        env: dev
+
+  overwatch-web:
+    type: values
+    paths:
+      - path: kubernetes/clusters/1276-dev/overwatch/overwatch-web/values.yaml
+        env: dev
+
   hausparty:
     type: values
     paths:

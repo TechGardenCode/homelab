@@ -83,6 +83,12 @@ spec:
             - name: KC_BROKER_MASTER_SECRET
               valueFrom:
                 secretKeyRef: { name: keycloak-realm-secrets, key: broker-master-secret }
+            - name: KC_CLIENT_OVERWATCH_GATEWAY_SECRET
+              valueFrom:
+                secretKeyRef: { name: keycloak-realm-secrets, key: overwatch-gateway-client-secret }
+            - name: KC_CLIENT_OVERWATCH_MACHINE_SECRET
+              valueFrom:
+                secretKeyRef: { name: keycloak-realm-secrets, key: overwatch-machine-client-secret }
           volumeMounts:
             - name: realm-config
               mountPath: /config
