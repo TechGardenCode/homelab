@@ -23,7 +23,7 @@ jobs:
           MAX_AGE_DAYS: "14"
         run: |
           set -euo pipefail
-          # Renovate's limit (config:recommended default is 10 when unset).
+          # Renovate's prConcurrentLimit; its built-in default is 10 when unset.
           limit=$(jq '.prConcurrentLimit // 10' renovate.json)
           prs=$(gh pr list --repo "$REPO" --state open --limit 200 \
                   --json number,title,createdAt,author)
