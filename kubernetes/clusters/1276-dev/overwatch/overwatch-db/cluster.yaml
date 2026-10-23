@@ -1,0 +1,31 @@
+---
+# Overwatch app state (alert rules, dashboards, saved queries, inbox). The app
+# owns its schema via Flyway. Telemetry itself lives in ClickHouse, not here.
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: overwatch-db
+  namespace: overwatch
+spec:
+  instances: 1
+
+  storage:
+    size: 2Gi
+    storageClass: freenas-iscsi-ssd-csi
+
+  bootstrap:
+    initdb:
+      database: overwatch
+      owner: overwatch
+      secret:
+        name: overwatch-db-app-credentials
+
+  monitoring:
+    disableDefaultQueries: false
+
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      memory: 256Mi
