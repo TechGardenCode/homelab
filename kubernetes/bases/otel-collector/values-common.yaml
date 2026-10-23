@@ -60,10 +60,14 @@ config:
         storage: file_storage
         sizer: bytes
         queue_size: 536870912  # 512 MiB per signal (logs + metrics), same as the host agents
+        # Bytes, capped: an uncapped batch (14k points on a node's first
+        # scrape) passed the gateway's 4 MiB gRPC limit and was dropped as a
+        # permanent error. 3 MiB uncompressed stays under it.
         batch:
-          sizer: items
+          sizer: bytes
           flush_timeout: 5s
-          min_size: 8192
+          min_size: 1048576
+          max_size: 3145728
   service:
     extensions: [health_check, file_storage]
     pipelines:
