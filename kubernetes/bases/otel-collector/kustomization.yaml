@@ -1,0 +1,24 @@
+# Overwatch K8s collectors. A base, not an app: it sits outside every
+# ApplicationSet glob and each cluster pulls it in from
+# clusters/<cluster>/monitoring/otel-collector/, which supplies the cluster
+# identity (the CMP passes only NAMESPACE, so shared/ can't carry it).
+# An edit here reaches every cluster that includes it at once, like shared/;
+# stage a risky change by pinning it in the dev overlay first.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+helmCharts:
+  - name: opentelemetry-collector
+    version: 0.175.1
+    releaseName: otel-agent
+    repo: https://open-telemetry.github.io/opentelemetry-helm-charts
+    valuesFile: values-common.yaml
+    additionalValuesFiles: [values-agent.yaml]
+    namespace: monitoring
+  - name: opentelemetry-collector
+    version: 0.175.1
+    releaseName: otel-cluster
+    repo: https://open-telemetry.github.io/opentelemetry-helm-charts
+    valuesFile: values-common.yaml
+    additionalValuesFiles: [values-cluster.yaml]
+    namespace: monitoring

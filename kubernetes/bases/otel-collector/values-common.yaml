@@ -1,0 +1,78 @@
+# Shared by otel-agent and otel-cluster. Same collector version as the host
+# agents and the gateway on clickhouse (kian.sh roles otel_collector /
+# telemetry_store).
+# Pinned by hand (Renovate's helm-values manager skips this filename): bump it
+# together with the gateway and host agents.
+image:
+  repository: otel/opentelemetry-collector-contrib
+  tag: 0.162.0
+command:
+  name: otelcol-contrib
+
+# Nothing pushes OTLP into these collectors; close every default port.
+ports:
+  otlp: { enabled: false }
+  otlp-http: { enabled: false }
+  jaeger-compact: { enabled: false }
+  jaeger-thrift: { enabled: false }
+  jaeger-grpc: { enabled: false }
+  zipkin: { enabled: false }
+
+# Set per cluster by the overlay's configMapGenerator.
+extraEnvs:
+  - name: K8S_CLUSTER_NAME
+    valueFrom:
+      configMapKeyRef: { name: otel-cluster-identity, key: K8S_CLUSTER_NAME }
+  - name: DEPLOYMENT_ENVIRONMENT
+    valueFrom:
+      configMapKeyRef: { name: otel-cluster-identity, key: DEPLOYMENT_ENVIRONMENT }
+
+config:
+  receivers:
+    jaeger: null
+    zipkin: null
+    otlp: null
+  processors:
+    batch: null  # batching lives in the exporter's disk queue
+    resource:
+      attributes:
+        - { key: k8s.cluster.name, value: "${env:K8S_CLUSTER_NAME}", action: upsert }
+        - { key: deployment.environment, value: "${env:DEPLOYMENT_ENVIRONMENT}", action: upsert }
+  extensions:
+    file_storage:
+      directory: /var/lib/otelcol
+      create_directory: true
+      compaction:  # bbolt files never shrink otherwise
+        directory: /var/lib/otelcol
+        on_start: true
+        on_rebound: true
+  exporters:
+    debug: null
+    otlp_grpc:
+      endpoint: 10.0.60.162:4317  # Overwatch gateway (clickhouse VM)
+      tls:
+        insecure: true  # internal VLAN 60
+      retry_on_failure:
+        enabled: true
+        max_elapsed_time: 0  # retry forever; the disk queue absorbs outages
+      sending_queue:
+        enabled: true
+        storage: file_storage
+        sizer: bytes
+        queue_size: 536870912  # 512 MiB per signal (logs + metrics), same as the host agents
+        batch:
+          sizer: items
+          flush_timeout: 5s
+          min_size: 8192
+  service:
+    extensions: [health_check, file_storage]
+    pipelines:
+      traces: null
+      logs:
+        receivers: []
+        processors: [memory_limiter, resource]
+        exporters: [otlp_grpc]
+      metrics:
+        receivers: [prometheus]
+        processors: [memory_limiter, resource]
+        exporters: [otlp_grpc]
