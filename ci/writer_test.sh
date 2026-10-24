@@ -245,6 +245,15 @@ test_push_retry_recomputes() {
   assert_eq "$(command git -C "$T/origin.git" show main:a/dev/values.yaml | yq .image.tag)" new tag
 }
 
+# --- dispatch payload never reaches the writer ----------------------------
+
+test_payload_ignored() {
+  local wf="$ROOT/.github/workflows/update-image-tag.yml"
+  assert_eq "$(grep -c client_payload "$wf")" 1 workflow-uses
+  grep -qE '^\s+APP: \$\{\{ github\.event\.client_payload\.app \}\}$' "$wf"; assert_eq $? 0 env-entry
+  assert_eq "$(grep -c client_payload "$HERE/writer.sh")" 0 writer-uses
+}
+
 # --- runner ---------------------------------------------------------------
 
 fail=0

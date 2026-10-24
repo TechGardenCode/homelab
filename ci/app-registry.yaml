@@ -1,21 +1,27 @@
 ---
-# App Registry — maps dispatch app names to their manifest paths.
-# Used by .github/workflows/update-image-tag.yml to update image tags
-# when a side-project CI dispatches an "update-image" event.
+# App registry: every app whose image tag the homelab writer manages.
 #
-# Types:
-#   values        — updates image.tag in a Helm values.yaml
-#   kustomization — updates images[].newTag in a kustomization.yaml
+# The writer (.github/workflows/update-image-tag.yml -> ci/writer.sh) does not
+# replay dispatch payloads. Each run reconciles EVERY app here: it walks the
+# app repo's main history newest-first, takes the first commit whose sha
+# exists as a tag of the app's image, and writes that tag.
+#   - env: dev paths are set on homelab main directly.
+#   - env: prod paths go through one promote/<app> PR (Kian merges), or are
+#     written on main too when the app sets prod: auto.
+# Runs on update-image dispatches (a nudge only), on pushes that touch this
+# file, every 30 minutes, and on demand.
 #
-# Path format:
-#   Each entry under `paths:` must be an object with `path` and `env`.
-#   `env: dev` targets the 1276-dev cluster; `env: prod` targets prod clusters.
-#   The `env` label is required so the promote-to-prod workflow can open a
-#   promotion PR for prod paths after a dev dispatch lands on main.
+# Schema (unknown keys fail the writer):
+#   <app>:                 # ^[a-z0-9-]+$
+#     repo: TechGardenCode/<repo>   # required; its main history decides "newest"
+#     prod: pr | auto      # optional, default pr
+#     paths:               # required, non-empty
+#       - path: <helm values.yaml; image name comes from the first path's .image.repository>
+#         env: dev | prod
 
 apps:
   wiki:
-    type: values
+    repo: TechGardenCode/wiki
     paths:
       - path: kubernetes/clusters/1276-dev/wiki/wiki/values.yaml
         env: dev
@@ -23,7 +29,7 @@ apps:
         env: prod
 
   kian-coffee:
-    type: values
+    repo: TechGardenCode/kian.coffee
     paths:
       - path: kubernetes/clusters/1276-dev/kian-coffee/kian-coffee/values.yaml
         env: dev
@@ -31,13 +37,13 @@ apps:
         env: prod
 
   kian-coffee-blog:
-    type: values
+    repo: TechGardenCode/kian-coffee-blog
     paths:
       - path: kubernetes/clusters/1276-dev/kian-coffee/kian-coffee-blog/values.yaml
         env: dev
 
   overwatch-api:
-    type: values
+    repo: TechGardenCode/overwatch
     paths:
       - path: kubernetes/clusters/1276-dev/overwatch/overwatch-api/values.yaml
         env: dev
@@ -45,7 +51,7 @@ apps:
         env: prod
 
   overwatch-web:
-    type: values
+    repo: TechGardenCode/overwatch
     paths:
       - path: kubernetes/clusters/1276-dev/overwatch/overwatch-web/values.yaml
         env: dev
@@ -53,7 +59,7 @@ apps:
         env: prod
 
   hausparty:
-    type: values
+    repo: TechGardenCode/hausparty
     paths:
       - path: kubernetes/clusters/1276-dev/hausparty/hausparty/values.yaml
         env: dev
@@ -61,13 +67,15 @@ apps:
         env: prod
 
   lizard-www:
-    type: values
+    repo: TechGardenCode/lizard
+    prod: auto
     paths:
       - path: kubernetes/clusters/1276-prod/lizard/www/values.yaml
         env: prod
 
   garibaldo-www:
-    type: values
+    repo: TechGardenCode/garibaldo
+    prod: auto
     paths:
       - path: kubernetes/clusters/1276-prod/garibaldo/www/values.yaml
         env: prod
