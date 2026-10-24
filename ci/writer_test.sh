@@ -253,6 +253,60 @@ test_push_retry_recomputes() {
   assert_eq "$(command git -C "$T/origin.git" show main:a/dev/values.yaml | yq .image.tag)" new tag
 }
 
+# A partial failure must not commit half an app.
+test_reconcile_failed_write_commits_nothing() {
+  repo_fixture old
+  mkdir -p a/dev2 && printf 'image: [unclosed\n' >a/dev2/values.yaml
+  A=a yq -i '.apps.a.paths += [{"path": "a/dev2/values.yaml", "env": "dev"}]' reg.yaml
+  git add -A && git commit -qm broken && git push -q origin HEAD:main
+  reconcile_main reg.yaml >/dev/null 2>&1; assert_eq $? 1 rc
+  assert_eq "$(git log --format=%s origin/main..HEAD | grep -c 'update a image')" 0 a-commits
+  assert_eq "$(git status --porcelain -- a)" "" clean
+}
+
+# The image package itself is missing or unreadable: a wrong image name or a
+# missing GHCR grant. That's an error, not "no built image yet".
+test_reconcile_missing_package_is_error() {
+  repo_fixture old
+  : >"$TAGS"
+  image_repo_exists() { return 1; }
+  reconcile_main reg.yaml >/dev/null 2>&1; assert_eq $? 1 rc
+}
+
+test_reconcile_no_image_yet_is_notice() {
+  repo_fixture old
+  : >"$TAGS"
+  image_repo_exists() { return 0; }
+  reconcile_main reg.yaml >/dev/null 2>&1; assert_eq $? 0 rc
+}
+
+# --- promote flow (bare origin, gh stubbed) -------------------------------
+
+promote_fixture() { # dev on main at new, prod at old → rewrite
+  repo_fixture old
+  printf 'new\n' >"$T/shas"
+  TAG=new yq -i '.image.tag = strenv(TAG)' a/dev/values.yaml
+  git commit -qam dev && git push -q origin HEAD:main
+  gh() { echo "$*" >>"$T/gh.log"; }
+}
+
+test_promote_rewrite_pushes_only_prod() {
+  promote_fixture
+  reconcile_promotions reg.yaml >/dev/null 2>&1; assert_eq $? 0 rc
+  assert_eq "$(command git diff --name-only origin/main origin/promote/a)" a/prod/values.yaml diff
+  assert_eq "$(command git show origin/promote/a:a/prod/values.yaml | yq .image.tag)" new tag
+  grep -q '^pr create' "$T/gh.log"; assert_eq $? 0 pr-created
+}
+
+test_promote_failed_push_is_red_and_opens_no_pr() {
+  promote_fixture
+  printf '#!/bin/sh\nwhile read o n r; do case "$r" in refs/heads/promote/*) exit 1;; esac; done\n' \
+    >"$T/origin.git/hooks/pre-receive"
+  chmod +x "$T/origin.git/hooks/pre-receive"
+  reconcile_promotions reg.yaml >/dev/null 2>&1; assert_eq $? 1 rc
+  assert_eq "$(grep -cE '^pr (create|edit)' "$T/gh.log")" 0 pr-calls
+}
+
 # --- dispatch payload never reaches the writer ----------------------------
 
 test_payload_ignored() {

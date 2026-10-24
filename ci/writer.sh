@@ -57,26 +57,35 @@ validate_registry() {
 
 # --- images ---------------------------------------------------------------
 
+# HTTP status of a GHCR v2 GET/HEAD for IMAGE, "000" if the token request or
+# the connection fails. IMAGE PATH [curl args...]
+ghcr_code() {
+  local name=${1#ghcr.io/} tok
+  tok=$(curl -fsS ${GHCR_TOKEN:+-u "x:$GHCR_TOKEN"} \
+    "https://ghcr.io/token?scope=repository:$name:pull" | yq -p json '.token') || { echo 000; return; }
+  curl -sS -o /dev/null -w '%{http_code}' -H "Authorization: Bearer $tok" "${@:3}" \
+    "https://ghcr.io/v2/$name/$2" 2>/dev/null || true
+}
+
 # rc 0 = tag exists, 1 = not found, 2 = registry/auth error (never treated
 # as "not found", so a broken token can't silently freeze an app).
 image_exists() {
-  local name=${1#ghcr.io/} tag=$2 tok code
-  tok=$(curl -fsS ${GHCR_TOKEN:+-u "x:$GHCR_TOKEN"} \
-    "https://ghcr.io/token?scope=repository:$name:pull" | yq -p json '.token') \
-    || { echo "::error::ghcr token request failed for $1" >&2; return 2; }
-  code=$(curl -sS -o /dev/null -w '%{http_code}' -I \
-    -H "Authorization: Bearer $tok" \
+  local code
+  code=$(ghcr_code "$1" "manifests/$2" -I \
     -H 'Accept: application/vnd.oci.image.index.v1+json' \
     -H 'Accept: application/vnd.oci.image.manifest.v1+json' \
     -H 'Accept: application/vnd.docker.distribution.manifest.list.v2+json' \
-    -H 'Accept: application/vnd.docker.distribution.manifest.v2+json' \
-    "https://ghcr.io/v2/$name/manifests/$tag") || code=000
+    -H 'Accept: application/vnd.docker.distribution.manifest.v2+json')
   case "$code" in
     200) return 0 ;;
     404) return 1 ;;
     *) echo "::error::ghcr manifest lookup for $1 returned $code" >&2; return 2 ;;
   esac
 }
+
+# With a token, a misspelt image or a missing package grant is a 404 per
+# tag, so "no candidate" alone can't tell it from "not built yet".
+image_repo_exists() { [[ "$(ghcr_code "$1" "tags/list?n=1")" == 200 ]]; }
 
 main_shas() { gh api "repos/$1/commits?sha=main&per_page=100" --jq '.[].sha'; }
 
@@ -96,12 +105,20 @@ pick_candidate() {
 
 # --- manifests ------------------------------------------------------------
 
+set_tags() { # PATHS(one per line) TAG
+  local p
+  while IFS= read -r p; do
+    [[ -z "$p" ]] || set_tag "$p" "$2" || return 1
+  done <<<"$1"
+}
+
 set_tag() {
   local file=$1 tag=$2 job repo
-  TAG="$tag" yq -i '.image.tag = strenv(TAG)' "$file"
+  # Callers run under || (errexit off), so every step returns its failure.
+  TAG="$tag" yq -i '.image.tag = strenv(TAG)' "$file" || return 1
   job="$(dirname "$file")/migrate-job.yaml"
   [[ -f "$job" ]] || return 0
-  repo=$(yq '.image.repository' "$file")
+  repo=$(yq '.image.repository' "$file") || return 1
   REPO="$repo" TAG="$tag" yq -i '
     (.spec.template.spec.containers[] | select(.image | sub(":[^:/]*$"; "") == strenv(REPO)) | .image)
       = strenv(REPO) + ":" + strenv(TAG)' "$job"
@@ -147,7 +164,7 @@ branch_clean() { # REGISTRY APP
 }
 
 reconcile_promotions() {
-  local reg=$1 app branch prod_paths first dev desired prod_tag branch_tag pr num mergeable action p short body fail=0
+  local reg=$1 app branch prod_paths first dev desired prod_tag branch_tag pr num mergeable action short body fail=0
   # fd 3 so gh/git inside the loop can't eat the app list
   while IFS= read -r app <&3; do
     [[ "$(app_prod "$reg" "$app")" == pr ]] || continue
@@ -179,8 +196,10 @@ reconcile_promotions() {
 
     case "$action" in
       cleanup)
-        [[ -z "$pr" ]] || act gh pr close "$num" --comment "prod is already at $desired"
-        [[ -z "$branch_tag" ]] || act git push -q origin --delete "$branch"
+        [[ -z "$pr" ]] || act gh pr close "$num" --comment "prod is already at $desired" \
+          || { echo "::error::$app: closing PR #$num failed"; fail=1; }
+        [[ -z "$branch_tag" ]] || act git push -q origin --delete "$branch" \
+          || { echo "::error::$app: deleting $branch failed"; fail=1; }
         ;;
       rewrite)
         short=${desired:0:7}
@@ -188,10 +207,14 @@ reconcile_promotions() {
           echo "would: force-push $branch with prod at $desired and $([[ -n "$pr" ]] && echo "retitle PR #$num" || echo "open a PR")"
           continue
         fi
-        git checkout -q -B "$branch" origin/main
-        while IFS= read -r p; do set_tag "$p" "$desired"; done <<<"$prod_paths"
-        git commit -qam "promote: $app to $short"
-        git push -qf origin "$branch"
+        # errexit is off here (main calls us under ||): check every step, and
+        # touch the PR only once the branch really holds the new tag.
+        if ! { git checkout -q -B "$branch" origin/main && set_tags "$prod_paths" "$desired" \
+          && git commit -qam "promote: $app to $short" && git push -qf origin "$branch"; }; then
+          echo "::error::$app: updating $branch failed"; fail=1
+          git reset -q --hard && git checkout -q --detach origin/main
+          continue
+        fi
         body=$(printf '%s\n' "Promote **$app** to \`$desired\`." "" \
           "Verify dev is Synced+Healthy before merging." "" \
           "---" "*Maintained by the homelab writer (\`ci/writer.sh\`); updated in place.*")
@@ -199,7 +222,7 @@ reconcile_promotions() {
           gh pr edit "$num" --title "promote: $app to $short" --body "$body"
         else
           gh pr create --base main --head "$branch" --title "promote: $app to $short" --body "$body"
-        fi
+        fi || { echo "::error::$app: updating the promote PR failed"; fail=1; }
         git checkout -q --detach origin/main
         ;;
     esac
@@ -212,26 +235,37 @@ reconcile_promotions() {
 # One commit per app that moved. Compares against origin/main so DRY_RUN
 # needs no reset of the local checkout.
 reconcile_main() {
-  local reg=$1 app cand targets p changed fail=0
+  local reg=$1 app cand targets p changed bad fail=0
   validate_registry "$reg" || return 1
   while IFS= read -r app <&3; do
     cand=$(main_shas "$(app_repo "$reg" "$app")" | pick_candidate "$(image_of "$reg" "$app")") \
       || { echo "::error::$app: candidate lookup failed"; fail=1; continue; }
-    [[ -n "$cand" ]] || { echo "::notice::$app: no built image yet"; continue; }
+    if [[ -z "$cand" ]]; then
+      if image_repo_exists "$(image_of "$reg" "$app")"; then
+        echo "::notice::$app: no built image yet"
+      else
+        echo "::error::$app: image package not found or not readable (image name or GHCR access)"; fail=1
+      fi
+      continue
+    fi
     targets=$(app_paths "$reg" "$app" dev)
     if [[ "$(app_prod "$reg" "$app")" == auto ]]; then
       targets=$(printf '%s\n%s' "$targets" "$(app_paths "$reg" "$app" prod)")
     fi
-    changed=
+    changed= bad=
     while IFS= read -r p; do
       [[ -n "$p" ]] || continue
-      [[ -f "$p" ]] || { echo "::error::$app: registered path $p does not exist"; fail=1; continue; }
+      [[ -f "$p" ]] || { echo "::error::$app: registered path $p does not exist"; bad=1; break; }
       [[ "$(tag_at origin/main "$p")" != "$cand" ]] || continue
-      if dry; then echo "would: set $p to $cand"; else set_tag "$p" "$cand"; fi
+      if dry; then echo "would: set $p to $cand"
+      else set_tag "$p" "$cand" || { echo "::error::$app: writing $p failed"; bad=1; break; }; fi
       changed=1
     done <<<"$targets"
+    # All of an app's paths move together or not at all.
+    if [[ -n "$bad" ]]; then fail=1; dry || git checkout -q -- .; continue; fi
     [[ -n "$changed" ]] || continue
-    act git commit -qam "chore: update $app image to $cand"
+    act git commit -qam "chore: update $app image to $cand" \
+      || { echo "::error::$app: commit failed"; fail=1; git checkout -q -- .; continue; }
     echo "$app"
   done 3< <(apps "$reg")
   return "$fail"
