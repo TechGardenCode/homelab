@@ -16,12 +16,6 @@ spec:
       containers:
         - name: verify
           image: curlimages/curl:8.22.0
-          env:
-            - name: GITHUB_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: github-deploy-token
-                  key: token
           command: ["/bin/sh", "-c"]
           args:
             - |
@@ -45,12 +39,6 @@ spec:
                 exit 1
               fi
               echo "Deployed SHA: $SHA"
-              curl -sf -X POST \
-                -H "Authorization: token $GITHUB_TOKEN" \
-                -H "Accept: application/vnd.github+json" \
-                "https://api.github.com/repos/techgardencode/kian.sh/dispatches" \
-                -d "{\"event_type\":\"deploy-verified\",\"client_payload\":{\"app\":\"wiki\",\"env\":\"dev\",\"sha\":\"$SHA\"}}"
-              echo "Dispatched deploy-verified event"
           resources:
             requests:
               cpu: 5m
