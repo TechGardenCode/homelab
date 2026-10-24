@@ -1,7 +1,7 @@
 image:
   repository: "ghcr.io/techgardencode/kian-coffee-blog"
   # tag: bot-managed via app-registry.yaml; do not edit by hand
-  tag: "7b89aadffc92b4243b19761cd9c8888ef4d4e713"
+  tag: "b87a6970ef6d6272d399640e26d43c1835711b44"
 ports:
   - name: main
     containerPort: 8080
