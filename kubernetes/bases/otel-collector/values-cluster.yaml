@@ -52,6 +52,11 @@ config:
             scrape_interval: 30s
             static_configs:
               - targets: ["kube-state-metrics.monitoring.svc:8080"]
+            # Fixed pod metadata re-sent every scrape; the kube API has it.
+            metric_relabel_configs:
+              - source_labels: [__name__]
+                regex: kube_pod_(tolerations|status_qos_class|scheduler|service_account|restart_policy|ips|created|status_initialized_time|status_scheduled_time|status_scheduled)
+                action: drop
 
           # CNPG postgres_exporter
           - job_name: cnpg
@@ -64,6 +69,9 @@ config:
               - { source_labels: [__meta_kubernetes_namespace], target_label: namespace }
               - { source_labels: [__meta_kubernetes_pod_name], target_label: pod }
               - { source_labels: [__meta_kubernetes_pod_label_cnpg_io_cluster], target_label: cnpg_cluster }
+            # The whole pg_settings dump, constant between restarts.
+            metric_relabel_configs:
+              - { source_labels: [__name__], regex: cnpg_pg_settings_setting, action: drop }
 
           # CNPG Pooler (PgBouncer) exporter
           - job_name: pgbouncer

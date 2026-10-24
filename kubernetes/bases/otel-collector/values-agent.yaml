@@ -62,3 +62,20 @@ config:
               insecure_skip_verify: true
             static_configs:
               - targets: ["${env:K8S_NODE_IP}:10250"]
+            # ponytail: drop repeats, keep per-container signal (about 9M of
+            # 18M rows/h estate-wide). Root and kubepods/pod cgroups repeat the
+            # kubeletstats totals; hostNetwork pods each repeat the host NIC.
+            # The Talos /system/* cgroups and the root's host NICs stay.
+            metric_relabel_configs:
+              - source_labels: [__name__]
+                regex: container_(spec_.*|last_seen|creation_time_seconds|memory_failures_total|blkio_device_usage_total)
+                action: drop
+              - source_labels: [container, id, __name__]
+                regex: ";/(kubepods.*)?;container_(cpu|memory|fs|file|threads|sockets|processes|oom|pressure|ulimits|tasks|health|start|scrape|last|blkio)_.*"
+                action: drop
+              - source_labels: [interface]
+                regex: tunl0|sit0|ip6tnl0|teql0|dummy0|ip_vti0|ip6_vti0|gre0|gretap0|erspan0|ip6gre0
+                action: drop
+              - source_labels: [__name__, pod, interface]
+                regex: "container_network_.*;.+;(bond.*|en.*|eth[1-9].*|cni.*|flannel.*|lo|veth.*)"
+                action: drop
