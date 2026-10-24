@@ -2,6 +2,7 @@
   "realm": "accounts",
   "enabled": true,
   "displayName": "Accounts",
+  "loginTheme": "homelab",
   "registrationAllowed": false,
   "loginWithEmailAllowed": true,
   "duplicateEmailsAllowed": false,

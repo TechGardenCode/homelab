@@ -76,7 +76,8 @@ spec:
           # stable names (no hash suffix), so nothing else forces that restart.
           # BUMP THIS on any change under base/themes/ — it is the pod roll.
           # 2: login emailSentMessage (WS-05 stage-3 finding).
-          techgarden.gg/theme-revision: "2"
+          # 3: homelab login theme (overwatch design kit) for the accounts realm.
+          techgarden.gg/theme-revision: "3"
       spec:
         containers:
           - name: keycloak
@@ -86,6 +87,9 @@ spec:
                 readOnly: true
               - name: theme-techgarden-email
                 mountPath: /opt/keycloak/themes/techgarden/email
+                readOnly: true
+              - name: theme-homelab-login
+                mountPath: /opt/keycloak/themes/homelab/login
                 readOnly: true
         volumes:
           - name: theme-techgarden-login
@@ -113,3 +117,17 @@ spec:
                 - { key: executeActions.ftl, path: html/executeActions.ftl }
                 - { key: password-reset.ftl, path: html/password-reset.ftl }
                 - { key: template.ftl, path: html/template.ftl }
+          - name: theme-homelab-login
+            configMap:
+              name: keycloak-theme-homelab-login
+              items:
+                - { key: theme.properties, path: theme.properties }
+                - { key: messages_en.properties, path: messages/messages_en.properties }
+                - { key: kit.css, path: resources/css/kit.css }
+                - { key: login.css, path: resources/css/login.css }
+                - { key: OFL.txt, path: resources/css/fonts/OFL.txt }
+                - { key: plex-sans-400.woff2, path: resources/css/fonts/plex-sans-400.woff2 }
+                - { key: plex-sans-500.woff2, path: resources/css/fonts/plex-sans-500.woff2 }
+                - { key: plex-sans-600.woff2, path: resources/css/fonts/plex-sans-600.woff2 }
+                - { key: plex-mono-400.woff2, path: resources/css/fonts/plex-mono-400.woff2 }
+                - { key: plex-mono-500.woff2, path: resources/css/fonts/plex-mono-500.woff2 }

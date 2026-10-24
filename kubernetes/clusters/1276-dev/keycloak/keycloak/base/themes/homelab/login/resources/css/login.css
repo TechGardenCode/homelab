@@ -1,0 +1,68 @@
+/* homelab login: page layout on top of kit.css. Colors, type and controls come from the kit tokens/classes. */
+
+.hl-body {
+  min-height: 100dvh; display: grid; place-items: start center;
+  padding: max(var(--k-space-6), env(safe-area-inset-top)) max(var(--k-space-4), env(safe-area-inset-right))
+           var(--k-space-6) max(var(--k-space-4), env(safe-area-inset-left));
+  box-sizing: border-box;
+}
+@media (min-height: 640px) { .hl-body { place-items: center; } }
+.hl-login { width: 100%; max-width: 360px; display: grid; gap: var(--k-space-4); }
+
+/* Brand row: a small rack mark + realm title ("kian.sh") */
+.hl-brand {
+  display: flex; align-items: center; gap: var(--k-space-2);
+  font-family: var(--k-mono); font-size: var(--k-text-lg); font-weight: 500; color: var(--k-text);
+}
+.hl-brand::before {
+  content: ""; width: 22px; height: 22px; flex: none; background: var(--k-accent);
+  -webkit-mask: var(--hl-rack) center / contain no-repeat; mask: var(--hl-rack) center / contain no-repeat;
+}
+:root {
+  --hl-rack: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2'%3E%3Crect x='3' y='4' width='18' height='5' rx='1'/%3E%3Crect x='3' y='11' width='18' height='5' rx='1'/%3E%3Cpath d='M7 6.5h.01M7 13.5h.01M8 20h8'/%3E%3C/svg%3E");
+}
+
+.hl-card { padding: var(--k-space-5); display: grid; gap: var(--k-space-4); }
+#kc-page-title { margin: 0; font-size: var(--k-text-xl); font-weight: 600; line-height: 1.3; }
+#kc-content-wrapper, #kc-form, #kc-form-wrapper, form { display: grid; gap: var(--k-space-4); }
+form { margin: 0; }
+
+.hl-field { display: grid; gap: var(--k-space-1); }
+.hl-label { font-size: var(--k-text-sm); color: var(--k-muted); }
+.hl-input { font-size: var(--k-text-base); padding: 8px 10px; width: 100%; box-sizing: border-box; }
+.hl-input-group { display: flex; gap: var(--k-space-1); }
+.hl-input-group .hl-input { flex: 1; }
+.hl-error { font-size: var(--k-text-sm); }
+.hl-settings, .hl-options { font-size: var(--k-text-sm); }
+#kc-form-options { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--k-space-2); }
+#kc-form-options .checkbox label { display: flex; align-items: center; gap: var(--k-space-2); color: var(--k-muted); }
+p.instruction { margin: 0; font-size: var(--k-text-sm); color: var(--k-muted); }
+
+/* Buttons: kit k-btn; block + large sizes for the primary action */
+.hl-block { width: 100%; }
+.hl-lg { padding: 9px var(--k-space-3); font-size: var(--k-text-base); }
+#kc-form-buttons { display: grid; gap: var(--k-space-2); margin: 0; }
+#kc-form-buttons input, #kc-form-buttons button { width: 100%; }
+.hl-eye { padding-inline: var(--k-space-2); }
+
+/* Icons drawn with masks so they follow currentColor */
+.hl-icon { display: inline-block; width: 18px; height: 18px; background: currentColor; -webkit-mask: var(--hl-i) center / contain no-repeat; mask: var(--hl-i) center / contain no-repeat; }
+.hl-icon-eye { --hl-i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8'%3E%3Cpath d='M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/svg%3E"); }
+.hl-icon-eye-off { --hl-i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8'%3E%3Cpath d='M3 3l18 18M10.6 5.1A10 10 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-3.2 4M6.6 6.6C3.8 8.4 2 12 2 12s3.5 7 10 7a9.6 9.6 0 0 0 5.4-1.6M9.9 9.9a3 3 0 0 0 4.2 4.2'/%3E%3C/svg%3E"); }
+.hl-icon-back { --hl-i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2'%3E%3Cpath d='M15 18l-6-6 6-6'/%3E%3C/svg%3E"); vertical-align: middle; }
+
+/* Alerts: base sets alert-{error,warning,success,info}; map them onto kit status colors */
+.hl-alert {
+  display: flex; align-items: flex-start; gap: var(--k-space-2); padding: var(--k-space-2) var(--k-space-3);
+  border-radius: var(--k-radius-sm); font-size: var(--k-text-sm);
+  color: var(--k-text); background: color-mix(in srgb, var(--k-c, var(--k-muted)) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--k-c, var(--k-muted)) 45%, transparent);
+}
+.alert-error { --k-c: var(--k-crit); }
+.alert-warning { --k-c: var(--k-warn); }
+.alert-success { --k-c: var(--k-ok); }
+.alert-info { --k-c: var(--k-accent); }
+.hl-alert-icon { display: block; width: 8px; height: 8px; margin-top: 6px; border-radius: 50%; background: var(--k-c, var(--k-muted)); }
+
+.hl-info, .hl-info-wrap { font-size: var(--k-text-sm); color: var(--k-muted); text-align: center; }
+.hl-locale { display: none; }

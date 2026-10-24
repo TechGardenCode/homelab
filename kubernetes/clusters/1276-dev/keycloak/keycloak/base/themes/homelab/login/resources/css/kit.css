@@ -1,0 +1,164 @@
+/* homelab kit 1.0.0 — tokens + components for homelab infra apps. Source of truth: overwatch/kit/.
+   Dark-first; light follows the OS, and [data-theme] on <html> overrides either way.
+   Contrast is checked by contrast.test.mjs: change a color, run `node --test kit/contrast.test.mjs`. */
+
+@font-face { font-family: "IBM Plex Sans"; font-weight: 400; font-display: swap; src: url("fonts/plex-sans-400.woff2") format("woff2"); }
+@font-face { font-family: "IBM Plex Sans"; font-weight: 500; font-display: swap; src: url("fonts/plex-sans-500.woff2") format("woff2"); }
+@font-face { font-family: "IBM Plex Sans"; font-weight: 600; font-display: swap; src: url("fonts/plex-sans-600.woff2") format("woff2"); }
+@font-face { font-family: "IBM Plex Mono"; font-weight: 400; font-display: swap; src: url("fonts/plex-mono-400.woff2") format("woff2"); }
+@font-face { font-family: "IBM Plex Mono"; font-weight: 500; font-display: swap; src: url("fonts/plex-mono-500.woff2") format("woff2"); }
+
+/* ── Tokens. Dark on bare :root; the light set is declared twice (OS + explicit) and must stay identical. ── */
+:root {
+  color-scheme: dark;
+  --k-bg: #0c0c1a; --k-surface: #121226; --k-raised: #1a1a34;
+  --k-border: #282a4e; --k-border-strong: #6366a0;
+  --k-text: #e6e7f7; --k-muted: #9395b8;
+  --k-accent: #9aa2ff; --k-accent-fill: #575cf0; --k-accent-fill-hover: #4b50e6; --k-on-accent-fill: #ffffff;
+  --k-ok: #3fd39a; --k-warn: #f2b630; --k-crit: #ff6b6b;
+  --k-series-1: #3987e5; --k-series-2: #d95926; --k-series-3: #199e70; --k-series-4: #c98500;
+  --k-series-5: #d55181; --k-series-6: #008300; --k-series-7: #9085e9; --k-series-8: #e66767; --k-series-muted: #475569;
+
+  --k-unk: var(--k-muted);
+  --k-font: "IBM Plex Sans", system-ui, sans-serif;
+  --k-mono: "IBM Plex Mono", ui-monospace, monospace;
+  --k-text-xs: 11px; --k-text-sm: 12.5px; --k-text-base: 14px; --k-text-lg: 16px; --k-text-xl: 20px; --k-text-2xl: 24px;
+  --k-space-1: 4px; --k-space-2: 8px; --k-space-3: 12px; --k-space-4: 16px; --k-space-5: 24px; --k-space-6: 32px;
+  --k-radius: 4px; --k-radius-sm: 2px;
+  --k-nav-w: 72px; --k-nav-h: 56px;
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --k-bg: #0c0c1a; --k-surface: #121226; --k-raised: #1a1a34;
+  --k-border: #282a4e; --k-border-strong: #6366a0;
+  --k-text: #e6e7f7; --k-muted: #9395b8;
+  --k-accent: #9aa2ff; --k-accent-fill: #575cf0; --k-accent-fill-hover: #4b50e6; --k-on-accent-fill: #ffffff;
+  --k-ok: #3fd39a; --k-warn: #f2b630; --k-crit: #ff6b6b;
+  --k-series-1: #3987e5; --k-series-2: #d95926; --k-series-3: #199e70; --k-series-4: #c98500;
+  --k-series-5: #d55181; --k-series-6: #008300; --k-series-7: #9085e9; --k-series-8: #e66767; --k-series-muted: #475569;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    color-scheme: light;
+    --k-bg: #f0f0f8; --k-surface: #ffffff; --k-raised: #f6f6fb;
+    --k-border: #d8d9ec; --k-border-strong: #8486b2;
+    --k-text: #12121f; --k-muted: #565878;
+    --k-accent: #4446c9; --k-accent-fill: #3a35d6; --k-accent-fill-hover: #2f2ab8; --k-on-accent-fill: #ffffff;
+    --k-ok: #127a4b; --k-warn: #8a5a00; --k-crit: #c0282f;
+    --k-series-1: #2a78d6; --k-series-2: #eb6834; --k-series-3: #1baf7a; --k-series-4: #eda100;
+    --k-series-5: #e87ba4; --k-series-6: #008300; --k-series-7: #6250d6; --k-series-8: #e34948; --k-series-muted: #94a3b8;
+  }
+}
+:root[data-theme="light"] {
+  color-scheme: light;
+  --k-bg: #f0f0f8; --k-surface: #ffffff; --k-raised: #f6f6fb;
+  --k-border: #d8d9ec; --k-border-strong: #8486b2;
+  --k-text: #12121f; --k-muted: #565878;
+  --k-accent: #4446c9; --k-accent-fill: #3a35d6; --k-accent-fill-hover: #2f2ab8; --k-on-accent-fill: #ffffff;
+  --k-ok: #127a4b; --k-warn: #8a5a00; --k-crit: #c0282f;
+  --k-series-1: #2a78d6; --k-series-2: #eb6834; --k-series-3: #1baf7a; --k-series-4: #eda100;
+  --k-series-5: #e87ba4; --k-series-6: #008300; --k-series-7: #6250d6; --k-series-8: #e34948; --k-series-muted: #94a3b8;
+}
+
+/* ── Base ── */
+body {
+  margin: 0; background: var(--k-bg); color: var(--k-text);
+  font-family: var(--k-font); font-size: var(--k-text-base); line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--k-accent); }
+input[type="checkbox"], input[type="radio"] { accent-color: var(--k-accent-fill); }
+:focus-visible { outline: 2px solid var(--k-accent); outline-offset: 2px; }
+
+/* ── Buttons ── */
+.k-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--k-space-2);
+  font: inherit; font-size: var(--k-text-sm); font-weight: 500; line-height: 1.4;
+  padding: 6px var(--k-space-3); border-radius: var(--k-radius-sm); border: 1px solid var(--k-border);
+  background: var(--k-surface); color: var(--k-text); cursor: pointer; text-decoration: none;
+}
+.k-btn:hover { border-color: var(--k-border-strong); }
+.k-btn-primary { background: var(--k-accent-fill); border-color: var(--k-accent-fill); color: var(--k-on-accent-fill); }
+.k-btn-primary:hover { background: var(--k-accent-fill-hover); border-color: var(--k-accent-fill-hover); }
+.k-btn-danger { border-color: color-mix(in srgb, var(--k-crit) 50%, transparent); color: var(--k-crit); }
+.k-btn-danger:hover { border-color: var(--k-crit); }
+.k-btn:disabled { opacity: .5; cursor: not-allowed; }
+
+/* ── Inputs (input, select, textarea) ── */
+.k-input {
+  font: inherit; font-size: var(--k-text-sm); padding: 6px 10px; min-width: 0;
+  border-radius: var(--k-radius-sm); border: 1px solid var(--k-border-strong);
+  background: var(--k-bg); color: var(--k-text);
+}
+.k-input::placeholder { color: var(--k-muted); }
+.k-input:focus-visible { outline-offset: 0; border-color: var(--k-accent); }
+.k-input:disabled { opacity: .5; }
+
+/* ── Card / tile ── */
+.k-card {
+  display: block; background: var(--k-surface); border: 1px solid var(--k-border);
+  border-radius: var(--k-radius); padding: var(--k-space-3); color: inherit; text-decoration: none; min-width: 0;
+}
+a.k-card:hover { border-color: var(--k-border-strong); background: var(--k-raised); }
+
+/* ── Small caps label (card titles, table headers) ── */
+.k-label {
+  font-family: var(--k-mono); font-size: var(--k-text-xs); font-weight: 500;
+  text-transform: uppercase; letter-spacing: .08em; color: var(--k-muted);
+}
+
+/* ── Table ── */
+.k-table { width: 100%; border-collapse: collapse; font-size: var(--k-text-sm); }
+.k-table th {
+  text-align: left; padding: var(--k-space-1) var(--k-space-2); border-bottom: 1px solid var(--k-border);
+  font-family: var(--k-mono); font-size: var(--k-text-xs); font-weight: 500; text-transform: uppercase; letter-spacing: .08em; color: var(--k-muted);
+}
+.k-table td { padding: 6px var(--k-space-2); border-bottom: 1px solid var(--k-border); }
+.k-table tr:last-child td { border-bottom: 0; }
+.k-num { text-align: right; font-family: var(--k-mono); font-variant-numeric: tabular-nums; }
+
+/* ── Status: a modifier sets --k-c, the pieces below read it ── */
+.k-ok { --k-c: var(--k-ok); }
+.k-warn { --k-c: var(--k-warn); }
+.k-crit { --k-c: var(--k-crit); }
+.k-unk { --k-c: var(--k-unk); }
+.k-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; flex: none; background: var(--k-c, var(--k-unk)); }
+.k-status-text { color: var(--k-c, var(--k-muted)); }
+.k-badge {
+  display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;
+  font-size: var(--k-text-xs); font-weight: 500; padding: 1px var(--k-space-2); border-radius: var(--k-radius-sm);
+  color: var(--k-c, var(--k-muted)); background: color-mix(in srgb, var(--k-c, var(--k-muted)) 14%, transparent);
+}
+.k-badge::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+/* ── Nav: bottom bar on phones, left rail from 768px ── */
+.k-nav {
+  position: fixed; z-index: 10; inset: auto 0 0 0; display: flex; justify-content: space-around;
+  min-height: var(--k-nav-h); padding-bottom: env(safe-area-inset-bottom, 0px);
+  padding-left: env(safe-area-inset-left, 0px); padding-right: env(safe-area-inset-right, 0px);
+  background: var(--k-surface); border-top: 1px solid var(--k-border);
+}
+.k-nav a {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  padding: var(--k-space-1) var(--k-space-2); border-radius: var(--k-radius-sm);
+  font-size: var(--k-text-xs); color: var(--k-muted); text-decoration: none;
+}
+.k-nav a:hover { color: var(--k-text); }
+.k-nav a[aria-current="page"] { color: var(--k-accent); background: color-mix(in srgb, var(--k-accent) 16%, transparent); }
+.k-nav svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+@media (min-width: 768px) {
+  .k-nav {
+    inset: 0 auto 0 0; width: var(--k-nav-w); flex-direction: column; justify-content: center; gap: var(--k-space-2);
+    padding: var(--k-space-3) 0; padding-left: env(safe-area-inset-left, 0px);
+    border-top: 0; border-right: 1px solid var(--k-border);
+  }
+  .k-nav a { margin-inline: var(--k-space-2); padding-block: var(--k-space-2); }
+}
+
+/* ── Page header ── */
+.k-page-header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--k-space-3); }
+.k-page-title { margin: 0; font-size: var(--k-text-xl); font-weight: 600; line-height: 1.3; }
+.k-page-sub { margin: 0; font-family: var(--k-mono); font-size: var(--k-text-sm); color: var(--k-muted); }
+.k-page-actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--k-space-2); }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
