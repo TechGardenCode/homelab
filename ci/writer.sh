@@ -202,6 +202,60 @@ reconcile_promotions() {
   return "$fail"
 }
 
-main() { :; }
+# --- dev and prod: auto on main -------------------------------------------
 
-if [[ "${BASH_SOURCE[0]:-}" == "$0" ]]; then main "$@"; fi
+# One commit per app that moved. Compares against origin/main so DRY_RUN
+# needs no reset of the local checkout.
+reconcile_main() {
+  local reg=$1 app cand targets p changed fail=0
+  validate_registry "$reg" || return 1
+  while IFS= read -r app <&3; do
+    cand=$(main_shas "$(app_repo "$reg" "$app")" | pick_candidate "$(image_of "$reg" "$app")") \
+      || { echo "::error::$app: candidate lookup failed"; fail=1; continue; }
+    [[ -n "$cand" ]] || { echo "::notice::$app: no built image yet"; continue; }
+    targets=$(app_paths "$reg" "$app" dev)
+    if [[ "$(app_prod "$reg" "$app")" == auto ]]; then
+      targets=$(printf '%s\n%s' "$targets" "$(app_paths "$reg" "$app" prod)")
+    fi
+    changed=
+    while IFS= read -r p; do
+      [[ -n "$p" ]] || continue
+      [[ -f "$p" ]] || { echo "::error::$app: registered path $p does not exist"; fail=1; continue; }
+      [[ "$(tag_at origin/main "$p")" != "$cand" ]] || continue
+      if dry; then echo "would: set $p to $cand"; else set_tag "$p" "$cand"; fi
+      changed=1
+    done <<<"$targets"
+    [[ -n "$changed" ]] || continue
+    act git commit -qam "chore: update $app image to $cand"
+    echo "$app"
+  done 3< <(apps "$reg")
+  return "$fail"
+}
+
+# Recompute from fresh main on every attempt: never rebase a stale commit.
+push_with_retry() {
+  local reg=$1 attempts=$2 i rc
+  for ((i = 1; i <= attempts; i++)); do
+    git fetch -q origin main
+    dry || git reset -q --hard origin/main
+    rc=0; reconcile_main "$reg" || rc=$?
+    dry && return "$rc"
+    [[ "$(git rev-list --count origin/main..HEAD)" != 0 ]] || return "$rc"
+    git push -q origin HEAD:main && return "$rc"
+    echo "::warning::push rejected (attempt $i/$attempts); recomputing on fresh main"
+    sleep $((i * 5))
+  done
+  echo "::error::push failed after $attempts attempts"
+  return 1
+}
+
+main() {
+  local reg=ci/app-registry.yaml rc=0
+  validate_registry "$reg" || return 1
+  push_with_retry "$reg" 5 || rc=1
+  reconcile_promotions "$reg" || rc=1
+  return "$rc"
+}
+
+# exit on the same line: push_with_retry resets this file under bash's feet.
+if [[ "${BASH_SOURCE[0]:-}" == "$0" ]]; then main "$@"; exit $?; fi

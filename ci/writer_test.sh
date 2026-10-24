@@ -159,6 +159,92 @@ test_promote_rewrite_on_conflict() { assert_eq "$(promote_action t0 t1 t1 yes CO
 test_promote_rewrite_when_none() { assert_eq "$(promote_action t0 t1 "" no "")" rewrite r; }
 test_promote_rewrite_when_dirty() { assert_eq "$(promote_action t0 t1 t1 yes MERGEABLE no)" rewrite r; }
 
+# --- reconcile + push (local bare repo as origin) -------------------------
+
+export GIT_AUTHOR_NAME=writer GIT_AUTHOR_EMAIL=writer@test GIT_COMMITTER_NAME=writer GIT_COMMITTER_EMAIL=writer@test
+sleep() { :; }
+main_shas() { cat "$T/shas"; }
+
+# App a: dev + prod (prod: pr). App b: prod only, prod: auto.
+repo_fixture() { # current tag
+  fixture
+  git init -q --bare -b main "$T/origin.git"
+  git clone -q "$T/origin.git" "$T/work" 2>/dev/null
+  cd "$T/work" || exit 1
+  local f
+  for f in a/dev a/prod b/prod; do
+    mkdir -p "$f"
+    printf 'image:\n  repository: "ghcr.io/techgardencode/%s"\n  tag: "%s"\n' "${f%%/*}" "$1" >"$f/values.yaml"
+  done
+  cat >reg.yaml <<'EOF'
+apps:
+  a:
+    repo: TechGardenCode/a
+    paths:
+      - path: a/dev/values.yaml
+        env: dev
+      - path: a/prod/values.yaml
+        env: prod
+  b:
+    repo: TechGardenCode/b
+    prod: auto
+    paths:
+      - path: b/prod/values.yaml
+        env: prod
+EOF
+  git add -A && git commit -qm init && git push -q origin HEAD:main
+  printf 'new\nold\n' >"$T/shas"; printf 'new\nold\n' >"$TAGS"
+}
+
+test_reconcile_commits_per_app() {
+  repo_fixture old
+  reconcile_main reg.yaml >/dev/null
+  assert_eq "$(git log --format=%s origin/main..HEAD | grep -c 'image to')" 2 commits
+  assert_eq "$(git log --format=%s origin/main..HEAD | grep -cx 'chore: update a image to new')" 1 msg
+  assert_eq "$(yq .image.tag a/dev/values.yaml)" new tag
+}
+
+test_prod_auto_writes_prod() {
+  repo_fixture old
+  reconcile_main reg.yaml >/dev/null
+  assert_eq "$(yq .image.tag b/prod/values.yaml)" new tag
+}
+
+test_prod_pr_never_touches_prod_on_main() {
+  repo_fixture old
+  reconcile_main reg.yaml >/dev/null
+  assert_eq "$(yq .image.tag a/prod/values.yaml)" old tag
+}
+
+test_noop_when_current() {
+  repo_fixture new
+  git() { [[ "$1" == push ]] && touch "$T/pushed"; command git "$@"; }
+  push_with_retry reg.yaml 5 >/dev/null; assert_eq $? 0 rc
+  assert_eq "$(command git rev-list --count HEAD)" 1 commits
+  assert_eq "$([[ -e "$T/pushed" ]] && echo pushed)" "" push
+}
+
+test_push_retry_recomputes() {
+  repo_fixture old
+  # First push: someone else lands a commit on origin first, so ours is
+  # rejected as non-fast-forward. Later pushes go through.
+  git() {
+    if [[ "$1" == push && ! -e "$T/raced" ]]; then
+      touch "$T/raced"
+      command git clone -q "$T/origin.git" "$T/other" 2>/dev/null
+      (cd "$T/other" && echo x >unrelated && command git add unrelated \
+        && command git commit -qm unrelated && command git push -q origin HEAD:main)
+    fi
+    command git "$@"
+  }
+  push_with_retry reg.yaml 5 >/dev/null 2>&1; assert_eq $? 0 rc
+  local unrelated; unrelated=$(command git -C "$T/origin.git" log --format='%H %s' main | awk '$2=="unrelated"{print $1}')
+  local first; first=$(command git -C "$T/origin.git" rev-list --reverse "$unrelated..main" | head -n1)
+  assert_eq "$(command git -C "$T/origin.git" rev-parse "$first^")" "$unrelated" parent
+  assert_eq "$(command git -C "$T/origin.git" rev-list --count "$unrelated..main")" 2 writer-commits
+  assert_eq "$(command git -C "$T/origin.git" show main:a/dev/values.yaml | yq .image.tag)" new tag
+}
+
 # --- runner ---------------------------------------------------------------
 
 fail=0
