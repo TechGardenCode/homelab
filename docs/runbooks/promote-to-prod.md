@@ -6,18 +6,16 @@ A dev rollout has been verified and the same image tag should ship to prod.
 
 ## How it normally works (automated)
 
-For apps whose `ci/app-registry.yaml` entry uses the `{path, env}` object form:
+1. Developer pushes to the app repo's `main`.
+2. App CI builds and pushes `ghcr.io/techgardencode/<app>:<sha>`, then nudges this repo.
+3. The writer (`update-image-tag.yml`) finds the newest `main` commit with an image and commits the dev values bump as `chore: update <app> image to <sha>`.
+4. It keeps one PR per app on branch `promote/<app>`, titled `promote: <app> to <shortsha>`, at dev's sha. A newer dev bump updates the same PR in place.
+5. Dev ArgoCD reconciles in seconds via webhook.
+6. Operator verifies the dev deployment (functional check, error rates, logs).
+7. Operator merges the promote PR.
+8. Prod ArgoCD reconciles in seconds. On its next run the writer sees prod has caught up and deletes the branch.
 
-1. Developer pushes to the app repo.
-2. App CI builds + pushes `ghcr.io/techgardencode/<app>:<sha>`.
-3. App CI sends `repository_dispatch(event=update-image, payload={app, tag, env: dev})`.
-4. `update-image-tag.yml` commits the dev values bump to `main`.
-5. Same workflow opens a `promote/<app>-<shortsha>` PR against `main` that bumps prod values.
-6. Dev ArgoCD reconciles in seconds via webhook.
-7. Operator verifies the dev deployment (functional check, error rates, logs).
-8. Operator merges the promote PR.
-9. Prod ArgoCD reconciles in seconds.
-10. Stale `promote/<app>-*` branches are auto-closed on the next promotion.
+Apps marked `prod: auto` in `ci/app-registry.yaml` (no dev environment) skip steps 4–7: the writer commits prod directly.
 
 ## Verifying dev before merging the promote PR
 
@@ -41,29 +39,16 @@ Or the parent repo's `watch-rollout` skill, which waits for health.
 
 ## Merging the promote PR
 
-- PR title: `promote: <app> to <shortsha>`.
-- Description: a link to the dev deployment + a one-line functional check.
-- Merge strategy: squash (keeps `main` history linear). The bot will auto-close earlier promote PRs for the same app.
+- PR title: `promote: <app> to <shortsha>`. The diff should touch only the prod `values.yaml` (and a `migrate-job.yaml` beside it, if the app has one).
+- Merge strategy: squash (keeps `main` history linear). Don't delete the branch: only the writer may touch `promote/**`, and it cleans up on its next run.
 
 Once merged, prod ArgoCD picks up the change via webhook within seconds. If it sits in `OutOfSync` for more than a minute, see [investigate-stuck-rollout.md](investigate-stuck-rollout.md).
 
 ## Edge cases
 
-### App uses legacy string paths in `app-registry.yaml`
+### No promote PR appeared
 
-The promote-to-prod job filters by `env == "prod"` via yq; legacy string-format entries skip PR creation entirely and `update-image-tag.yml` updates every listed path directly — including prod. This bypasses the review gate.
-
-**Fix:** migrate the app-registry entry to object form:
-
-```yaml
-<app>:
-  type: values
-  paths:
-    - path: kubernetes/clusters/1276-dev/<namespace>/<app>/values.yaml
-      env: dev
-    - path: kubernetes/clusters/1276-prod/<namespace>/<app>/values.yaml
-      env: prod
-```
+Prod may already match dev, the app may be `prod: auto`, or it may have no `env: prod` path. Otherwise, read the latest `update-image-tag` run log, which lists each app's candidate sha. To trigger a run by hand: `gh workflow run update-image-tag.yml -R TechGardenCode/homelab`.
 
 ### Prod requires a config change beyond the image tag
 
@@ -76,14 +61,17 @@ Don't edit prod `values.yaml` directly — the block-image-tag-edit hook will ca
 
 ### Rolling back
 
-Prod rollback = revert the promote commit on `main`. ArgoCD reconciles the previous image tag within seconds.
+Prod rollback = a PR that reverts the promote commit (`main` is locked). ArgoCD reconciles the previous image tag within seconds of the merge.
 
 ```sh
+git switch -c revert/<app>-prod origin/main
 git revert <promote-commit-sha>
-git push
+git push -u origin HEAD && gh pr create --fill
 ```
+
+The writer then reopens `promote/<app>` at dev's sha. Leave it open until the fix reaches dev.
 
 ## Related
 
-- Parent repo skill: `.claude/skills/promote-dev-to-prod/SKILL.md` in `kian.sh` (orchestrates the verify → open-PR flow).
+- Parent repo skill: `.claude/skills/promote-dev-to-prod/SKILL.md` in `kian.sh` (verifies dev, then hands the PR to a human to merge).
 - Workflow: [`.github/workflows/update-image-tag.yml`](../../.github/workflows/update-image-tag.yml).

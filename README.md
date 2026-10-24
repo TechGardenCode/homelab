@@ -111,7 +111,9 @@ Keycloak (per-cluster deployment for dev + prod), with a Keycloak instance insid
 
 ## GitOps & image promotion
 
-App repositories own their source, CI, and GHCR images. This repo owns the desired Kubernetes state. They meet at two points: `ci/app-registry.yaml` (which values file gets bumped) and a `repository_dispatch` event (the bump trigger).
+App repositories own their source, CI and GHCR images. This repo owns the desired Kubernetes state. They meet at `ci/app-registry.yaml`, which lists each app's source repo and the values files that carry its image tag.
+
+A single **writer** (`update-image-tag.yml` → `ci/writer.sh`) decides what runs. It doesn't replay events: every run, for every registered app, it finds the newest commit on the app repo's `main` that has an image, and moves the app to it.
 
 ```mermaid
 sequenceDiagram
@@ -120,30 +122,30 @@ sequenceDiagram
   participant AR as App repo
   participant CI as App CI
   participant GHCR
-  participant HL as homelab repo
-  participant Bot as update-image-tag.yml
+  participant W as Writer (update-image-tag.yml)
+  participant HL as homelab main
   participant Argo as ArgoCD
   participant K8s as Target cluster
 
-  Dev->>AR: git push
+  Dev->>AR: git push (main)
   AR->>CI: trigger build
   CI->>GHCR: push image :<sha>
-  CI->>HL: repository_dispatch(app, tag, env=dev)
-  HL->>Bot: run workflow
-  Bot->>HL: commit — bump dev values.yaml
-  Bot->>HL: open promote/<app>-<sha> PR for prod
-  Note over HL: Dev auto-commits.<br/>Prod waits for PR review.
+  CI->>W: nudge (repository_dispatch)
+  W->>AR: newest main commit with an image?
+  W->>HL: commit — bump dev values.yaml
+  W->>HL: open/update promote/<app> PR for prod
+  Note over HL: Dev lands directly.<br/>Prod waits for PR review.
   HL->>Argo: GitHub webhook
   Argo->>K8s: sync → rollout
   K8s-->>Argo: Healthy
 ```
 
-- **Dev** auto-commits directly to `main`.
-- **Prod** gets a `promote/<app>-<shortsha>` PR. Merging the PR deploys to prod; closing it discards the rollout.
-- ArgoCD syncs within seconds of merge via a Cloudflared-tunneled GitHub webhook; the 3-minute polling interval is a fallback.
-- Image tags are bot-managed. The [`.claude/` tooling in the parent repo](https://github.com/techgardencode/kian.sh) has a hook that blocks manual edits to `image:` / `tag:` / `newTag:` fields under paths registered in `ci/app-registry.yaml`.
-
-Full bot logic: [`.github/workflows/update-image-tag.yml`](.github/workflows/update-image-tag.yml).
+- **Dev** is committed directly to `main` by the writer's GitHub App.
+- **Prod** gets one PR per app on `promote/<app>`, kept at dev's sha and closed once prod catches up. Apps marked `prod: auto` (no dev environment) are written directly.
+- **Newest wins by history, not timing.** The writer also runs on registry changes, every 30 minutes and on demand, so a lost or out-of-order event heals on its own.
+- **`main` is locked:** PR + green checks for everyone; the writer App is the only bypass. See [ADR-0008](docs/adr/0008-reconciling-image-writer.md).
+- ArgoCD syncs within seconds via a Cloudflared-tunneled GitHub webhook; the 3-minute poll is a fallback.
+- Image tags are bot-managed. The [`.claude/` tooling in the parent repo](https://github.com/techgardencode/kian.sh) blocks manual edits to `image:` / `tag:` / `newTag:` under registered paths.
 
 ---
 
@@ -158,6 +160,7 @@ Decisions are documented in [`docs/adr/`](docs/adr/). Highlights:
 - **Renovate over Dependabot** — Dependabot doesn't cover Helm charts in Kustomize blocks well; Renovate does, plus it supports custom managers and versioning schemes. See [ADR-0005](docs/adr/0005-renovate-over-dependabot.md).
 - **Separate `core` hub cluster** — ArgoCD and shared-tier infra live on a dedicated cluster so workload cluster failures never take GitOps offline. See [ADR-0006](docs/adr/0006-separate-core-hub-cluster.md).
 - **Model-enforced prod safety gate** — `kian.sh`'s Claude Code tooling blocks direct edits to `kubernetes/clusters/*-prod/**` without verifying dev is Synced+Healthy first. See [ADR-0007](docs/adr/0007-model-as-prod-safety-gate.md).
+- **Reconciling image writer + locked `main`** — image tags follow each app repo's `main` history, prod moves by PR, and `main` requires PR + checks for everyone. See [ADR-0008](docs/adr/0008-reconciling-image-writer.md).
 
 ---
 

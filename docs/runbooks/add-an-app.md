@@ -34,7 +34,8 @@ A new application needs to run on one or more clusters. The app either:
 
    ```yaml
    <app>:
-     type: values
+     repo: TechGardenCode/<repo>   # required: whose main history decides "newest"
+     # prod: auto                  # only for apps with no dev environment
      paths:
        - path: kubernetes/clusters/1276-dev/<namespace>/<app>/values.yaml
          env: dev
@@ -42,22 +43,27 @@ A new application needs to run on one or more clusters. The app either:
          env: prod
    ```
 
-   Use the `{path, env}` object form — the `promote-to-prod` job filters on `env == "prod"` and will skip PR creation if `env` is missing.
+   The writer fails loudly on an unknown field, a missing `repo`, or an app name that isn't lowercase-hyphen. The image name comes from `.image.repository` in the first path.
 
-6. **Configure the app repo's CI** to send `repository_dispatch` to the homelab repo on each build:
+   - **Private app repo:** add it to the writer GitHub App's installation, and to `repositories:` in `update-image-tag.yml`, so the writer can read its history.
+   - **Private image:** in the GHCR package settings, grant this repo Read under "Manage Actions access".
+
+6. **Make the app repo's CI nudge the writer** after it pushes an image tagged with the full commit sha. Set the `HOMELAB_DISPATCH_TOKEN` secret in the app repo, then add:
 
    ```yaml
-   - name: Dispatch image update
-     run: |
-       gh api repos/techgardencode/homelab/dispatches \
-         --method POST \
-         -f event_type=update-image \
-         -f "client_payload[app]=<app>" \
-         -f "client_payload[tag]=${{ github.sha }}" \
-         -f "client_payload[env]=dev"
+   - name: Nudge homelab writer
+     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+     uses: peter-evans/repository-dispatch@28959ce8df70de7be546dd1250a005dd32156697 # v4.0.1
+     with:
+       token: ${{ secrets.HOMELAB_DISPATCH_TOKEN }}
+       repository: TechGardenCode/homelab
+       event-type: update-image
+       client-payload: '{"app": "<app>"}'
    ```
 
-7. **Commit and push.** The `validate-and-audit.yml` workflow runs on the PR. Merge after green.
+   The payload is only logged; the writer decides the tag from history. Without the nudge the 30-minute schedule still picks the image up.
+
+7. **Open a PR.** `main` requires a PR with the `validate-and-audit.yml` checks green. Once the registry change merges, the writer runs and lands the app's newest existing image with no dispatch needed.
 
 8. **Wait for ArgoCD.** The ApplicationSet git generator discovers the new directory on next sync (seconds via webhook). The Application will appear in the ArgoCD UI as `<cluster>.<namespace>.<app>`.
 
@@ -69,7 +75,7 @@ A new application needs to run on one or more clusters. The app either:
 
 ## Gotchas
 
-- **Don't commit an `image.tag` that doesn't exist in GHCR yet.** Validation passes, but ArgoCD will deploy and pods will `ImagePullBackOff`. Dispatch from CI first, then PR for any non-tag manifests.
+- **Don't hand-write an `image.tag`.** Leave the tag from an existing app as a placeholder or point it at a sha you know exists; the writer replaces it with the newest real image as soon as the registry entry merges.
 - **Secrets belong in Bitwarden + an `ExternalSecret`,** not in `values.yaml`. The `generic-service` chart supports `externalSecret:` blocks.
 - **HTTPRoute hostnames** must exist in DNS (internal Technitium zone or Cloudflare). `external-dns` writes them automatically if the `HTTPRoute` has the right annotations.
 
