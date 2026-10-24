@@ -56,7 +56,7 @@ VALID_APP='  a:
 test_validate_rejects_unknown_key() {
   fixture; registry "$VALID_APP
     type: values"
-  validate_registry "$T/reg.yaml" 2>/dev/null; assert_eq $? 1 rc
+  validate_registry "$T/reg.yaml" >/dev/null 2>&1; assert_eq $? 1 rc
 }
 
 test_validate_rejects_missing_repo() {
@@ -64,7 +64,7 @@ test_validate_rejects_missing_repo() {
     paths:
       - path: x/values.yaml
         env: dev'
-  validate_registry "$T/reg.yaml" 2>/dev/null; assert_eq $? 1 rc
+  validate_registry "$T/reg.yaml" >/dev/null 2>&1; assert_eq $? 1 rc
 }
 
 test_validate_rejects_bad_name() {
@@ -73,13 +73,13 @@ test_validate_rejects_bad_name() {
     paths:
       - path: x/values.yaml
         env: dev'
-  validate_registry "$T/reg.yaml" 2>/dev/null; assert_eq $? 1 rc
+  validate_registry "$T/reg.yaml" >/dev/null 2>&1; assert_eq $? 1 rc
 }
 
 test_validate_rejects_bad_prod() {
   fixture; registry "$VALID_APP
     prod: yes"
-  validate_registry "$T/reg.yaml" 2>/dev/null; assert_eq $? 1 rc
+  validate_registry "$T/reg.yaml" >/dev/null 2>&1; assert_eq $? 1 rc
 }
 
 test_validate_rejects_bad_paths() {
@@ -93,7 +93,7 @@ test_validate_rejects_bad_paths() {
     fixture; registry "  a:
     repo: TechGardenCode/a
 $body"
-    validate_registry "$T/reg.yaml" 2>/dev/null; assert_eq $? 1 "rc for: $body"
+    validate_registry "$T/reg.yaml" >/dev/null 2>&1; assert_eq $? 1 "rc for: $body"
   done
 }
 
