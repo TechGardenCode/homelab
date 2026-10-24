@@ -105,6 +105,14 @@ jobs:
           helm template test helm-charts/namespace \
             --set name=test
 
+  writer-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Writer self-check
+        run: bash ci/writer_test.sh
+
   alert-on-failure:
     runs-on: ubuntu-latest
     needs: [kustomize-build, shared-build, helm-template]

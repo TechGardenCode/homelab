@@ -1,188 +1,67 @@
 name: update-image-tag
 
+# The homelab writer: reconciles every app in ci/app-registry.yaml to the
+# newest built commit on its repo's main (see ci/writer.sh). Dispatches are
+# nudges only; the payload is logged and never used.
+
 on:
   repository_dispatch:
     types: [update-image]
+  push:
+    branches: [main]
+    paths:
+      - ci/app-registry.yaml
+      - ci/writer.sh
+      - .github/workflows/update-image-tag.yml
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch: {}
+
+# One run at a time; a newer pending run replaces an older pending one,
+# which is fine because every run reconciles all apps.
+concurrency:
+  group: homelab-writer
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  packages: read
 
 jobs:
-  update-tag:
+  reconcile:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
+    environment: writer
     steps:
-      - uses: actions/checkout@v7
-
-      - name: Install yq
-        uses: mikefarah/yq@v4
-
-      - name: Read app registry and update tags
+      - name: Log nudge
+        if: github.event_name == 'repository_dispatch'
         env:
-          APP_NAME: ${{ github.event.client_payload.app }}
-          NEW_TAG: ${{ github.event.client_payload.tag }}
-          ENV_FILTER: ${{ github.event.client_payload.env }}
-        run: |
-          REGISTRY="ci/app-registry.yaml"
+          APP: ${{ github.event.client_payload.app }}
+        run: '[[ "$APP" =~ ^[a-z0-9-]+$ ]] && echo "nudge: $APP" || echo "nudge: (invalid app name ignored)"'
 
-          if ! yq e ".apps.\"${APP_NAME}\"" "$REGISTRY" | grep -q "type:"; then
-            echo "::error::App '${APP_NAME}' not found in ${REGISTRY}"
-            exit 1
-          fi
+      - name: Mint writer token
+        id: token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          app-id: ${{ vars.WRITER_APP_ID }}
+          private-key: ${{ secrets.WRITER_APP_PRIVATE_KEY }}
+          owner: TechGardenCode
+          repositories: homelab,wiki,overwatch
 
-          TYPE=$(yq e ".apps.\"${APP_NAME}\".type" "$REGISTRY")
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          token: ${{ steps.token.outputs.token }}
+          fetch-depth: 0
 
-          # Path schema is always {path, env}. Filter by env when the
-          # dispatch provided one; otherwise update every registered path.
-          if [ -n "$ENV_FILTER" ]; then
-            PATHS=$(yq e ".apps.\"${APP_NAME}\".paths[] | select(.env == \"${ENV_FILTER}\") | .path" "$REGISTRY")
-          else
-            PATHS=$(yq e ".apps.\"${APP_NAME}\".paths[].path" "$REGISTRY")
-          fi
+      - name: Check yq
+        run: yq --version
 
-          if [ -z "$PATHS" ]; then
-            echo "::error::No paths found for app '${APP_NAME}' (env filter: '${ENV_FILTER}')"
-            exit 1
-          fi
-
-          for FILE_PATH in $PATHS; do
-            if [ ! -f "$FILE_PATH" ]; then
-              echo "::warning::Path ${FILE_PATH} does not exist, skipping"
-              continue
-            fi
-
-            if [ "$TYPE" = "kustomization" ]; then
-              yq e -i "(. | .images[] | select(.name == \"*\")).newTag = \"${NEW_TAG}\"" "$FILE_PATH"
-              echo "Updated newTag in ${FILE_PATH}"
-            elif [ "$TYPE" = "values" ]; then
-              yq e -i ".image.tag = \"${NEW_TAG}\"" "$FILE_PATH"
-              echo "Updated image.tag in ${FILE_PATH}"
-            else
-              echo "::error::Unknown type '${TYPE}' for app '${APP_NAME}'"
-              exit 1
-            fi
-
-            # Also update migrate-job.yaml in the same directory if it exists
-            MIGRATE_JOB="$(dirname "$FILE_PATH")/migrate-job.yaml"
-            if [ -f "$MIGRATE_JOB" ]; then
-              REPO=$(yq e '.image.repository' "$FILE_PATH")
-              sed -i "s|image: ${REPO}:.*|image: ${REPO}:${NEW_TAG}|" "$MIGRATE_JOB"
-              echo "Updated migrate-job image in ${MIGRATE_JOB}"
-            fi
-          done
-
-      - name: Commit and push
+      - name: Reconcile
         env:
-          APP_NAME: ${{ github.event.client_payload.app }}
-          NEW_TAG: ${{ github.event.client_payload.tag }}
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -A
-          if git diff --cached --quiet; then
-            echo "No changes to commit"
-            exit 0
-          fi
-          git commit -m "chore: update ${APP_NAME} image to ${NEW_TAG}"
-          git push
-
-  promote-to-prod:
-    needs: update-tag
-    if: github.event.client_payload.env == 'dev'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
-    steps:
-      - uses: actions/checkout@v7
-
-      - name: Install yq
-        uses: mikefarah/yq@v4
-
-      - name: Check for prod paths
-        id: check
-        env:
-          APP_NAME: ${{ github.event.client_payload.app }}
-        run: |
-          REGISTRY="ci/app-registry.yaml"
-          PROD_PATHS=$(yq e ".apps.\"${APP_NAME}\".paths[] | select(.env == \"prod\") | .path" "$REGISTRY" 2>/dev/null)
-          if [ -z "$PROD_PATHS" ]; then
-            echo "No prod paths for ${APP_NAME}, skipping promotion"
-            echo "has_prod=false" >> "$GITHUB_OUTPUT"
-          else
-            echo "has_prod=true" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Create promote PR
-        if: steps.check.outputs.has_prod == 'true'
-        env:
-          APP_NAME: ${{ github.event.client_payload.app }}
-          NEW_TAG: ${{ github.event.client_payload.tag }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          SHORT_SHA="${NEW_TAG:0:7}"
-          BRANCH="promote/${APP_NAME}-${SHORT_SHA}"
-          REGISTRY="ci/app-registry.yaml"
-          TYPE=$(yq e ".apps.\"${APP_NAME}\".type" "$REGISTRY")
-
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-
-          # Pull latest (update-tag job may have pushed)
-          git pull --rebase origin main
-
-          # Create or reset promote branch
-          git checkout -B "$BRANCH"
-
-          PROD_PATHS=$(yq e ".apps.\"${APP_NAME}\".paths[] | select(.env == \"prod\") | .path" "$REGISTRY")
-          for FILE_PATH in $PROD_PATHS; do
-            if [ ! -f "$FILE_PATH" ]; then
-              echo "::warning::Prod path ${FILE_PATH} does not exist, skipping"
-              continue
-            fi
-
-            if [ "$TYPE" = "values" ]; then
-              yq e -i ".image.tag = \"${NEW_TAG}\"" "$FILE_PATH"
-            elif [ "$TYPE" = "kustomization" ]; then
-              yq e -i "(. | .images[] | select(.name == \"*\")).newTag = \"${NEW_TAG}\"" "$FILE_PATH"
-            fi
-
-            # Also update migrate-job.yaml in the same directory
-            MIGRATE_JOB="$(dirname "$FILE_PATH")/migrate-job.yaml"
-            if [ -f "$MIGRATE_JOB" ]; then
-              REPO=$(yq e '.image.repository' "$FILE_PATH")
-              sed -i "s|image: ${REPO}:.*|image: ${REPO}:${NEW_TAG}|" "$MIGRATE_JOB"
-            fi
-          done
-
-          git add -A
-          if git diff --cached --quiet; then
-            echo "No prod changes to promote"
-            exit 0
-          fi
-
-          git commit -m "promote: ${APP_NAME} to ${SHORT_SHA}"
-          git push -f origin "$BRANCH"
-
-          # Close existing promote PRs for this app — excluding the current branch,
-          # otherwise --delete-branch would delete the branch we just pushed.
-          EXISTING=$(gh pr list --search "head:promote/${APP_NAME}-" --json number,headRefName \
-            --jq ".[] | select(.headRefName != \"${BRANCH}\") | .number" 2>/dev/null || true)
-          for PR_NUM in $EXISTING; do
-            gh pr close "$PR_NUM" --delete-branch 2>/dev/null || true
-          done
-
-          gh pr create \
-            --title "promote: ${APP_NAME} to ${SHORT_SHA}" \
-            --body "$(cat <<EOF
-          ## Promote ${APP_NAME} to production
-
-          **Image tag:** \`${NEW_TAG}\`
-          **Dev deployment:** Verify at the dev URL before merging.
-
-          Merging this PR will deploy to production via ArgoCD.
-
-          ---
-          *Auto-generated by CI*
-          EOF
-          )" \
-            --base main \
-            --head "$BRANCH"
+          GH_TOKEN: ${{ steps.token.outputs.token }}
+          GHCR_TOKEN: ${{ github.token }}
+          PROMOTE_GUARD: ruleset
+          GIT_AUTHOR_NAME: techgarden-homelab-writer[bot]
+          GIT_AUTHOR_EMAIL: 347152658+techgarden-homelab-writer[bot]@users.noreply.github.com
+          GIT_COMMITTER_NAME: techgarden-homelab-writer[bot]
+          GIT_COMMITTER_EMAIL: 347152658+techgarden-homelab-writer[bot]@users.noreply.github.com
+        run: bash ci/writer_test.sh && bash ci/writer.sh
