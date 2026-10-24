@@ -216,6 +216,14 @@ test_prod_pr_never_touches_prod_on_main() {
   assert_eq "$(yq .image.tag a/prod/values.yaml)" old tag
 }
 
+# A missing promote branch must read as "", not yq's "null" (else cleanup
+# tries to delete a branch that isn't there).
+test_tag_at_missing_ref_is_empty() {
+  repo_fixture old
+  assert_eq "$(tag_at origin/promote/a a/prod/values.yaml)" "" missing-ref
+  assert_eq "$(tag_at origin/main a/prod/values.yaml)" old present
+}
+
 test_noop_when_current() {
   repo_fixture new
   git() { [[ "$1" == push ]] && touch "$T/pushed"; command git "$@"; }

@@ -113,7 +113,12 @@ dry() { [[ "${DRY_RUN:-}" == 1 ]]; }
 act() { if dry; then echo "would: $*"; else "$@"; fi; }
 
 # .image.tag of PATH at git REF; empty if the file isn't there.
-tag_at() { git show "$1:$2" 2>/dev/null | yq '.image.tag' 2>/dev/null || true; }
+# (yq prints "null" for empty input, so don't pipe a failed git show into it.)
+tag_at() {
+  local doc
+  doc=$(git show "$1:$2" 2>/dev/null) || return 0
+  yq '.image.tag' <<<"$doc"
+}
 
 # --- promote PRs ----------------------------------------------------------
 
