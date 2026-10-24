@@ -62,6 +62,22 @@ configMapGenerator:
       - base/themes/techgarden/email/html/password-reset.ftl
       - base/themes/techgarden/email/html/template.ftl
 
+  # homelab login theme (base/themes/homelab/login/) for the accounts realm: the overwatch design kit.
+  # css/kit.css + css/fonts/ are a verbatim copy of overwatch/kit (see base/themes/README.md).
+  - name: keycloak-theme-homelab-login
+    namespace: keycloak
+    files:
+      - base/themes/homelab/login/theme.properties
+      - base/themes/homelab/login/messages/messages_en.properties
+      - base/themes/homelab/login/resources/css/kit.css
+      - base/themes/homelab/login/resources/css/login.css
+      - base/themes/homelab/login/resources/css/fonts/OFL.txt
+      - base/themes/homelab/login/resources/css/fonts/plex-sans-400.woff2
+      - base/themes/homelab/login/resources/css/fonts/plex-sans-500.woff2
+      - base/themes/homelab/login/resources/css/fonts/plex-sans-600.woff2
+      - base/themes/homelab/login/resources/css/fonts/plex-mono-400.woff2
+      - base/themes/homelab/login/resources/css/fonts/plex-mono-500.woff2
+
 generatorOptions:
   # Stable names: keycloak-config-cli mounts keycloak-realm-config by fixed name.
   # The theme ConfigMaps inherit this, so a theme edit does NOT roll the pod on

@@ -141,3 +141,30 @@ The two font families are SIL Open Font License 1.1, redistributed unmodified. O
 requires the licence and copyright notice accompany every copy, so
 `OFL-bricolage-grotesque.txt` and `OFL-hanken-grotesk.txt` ship beside the binaries in
 `login/resources/fonts/` and are served by Keycloak. **Do not remove them.**
+
+---
+
+# homelab login theme (`homelab`)
+
+Login theme for the dev **`accounts`** realm (`"loginTheme": "homelab"`), built from the **overwatch
+design kit** (`TechGardenCode/overwatch` → `kit/`), the shared look for homelab infra apps. Login only:
+there's no email theme, so `accounts` emails stay on Keycloak's default.
+
+Same shape as `techgarden/`: `parent=base`, no `.ftl` overrides, only `kc*Class` bindings in
+`theme.properties` plus two stylesheets:
+
+- `resources/css/kit.css` + `resources/css/fonts/` are a **verbatim copy** of the kit. The fonts sit
+  beside `kit.css` because it loads them by the relative URL `fonts/…`. Don't edit them here. To
+  update, copy `kit/kit.css` and `kit/fonts/*` again; the first line of `kit.css` names the kit
+  version.
+- `resources/css/login.css` holds only page layout and the raw Keycloak hooks the bindings can't
+  reach (`#kc-*`, `alert-{error,warning,success,info}`).
+
+Mounted by its own ConfigMap `keycloak-theme-homelab-login` (see `../../kustomization.yaml`) at
+`/opt/keycloak/themes/homelab/login`. **Bump `techgarden.gg/theme-revision`** in `../keycloak-cr.yaml` on
+any change here; that annotation is the pod roll for every theme.
+
+Checked locally against `quay.io/keycloak/keycloak:26.6.3 start-dev` (the "Iterating on it" recipe
+above, mounting `homelab/`): sign in, bad password, forgot password → success notice, the
+`UPDATE_PASSWORD` required action, and the error page. Dark and light, 390 px and desktop, no
+horizontal scroll, every request same-origin.
