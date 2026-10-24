@@ -147,6 +147,18 @@ test_set_tag_hostile_tag_is_literal() {
   assert_eq "$(yq 'keys | length' "$T/app/values.yaml")" 2 keys
 }
 
+# --- promote decisions ----------------------------------------------------
+
+test_promote_noop_when_prod_current() { assert_eq "$(promote_action t1 t1 "" no "")" noop r; }
+# The promote/** ruleset blocks GitHub's auto-delete-on-merge.
+test_promote_cleanup_leftover_branch() { assert_eq "$(promote_action t1 t1 t1 no "")" cleanup r; }
+test_promote_cleanup_open_pr() { assert_eq "$(promote_action t1 t1 t0 yes MERGEABLE)" cleanup r; }
+test_promote_keep_up_to_date() { assert_eq "$(promote_action t0 t1 t1 yes MERGEABLE)" keep r; }
+test_promote_rewrite_on_new_tag() { assert_eq "$(promote_action t0 t2 t1 yes MERGEABLE)" rewrite r; }
+test_promote_rewrite_on_conflict() { assert_eq "$(promote_action t0 t1 t1 yes CONFLICTING)" rewrite r; }
+test_promote_rewrite_when_none() { assert_eq "$(promote_action t0 t1 "" no "")" rewrite r; }
+test_promote_rewrite_when_dirty() { assert_eq "$(promote_action t0 t1 t1 yes MERGEABLE no)" rewrite r; }
+
 # --- runner ---------------------------------------------------------------
 
 fail=0

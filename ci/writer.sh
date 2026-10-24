@@ -107,6 +107,101 @@ set_tag() {
       = strenv(REPO) + ":" + strenv(TAG)' "$job"
 }
 
+dry() { [[ "${DRY_RUN:-}" == 1 ]]; }
+
+# Mutating command, or just "would: ..." under DRY_RUN.
+act() { if dry; then echo "would: $*"; else "$@"; fi; }
+
+# .image.tag of PATH at git REF; empty if the file isn't there.
+tag_at() { git show "$1:$2" 2>/dev/null | yq '.image.tag' 2>/dev/null || true; }
+
+# --- promote PRs ----------------------------------------------------------
+
+# PROD_TAG DESIRED BRANCH_TAG PR_OPEN MERGEABLE [BRANCH_CLEAN]
+promote_action() {
+  local prod=$1 desired=$2 branch=$3 open=$4 mergeable=$5 clean=${6:-yes}
+  if [[ "$prod" == "$desired" ]]; then
+    if [[ -n "$branch" || "$open" == yes ]]; then echo cleanup; else echo noop; fi
+  elif [[ "$branch" == "$desired" && "$open" == yes && "$mergeable" != CONFLICTING && "$clean" == yes ]]; then
+    echo keep
+  else
+    echo rewrite
+  fi
+}
+
+# yes when the promote branch changes only the app's prod values files and
+# their migrate jobs (the exact-diff fallback for PROMOTE_GUARD).
+branch_clean() { # REGISTRY APP
+  local f allowed
+  [[ "${PROMOTE_GUARD:-}" == exact-diff ]] || { echo yes; return; }
+  allowed=$(app_paths "$1" "$2" prod | while IFS= read -r f; do echo "$f"; echo "$(dirname "$f")/migrate-job.yaml"; done)
+  while IFS= read -r f; do
+    grep -qxF -- "$f" <<<"$allowed" || { echo no; return; }
+  done < <(git diff --name-only "origin/main...origin/promote/$2")
+  echo yes
+}
+
+reconcile_promotions() {
+  local reg=$1 app branch prod_paths first dev desired prod_tag branch_tag pr num mergeable action p short body fail=0
+  # fd 3 so gh/git inside the loop can't eat the app list
+  while IFS= read -r app <&3; do
+    [[ "$(app_prod "$reg" "$app")" == pr ]] || continue
+    prod_paths=$(app_paths "$reg" "$app" prod)
+    [[ -n "$prod_paths" ]] || continue
+    branch="promote/$app"
+    first=$(head -n1 <<<"$prod_paths")
+    dev=$(app_paths "$reg" "$app" dev | head -n1)
+    if [[ -n "$dev" ]]; then
+      desired=$(tag_at origin/main "$dev")
+    else
+      desired=$(main_shas "$(app_repo "$reg" "$app")" | pick_candidate "$(image_of "$reg" "$app")") \
+        || { echo "::error::$app: candidate lookup failed"; fail=1; continue; }
+    fi
+    [[ -n "$desired" ]] || { echo "::notice::$app: nothing to promote yet"; continue; }
+
+    prod_tag=$(tag_at origin/main "$first")
+    git update-ref -d "refs/remotes/origin/$branch" 2>/dev/null || true
+    git fetch -q origin "+refs/heads/$branch:refs/remotes/origin/$branch" 2>/dev/null || true
+    branch_tag=$(tag_at "origin/$branch" "$first")
+    # Same-repo PRs only: a fork can open a PR from a branch with this name.
+    pr=$(gh pr list --head "$branch" --state open --json number,mergeable,isCrossRepository \
+      --jq '[.[] | select(.isCrossRepository | not)][0] | select(.) | "\(.number) \(.mergeable)"') \
+      || { echo "::error::$app: listing promote PRs failed"; fail=1; continue; }
+    num=${pr%% *}; mergeable=${pr#* }
+    action=$(promote_action "$prod_tag" "$desired" "$branch_tag" "$([[ -n "$pr" ]] && echo yes || echo no)" \
+      "$mergeable" "$([[ -n "$branch_tag" ]] && branch_clean "$reg" "$app" || echo yes)")
+    echo "$app: promote $action (prod $prod_tag, desired $desired)"
+
+    case "$action" in
+      cleanup)
+        [[ -z "$pr" ]] || act gh pr close "$num" --comment "prod is already at $desired"
+        [[ -z "$branch_tag" ]] || act git push -q origin --delete "$branch"
+        ;;
+      rewrite)
+        short=${desired:0:7}
+        if dry; then
+          echo "would: force-push $branch with prod at $desired and $([[ -n "$pr" ]] && echo "retitle PR #$num" || echo "open a PR")"
+          continue
+        fi
+        git checkout -q -B "$branch" origin/main
+        while IFS= read -r p; do set_tag "$p" "$desired"; done <<<"$prod_paths"
+        git commit -qam "promote: $app to $short"
+        git push -qf origin "$branch"
+        body=$(printf '%s\n' "Promote **$app** to \`$desired\`." "" \
+          "Verify dev is Synced+Healthy before merging." "" \
+          "---" "*Maintained by the homelab writer (\`ci/writer.sh\`); updated in place.*")
+        if [[ -n "$pr" ]]; then
+          gh pr edit "$num" --title "promote: $app to $short" --body "$body"
+        else
+          gh pr create --base main --head "$branch" --title "promote: $app to $short" --body "$body"
+        fi
+        git checkout -q --detach origin/main
+        ;;
+    esac
+  done 3< <(apps "$reg")
+  return "$fail"
+}
+
 main() { :; }
 
 if [[ "${BASH_SOURCE[0]:-}" == "$0" ]]; then main "$@"; fi
