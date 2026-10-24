@@ -32,7 +32,7 @@ ArgoCD webhook delivery from `homelab` failed. Check:
 ### `ImagePullBackOff`
 
 1. Does the image actually exist in GHCR?  `crane manifest ghcr.io/techgardencode/<app>:<tag>` or the GH UI.
-2. Did `update-image-tag.yml` commit the right tag? Check the values file at the cluster path.
+2. Did the writer (`update-image-tag.yml`) commit the right tag? Check the values file at the cluster path, and the latest writer run log for the app's candidate sha.
 3. Registry pull secret present in the namespace? `kubectl -n <ns> get sa default -o yaml | grep imagePullSecrets`.
 
 ### `CrashLoopBackOff`
