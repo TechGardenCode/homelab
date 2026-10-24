@@ -1,6 +1,6 @@
 image:
   repository: "ghcr.io/techgardencode/overwatch-web"
-  tag: "da0bf7c1982982226b3c7b466b9aca1e1ec7779b"
+  tag: "c43fa0af6a2c757b7846ddee9389bc58ff062b31"
 imagePullSecrets:
   - name: ghcr-credentials
 ports:
