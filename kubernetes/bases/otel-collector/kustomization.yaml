@@ -9,14 +9,14 @@ kind: Kustomization
 
 helmCharts:
   - name: opentelemetry-collector
-    version: 0.175.1
+    version: 0.178.0
     releaseName: otel-agent
     repo: https://open-telemetry.github.io/opentelemetry-helm-charts
     valuesFile: values-common.yaml
     additionalValuesFiles: [values-agent.yaml]
     namespace: monitoring
   - name: opentelemetry-collector
-    version: 0.175.1
+    version: 0.178.0
     releaseName: otel-cluster
     repo: https://open-telemetry.github.io/opentelemetry-helm-charts
     valuesFile: values-common.yaml
