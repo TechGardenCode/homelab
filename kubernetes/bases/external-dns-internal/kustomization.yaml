@@ -1,0 +1,17 @@
+# external-dns-internal — a base, not an app: it sits outside every ApplicationSet glob and
+# each cluster pulls it in from clusters/<cluster>/platform/external-dns-internal/, which adds its own
+# ExternalSecret (the CMP passes only NAMESPACE, so shared/ can't carry a
+# per-cluster Bitwarden secret id: dev reads the `dev` project, prod/core `infra`).
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+
+helmCharts:
+  - repo: https://kubernetes-sigs.github.io/external-dns
+    name: external-dns
+    version: 1.23.0
+    releaseName: external-dns-internal
+    namespace: platform
+    includeCRDs: true
+    valuesFile: values.yaml
