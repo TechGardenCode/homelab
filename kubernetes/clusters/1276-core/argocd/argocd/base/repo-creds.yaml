@@ -30,4 +30,4 @@ spec:
   data:
     - secretKey: password
       remoteRef:
-        key: "46d0db72-9f10-4571-bdd6-b47500219d1e"
+        key: "46d0db72-9f10-4571-bdd6-b47500219d1e"  # infra/github/argocd-repo-readonly-token
