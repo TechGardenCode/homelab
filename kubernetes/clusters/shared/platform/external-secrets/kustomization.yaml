@@ -5,7 +5,6 @@ resources:
   # - base/bitwarden-issuer.yaml
   - base/bitwarden-cert.yaml
   - base/secretstore.yaml
-  - base/externalsecret.yaml
 
 helmCharts:
   - repo: https://charts.external-secrets.io
