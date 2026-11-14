@@ -201,6 +201,10 @@ applicationsets:
             - path: "kubernetes/clusters/1276-core/observability/*"
             - path: "kubernetes/clusters/1276-core/monitoring/*"
             - path: "kubernetes/clusters/1276-core/overwatch/*"
+            # cert-manager moved out of shared/ (#384); core lists dirs
+            # explicitly, so a new top-level dir must be added here or its
+            # app is pruned.
+            - path: "kubernetes/clusters/1276-core/cert-manager/*"
     template:
       metadata:
         name: "1276-core.{{path[3]}}.{{path.basenameNormalized}}"
